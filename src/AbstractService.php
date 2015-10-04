@@ -76,10 +76,10 @@ abstract class AbstractService implements ServiceInterface
      * Performs a call on the service, returning an interpreted response
      *
      * @param string $method        name of the method to call through the service
-     * @param mixed  $parameters    parameters to send along
+     * @param mixed  $parameters    parameters to send along, default: empty array
      * @return ServiceResponse      fallback to mixed if no interpreter available; make sure there is one
      */
-    public function call($method, $parameters)
+    public function call($method, $parameters = [])
     {
         $this->parameters = $parameters;
 

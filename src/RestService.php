@@ -41,7 +41,7 @@ class RestService extends AbstractService
      * @return mixed
      * @throws CouldNotConnectException
      */
-    public function callRaw($method, $parameters)
+    public function callRaw($method, $parameters = [])
     {
         $url = $this->location;
 
