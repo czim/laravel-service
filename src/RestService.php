@@ -129,4 +129,22 @@ class RestService extends AbstractService
         return $this;
     }
 
+    /**
+     * @param string $method GET, POST, etc
+     * @return $this
+     */
+    public function setMethod($method)
+    {
+        $this->method = (string) $method;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
 }
