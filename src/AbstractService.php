@@ -118,7 +118,7 @@ abstract class AbstractService implements ServiceInterface
             return $this->rawResponse;
         }
 
-        return $this->rawResponse;
+        return $this->response;
     }
 
 
