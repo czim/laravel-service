@@ -130,6 +130,14 @@ class RestService extends AbstractService
     }
 
     /**
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    /**
      * @param string $method GET, POST, etc
      * @return $this
      */
