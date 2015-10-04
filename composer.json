@@ -1,0 +1,45 @@
+{
+    "name": "czim/laravel-service",
+    "description": "Basic webservice framework for Laravel.",
+    "keywords": [
+        "service",
+        "webservice",
+        "rest",
+        "soap"
+    ],
+    "homepage": "https://github.com/czim/laravel-service",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Coen Zimmerman",
+            "email": "coen@pixelindustries.com",
+            "homepage": "http://www.pixelindustries.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "czim/laravel-dataobject": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.*",
+        "mockery/mockery": "0.9.*",
+        "scrutinizer/ocular": "~1.1",
+        "orchestra/testbench": "~3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Czim\\Service\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Czim\\Service\\Test\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
