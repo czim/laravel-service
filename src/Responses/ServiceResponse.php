@@ -2,8 +2,9 @@
 namespace Czim\Service\Responses;
 
 use Czim\DataObject\AbstractDataObject;
+use Czim\Service\Contracts\ServiceResponseInterface;
 
-class ServiceResponse extends AbstractDataObject
+class ServiceResponse extends AbstractDataObject implements ServiceResponseInterface
 {
 
     /**
@@ -46,8 +47,12 @@ class ServiceResponse extends AbstractDataObject
         $this->setAttribute('error', $error);
     }
 
+    /**
+     * @return string
+     */
     public function getError()
     {
         return $this->getAttribute('error');
     }
+
 }
