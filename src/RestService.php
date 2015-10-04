@@ -63,7 +63,7 @@ class RestService extends AbstractService
 
             case static::METHOD_POST:
                 curl_setopt($curl, CURLOPT_POST, true);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $this->parameters);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($this->parameters));
                 break;
 
             case static::METHOD_GET:
