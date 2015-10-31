@@ -1,27 +1,17 @@
 <?php
 namespace Czim\Service\Interpreters;
 
-use Czim\Service\Contracts\ServiceResponseInterface;
-
 /**
- * Class BasicJsonInterpreter
- *
  * Interprets JSON response data by decoding it as an array
  */
 class BasicJsonInterpreter extends AbstractInterpreter
 {
 
-    /**
-     * @param mixed $response
-     * @return ServiceResponseInterface
-     */
-    public function interpret($response)
+    protected function doInterpretation()
     {
-        $response = json_decode($response, true);
-
-        $this->interpretedResponse->setData($response);
-
-        return $this->interpretedResponse;
+        $this->interpretedResponse->setData(
+            json_decode($this->response, true)
+        );
     }
 
 }

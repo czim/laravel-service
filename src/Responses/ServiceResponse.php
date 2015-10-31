@@ -4,15 +4,29 @@ namespace Czim\Service\Responses;
 use Czim\DataObject\AbstractDataObject;
 use Czim\Service\Contracts\ServiceResponseInterface;
 
+/**
+ * The processed/interpreted response data finally returned from the service call
+ */
 class ServiceResponse extends AbstractDataObject implements ServiceResponseInterface
 {
 
+    protected $magicAssignment = false;
+
+    protected $attributes = [
+        'data'       => null,
+        'statusCode' => 0,
+        'errors'     => [],
+    ];
+
     /**
      * @param mixed $data
+     * @return $this
      */
     public function setData($data)
     {
         $this->setAttribute('data', $data);
+
+        return $this;
     }
 
     /**
@@ -25,10 +39,13 @@ class ServiceResponse extends AbstractDataObject implements ServiceResponseInter
 
     /**
      * @param int $code
+     * @return $this
      */
     public function setStatusCode($code)
     {
         $this->setAttribute('statusCode', $code);
+
+        return $this;
     }
 
     /**
@@ -39,20 +56,45 @@ class ServiceResponse extends AbstractDataObject implements ServiceResponseInter
         return $this->getAttribute('statusCode') ?: 0;
     }
 
+
     /**
-     * @param string $error
+     * Returns all errors listed
+     *
+     * @return array
      */
-    public function setError($error)
+    public function getErrors()
     {
-        $this->setAttribute('error', $error);
+        return $this->getAttribute('errors');
     }
 
     /**
-     * @return string
+     * Sets all errors at once
+     *
+     * @param array $errors
+     * @return $this
      */
-    public function getError()
+    public function setErrors(array $errors)
     {
-        return $this->getAttribute('error');
+        $this->setAttribute('errors', $errors);
+
+        return $this;
+    }
+
+    /**
+     * Adds a single error to the error list
+     *
+     * @param string $error
+     * @return $this
+     */
+    public function addError($error)
+    {
+        $errors = $this->getAttribute('errors') ?: [];
+
+        $errors[] = $error;
+
+        $this->setAttribute('errors', $errors);
+
+        return $this;
     }
 
 }

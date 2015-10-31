@@ -5,9 +5,11 @@ interface ServiceInterpreterInterface
 {
 
     /**
-     * @param mixed $response
+     * @param ServiceRequestInterface             $request the request sent in order to retrieve the response
+     * @param mixed                               $response
+     * @param ServiceResponseInformationInterface $responseInformation
      * @return ServiceResponseInterface
      */
-    public function interpret($response);
+    public function interpret(ServiceRequestInterface $request, $response, ServiceResponseInformationInterface $responseInformation = null);
 
 }
