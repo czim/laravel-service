@@ -10,4 +10,26 @@ use Czim\Service\Contracts\ServiceResponseInformationInterface;
 class ServiceResponseInformation extends ServiceResponse implements ServiceResponseInformationInterface
 {
 
+    /**
+     * Sets response headers
+     *
+     * @param array $headers
+     * @return $this
+     */
+    public function setHeaders(array $headers)
+    {
+        $this->setAttribute('headers', $headers);
+
+        return $this;
+    }
+
+    /**
+     * Returns response headers
+     *
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->getAttribute('headers') ?: [];
+    }
 }

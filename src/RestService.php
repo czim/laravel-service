@@ -1,8 +1,11 @@
 <?php
 namespace Czim\Service;
 
+use Czim\Service\Contracts\ServiceInterpreterInterface;
+use Czim\Service\Contracts\ServiceRequestDefaultsInterface;
 use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Exceptions\CouldNotConnectException;
+use GuzzleHttp\Client;
 
 class RestService extends AbstractService
 {
@@ -33,6 +36,22 @@ class RestService extends AbstractService
      */
     protected $headers = [];
 
+    /**
+     * @var Client
+     */
+    protected $client;
+
+
+    /**
+     * @param ServiceRequestDefaultsInterface $defaults
+     * @param ServiceInterpreterInterface     $interpreter
+     */
+    public function __construct(ServiceRequestDefaultsInterface $defaults = null, ServiceInterpreterInterface $interpreter = null)
+    {
+        $this->client = new Client();
+
+        parent::__construct($defaults, $interpreter);
+    }
 
     /**
      * Performs raw REST call
@@ -43,6 +62,86 @@ class RestService extends AbstractService
      */
     protected function callRaw(ServiceRequestInterface $request)
     {
+        return $this->callWithGuzzle($request);
+    }
+
+    protected function callWithGuzzle(ServiceRequestInterface $request)
+    {
+        $url = rtrim($request->getLocation(), '/') . '/' . $request->getMethod();
+
+        $options = [
+            'http_errors' => false,
+        ];
+
+
+        // handle authentication
+
+        $credentials = $request->getCredentials();
+
+        if (    $this->basicAuth
+            &&  ! empty($credentials['name'])
+            &&  ! empty($credentials['password'])
+        ) {
+            $options['auth'] = [ $credentials['name'], $credentials['password'] ];
+        }
+
+
+        // handle parameters and body
+
+        switch ($this->method) {
+
+            case static::METHOD_POST:
+                $options['body'] = $request->getBody();
+
+                $parameters = $request->getParameters();
+
+                if ( ! empty($parameters)) {
+                    $options['query'] = $request->getParameters();
+                }
+                break;
+
+            case static::METHOD_GET:
+                $options['query'] = $request->getbody() ?: [];
+                break;
+
+            // default omitted on purpose
+        }
+
+        // headers
+
+        $headers = $request->getHeaders();
+
+        if (count($headers)) {
+            $options['headers'] = $headers;
+        }
+
+        // perform request
+
+        try {
+
+            $response = $this->client->request($this->method, $url, $options);
+
+        } catch (\Exception $e) {
+
+            throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
+        }
+
+        $this->responseInformation->setStatusCode( $response->getStatusCode() );
+        $this->responseInformation->setHeaders( $response->getHeaders() );
+
+        return $response->getBody()->getContents();
+    }
+
+    /**
+     * Performs raw REST call
+     *
+     * @param ServiceRequestInterface $request
+     * @return mixed
+     * @throws CouldNotConnectException
+     */
+    protected function callWithCurl(ServiceRequestInterface $request)
+    {
+
         $url = rtrim($request->getLocation(), '/') . '/' . $request->getMethod();
 
         $curl = curl_init();
