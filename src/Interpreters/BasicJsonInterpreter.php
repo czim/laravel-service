@@ -7,10 +7,18 @@ namespace Czim\Service\Interpreters;
 class BasicJsonInterpreter extends AbstractInterpreter
 {
 
+    /**
+     * Whether to decode as an associative array
+     *
+     * @var bool
+     */
+    protected $asArray = true;
+
+
     protected function doInterpretation()
     {
         $this->interpretedResponse->setData(
-            json_decode($this->response, true)
+            json_decode($this->response, $this->asArray)
         );
     }
 

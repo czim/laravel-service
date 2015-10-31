@@ -45,7 +45,7 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
         $this->interpretedResponse = app(ServiceResponse::class);
 
         $this->interpretedResponse->setStatusCode(0);
-        $this->interpretedResponse->setError('');
+        $this->interpretedResponse->setErrors([]);
         $this->interpretedResponse->setData(null);
 
         $this->initialize();

@@ -25,7 +25,7 @@ abstract class AbstractService implements ServiceInterface
      *
      * @var string
      */
-    protected $interpreterClass = 'Czim\\Service\\Interpreters\\BasicInterpreter';
+    protected $interpreterClass = 'Czim\\Service\\Interpreters\\BasicDefaultInterpreter';
 
 
     /**
@@ -170,23 +170,23 @@ abstract class AbstractService implements ServiceInterface
     {
         // properties to set only if they are empty
 
-        if (is_null($this->request->getLocation())) {
+        if (empty($this->request->getLocation())) {
             $this->request->setLocation( $this->defaults->getLocation() );
         }
 
-        if (is_null($this->request->getMethod())) {
+        if (empty($this->request->getMethod())) {
             $this->request->setMethod( $this->defaults->getMethod() );
         }
 
-        if (is_null($this->request->getParameters())) {
+        if (empty($this->request->getParameters())) {
             $this->request->setParameters( $this->defaults->getParameters() );
         }
 
-        if (is_null($this->request->getBody())) {
+        if (empty($this->request->getBody())) {
             $this->request->setBody( $this->defaults->getBody() );
         }
 
-        if (is_null($this->request->getCredentials())) {
+        if (empty($this->request->getCredentials())) {
             $this->request->setCredentials( $this->defaults->getCredentials() );
         }
 

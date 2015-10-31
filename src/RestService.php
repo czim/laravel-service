@@ -1,6 +1,7 @@
 <?php
 namespace Czim\Service;
 
+use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Exceptions\CouldNotConnectException;
 
 class RestService extends AbstractService
@@ -36,14 +37,13 @@ class RestService extends AbstractService
     /**
      * Performs raw REST call
      *
-     * @param string $method     name of the method to call through the service
-     * @param mixed  $parameters parameters to send along
+     * @param ServiceRequestInterface $request
      * @return mixed
      * @throws CouldNotConnectException
      */
-    public function callRaw($method, $parameters = [])
+    protected function callRaw(ServiceRequestInterface $request)
     {
-        $url = $this->location;
+        $url = rtrim($request->getLocation(), '/') . '/' . $request->getMethod();
 
         $curl = curl_init();
 
@@ -52,31 +52,41 @@ class RestService extends AbstractService
         }
 
 
-        if ($this->basicAuth && ! empty($this->user) && ! empty($this->password)) {
+        $credentials = $request->getCredentials();
+
+        if ($this->basicAuth && ! empty($credentials['name']) && ! empty($credentials['password'])) {
 
             curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($curl, CURLOPT_USERPWD, $this->user . ":" . $this->password);
+            curl_setopt($curl, CURLOPT_USERPWD, $credentials['name'] . ":" . $credentials['password']);
         }
+
+        $headers = $request->getHeaders();
 
 
         switch ($this->method) {
 
             case static::METHOD_POST:
                 curl_setopt($curl, CURLOPT_POST, true);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($this->parameters));
+                curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($request->getBody() ?: []));
+
+                $parameters = $request->getParameters();
+
+                if ( ! empty($parameters)) {
+                    $url .= '?' . http_build_query($request->getParameters());
+                }
                 break;
 
             case static::METHOD_GET:
-                $url .= '?' . http_build_query($this->parameters);
+                $url .= '?' . http_build_query($request->getbody() ?: []);
                 break;
 
             // default omitted on purpose
         }
 
 
-        if (count($this->headers)) {
+        if (count($headers)) {
 
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $this->headers);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         }
 
 
@@ -99,43 +109,6 @@ class RestService extends AbstractService
     // ------------------------------------------------------------------------------
     //      Getters, Setters and Configuration
     // ------------------------------------------------------------------------------
-
-    /**
-     * Adds a HTTP header by name
-     *
-     * @param  string $name
-     * @param  mixed  $value
-     * @return $this
-     */
-    public function addHeader($name, $value)
-    {
-        $this->headers[ $name ] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Adds multiple HTTP headers at once
-     *
-     * @param array $headers    associative name => value pairs
-     * @return $this
-     */
-    public function addHeaders(array $headers)
-    {
-        foreach ($headers as $name => $value) {
-            $this->addHeader($name, $value);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getHeaders()
-    {
-        return $this->headers;
-    }
 
     /**
      * @param string $method GET, POST, etc
