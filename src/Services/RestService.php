@@ -1,11 +1,13 @@
 <?php
-namespace Czim\Service;
+namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\ServiceInterpreterInterface;
 use Czim\Service\Contracts\ServiceRequestDefaultsInterface;
 use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Exceptions\CouldNotConnectException;
+use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception as GuzzleException;
 
 class RestService extends AbstractService
 {
@@ -45,10 +47,11 @@ class RestService extends AbstractService
     /**
      * @param ServiceRequestDefaultsInterface $defaults
      * @param ServiceInterpreterInterface     $interpreter
+     * @param array                           $guzzleConfig     default config to pass into the guzzle client
      */
-    public function __construct(ServiceRequestDefaultsInterface $defaults = null, ServiceInterpreterInterface $interpreter = null)
+    public function __construct(ServiceRequestDefaultsInterface $defaults = null, ServiceInterpreterInterface $interpreter = null, array $guzzleConfig = [])
     {
-        $this->client = new Client();
+        $this->client = new Client($guzzleConfig);
 
         parent::__construct($defaults, $interpreter);
     }
@@ -59,13 +62,9 @@ class RestService extends AbstractService
      * @param ServiceRequestInterface $request
      * @return mixed
      * @throws CouldNotConnectException
+     * @throws Exception
      */
     protected function callRaw(ServiceRequestInterface $request)
-    {
-        return $this->callWithGuzzle($request);
-    }
-
-    protected function callWithGuzzle(ServiceRequestInterface $request)
     {
         $url = rtrim($request->getLocation(), '/') . '/' . $request->getMethod();
 
@@ -91,7 +90,7 @@ class RestService extends AbstractService
         switch ($this->method) {
 
             case static::METHOD_POST:
-                $options['body'] = $request->getBody();
+                $options['form_params'] = $request->getBody();
 
                 $parameters = $request->getParameters();
 
@@ -121,89 +120,44 @@ class RestService extends AbstractService
 
             $response = $this->client->request($this->method, $url, $options);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
-            throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
+            // throw as CouldNotConnect if it is a guzzle error
+            // or rethrow if unexpected
+
+            if ($this->isGuzzleException($e)) {
+
+                throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
+            }
+
+            throw $e;
         }
 
         $this->responseInformation->setStatusCode( $response->getStatusCode() );
+        $this->responseInformation->setMessage( $response->getReasonPhrase() );
         $this->responseInformation->setHeaders( $response->getHeaders() );
 
         return $response->getBody()->getContents();
     }
 
     /**
-     * Performs raw REST call
+     * Returns whether the given is a standard Guzzle exception
      *
-     * @param ServiceRequestInterface $request
-     * @return mixed
-     * @throws CouldNotConnectException
+     * @param Exception $e
+     * @return bool
      */
-    protected function callWithCurl(ServiceRequestInterface $request)
+    protected function isGuzzleException(Exception $e)
     {
-
-        $url = rtrim($request->getLocation(), '/') . '/' . $request->getMethod();
-
-        $curl = curl_init();
-
-        if ($curl === false) {
-            throw new CouldNotConnectException('cURL could not be initialized');
-        }
-
-
-        $credentials = $request->getCredentials();
-
-        if ($this->basicAuth && ! empty($credentials['name']) && ! empty($credentials['password'])) {
-
-            curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($curl, CURLOPT_USERPWD, $credentials['name'] . ":" . $credentials['password']);
-        }
-
-        $headers = $request->getHeaders();
-
-
-        switch ($this->method) {
-
-            case static::METHOD_POST:
-                curl_setopt($curl, CURLOPT_POST, true);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($request->getBody() ?: []));
-
-                $parameters = $request->getParameters();
-
-                if ( ! empty($parameters)) {
-                    $url .= '?' . http_build_query($request->getParameters());
-                }
-                break;
-
-            case static::METHOD_GET:
-                $url .= '?' . http_build_query($request->getbody() ?: []);
-                break;
-
-            // default omitted on purpose
-        }
-
-
-        if (count($headers)) {
-
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        }
-
-
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_USERAGENT, self::USER_AGENT);
-        curl_setopt($curl, CURLOPT_URL, $url);
-
-        $response = curl_exec($curl);
-
-        if ($response === false) {
-            throw new CouldNotConnectException(curl_error($curl), curl_errno($curl));
-        }
-
-        curl_close($curl);
-
-        return $response;
+        return (    is_a($e, GuzzleException\BadResponseException::class)
+                ||  is_a($e, GuzzleException\ClientException::class)
+                ||  is_a($e, GuzzleException\ConnectException::class)
+                ||  is_a($e, GuzzleException\RequestException::class)
+                ||  is_a($e, GuzzleException\SeekException::class)
+                ||  is_a($e, GuzzleException\ServerException::class)
+                ||  is_a($e, GuzzleException\TooManyRedirectsException::class)
+                ||  is_a($e, GuzzleException\TransferException::class)
+        );
     }
-
 
     // ------------------------------------------------------------------------------
     //      Getters, Setters and Configuration

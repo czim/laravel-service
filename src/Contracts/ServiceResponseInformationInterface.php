@@ -19,4 +19,18 @@ interface ServiceResponseInformationInterface extends ServiceResponseInterface
      */
     public function getHeaders();
 
+
+    /**
+     * Sets the message or reason phrase
+     *
+     * @param $message
+     * @return $this
+     */
+    public function setMessage($message);
+
+    /**
+     * @return string|null
+     */
+    public function getMessage();
+
 }

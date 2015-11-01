@@ -32,4 +32,27 @@ class ServiceResponseInformation extends ServiceResponse implements ServiceRespo
     {
         return $this->getAttribute('headers') ?: [];
     }
+
+    /**
+     * Sets the message or reason phrase
+     *
+     * @param $message
+     * @return $this
+     */
+    public function setMessage($message)
+    {
+        if ( ! is_null($message)) $message = (string) $message;
+
+        $this->setAttribute('message', $message);
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMessage()
+    {
+        return $this->getAttribute('message');
+    }
 }

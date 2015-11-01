@@ -1,5 +1,5 @@
 <?php
-namespace Czim\Service;
+namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\ServiceInterface;
 use Czim\Service\Contracts\ServiceInterpreterInterface;

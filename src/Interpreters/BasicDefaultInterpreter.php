@@ -10,6 +10,10 @@ class BasicDefaultInterpreter extends AbstractInterpreter
 
     protected function doInterpretation()
     {
+        $this->interpretedResponse->setSuccess(
+            $this->responseInformation->getStatusCode() == 200
+        );
+
         $this->interpretedResponse->setData(
             $this->response
         );

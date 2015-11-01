@@ -16,6 +16,7 @@ class ServiceResponse extends AbstractDataObject implements ServiceResponseInter
         'data'       => null,
         'statusCode' => 0,
         'errors'     => [],
+        'success'    => true,
     ];
 
     /**
@@ -97,4 +98,26 @@ class ServiceResponse extends AbstractDataObject implements ServiceResponseInter
         return $this;
     }
 
+    /**
+     * Returns succesfulness state of request
+     *
+     * @return bool
+     */
+    public function getSuccess()
+    {
+        return (bool) $this->getAttribute('success');
+    }
+
+    /**
+     * Sets succesfulness state
+     *
+     * @param bool $success
+     * @return $this
+     */
+    public function setSuccess($success)
+    {
+        $this->setAttribute('success', (bool) $success);
+
+        return $this;
+    }
 }

@@ -59,4 +59,19 @@ interface ServiceResponseInterface extends DataObjectInterface
      */
     public function addError($error);
 
+    /**
+     * Returns succesfulness state of request
+     *
+     * @return bool
+     */
+    public function getSuccess();
+
+    /**
+     * Sets succesfulness state
+     *
+     * @param bool $success
+     * @return $this
+     */
+    public function setSuccess($success);
+
 }
