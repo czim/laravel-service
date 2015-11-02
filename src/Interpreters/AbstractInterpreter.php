@@ -42,11 +42,7 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
 
     public function __construct()
     {
-        $this->interpretedResponse = app(ServiceResponse::class);
-
-        $this->interpretedResponse->setStatusCode(0);
-        $this->interpretedResponse->setErrors([]);
-        $this->interpretedResponse->setData(null);
+        $this->resetInterpretedResponse();
 
         $this->initialize();
     }
@@ -59,6 +55,8 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
      */
     public function interpret(ServiceRequestInterface $request, $response, ServiceResponseInformationInterface $responseInformation = null)
     {
+        $this->resetInterpretedResponse();
+
         if (is_null($responseInformation)) {
             $responseInformation = app(ServiceResponseInformation::class);
         } else {
@@ -76,6 +74,19 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
         $this->after();
 
         return $this->interpretedResponse;
+    }
+
+    /**
+     * Resets/initializes the interpreted response to a fresh instance
+     * with default values
+     */
+    protected function resetInterpretedResponse()
+    {
+        $this->interpretedResponse = app(ServiceResponse::class);
+
+        $this->interpretedResponse->setStatusCode(0);
+        $this->interpretedResponse->setErrors([]);
+        $this->interpretedResponse->setData(null);
     }
 
 
