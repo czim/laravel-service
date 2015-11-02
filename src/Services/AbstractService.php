@@ -130,7 +130,6 @@ abstract class AbstractService implements ServiceInterface
      */
     public function call($method, $request = null, $parameters = null, $headers = null)
     {
-
         // build up ServiceRequest
         if (is_a($request, ServiceRequestInterface::class)) {
             /** @var ServiceRequestInterface $request */
@@ -195,7 +194,7 @@ abstract class AbstractService implements ServiceInterface
 
         if ( ! empty($this->defaults->getHeaders())) {
 
-            $this->request->setMethod(array_merge(
+            $this->request->setHeaders(array_merge(
                 $this->request->getHeaders(),
                 $this->defaults->getHeaders()
             ));
