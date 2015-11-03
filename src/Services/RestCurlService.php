@@ -8,16 +8,13 @@ class RestCurlService extends AbstractService
 {
     const USER_AGENT = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)";
 
-    const METHOD_GET  = 'GET';
-    const METHOD_POST = 'POST';
-
 
     /**
      * The method to use for the HTTP call
      *
      * @var string
      */
-    protected $method = self::METHOD_POST;
+    protected $method = RestService::METHOD_POST;
 
     /**
      * Whether to use basic authentication
@@ -67,7 +64,9 @@ class RestCurlService extends AbstractService
 
         switch ($this->method) {
 
-            case static::METHOD_POST:
+            case RestService::METHOD_PATCH:
+            case RestService::METHOD_POST:
+            case RestService::METHOD_PUT:
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($request->getBody() ?: []));
 
@@ -78,7 +77,7 @@ class RestCurlService extends AbstractService
                 }
                 break;
 
-            case static::METHOD_GET:
+            case RestService::METHOD_GET:
                 $url .= '?' . http_build_query($request->getbody() ?: []);
                 break;
 
