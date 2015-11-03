@@ -13,8 +13,10 @@ class RestService extends AbstractService
 {
     const USER_AGENT = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)";
 
-    const METHOD_GET  = 'GET';
-    const METHOD_POST = 'POST';
+    const METHOD_GET   = 'GET';
+    const METHOD_PATCH = 'PATCH';
+    const METHOD_POST  = 'POST';
+    const METHOD_PUT   = 'PUT';
 
 
     /**
@@ -89,7 +91,9 @@ class RestService extends AbstractService
 
         switch ($this->method) {
 
+            case static::METHOD_PATCH:
             case static::METHOD_POST:
+            case static::METHOD_PUT:
                 $options['form_params'] = $request->getBody();
 
                 $parameters = $request->getParameters();
