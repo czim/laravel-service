@@ -18,14 +18,14 @@ abstract class AbstractService implements ServiceInterface
      * The classname of the defaults object to instantiate if none is injected
      * @var string
      */
-    protected $requestDefaultsClass = 'Czim\\Service\\Requests\\ServiceRequestDefaults';
+    protected $requestDefaultsClass = \Czim\Service\Requests\ServiceRequestDefaults::class;
 
     /**
      * The classname of the interpreter to instantiate if none is injected
      *
      * @var string
      */
-    protected $interpreterClass = 'Czim\\Service\\Interpreters\\BasicDefaultInterpreter';
+    protected $interpreterClass = \Czim\Service\Interpreters\BasicDefaultInterpreter::class;
 
 
     /**
@@ -122,20 +122,24 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Performs a call on the service, returning an interpreted response
      *
-     * @param string $method        name of the method to call through the service
-     * @param mixed  $request       either: request object, or the request body
-     * @param mixed  $parameters    extra parameters to send along (optional)
-     * @param mixed  $headers       extra headers to send along (optional)
-     * @return ServiceResponse      fallback to mixed if no interpreter available; make sure there is one
+     * @param string $method     name of the method to call through the service
+     * @param mixed  $request    either: request object, or the request body
+     * @param mixed  $parameters extra parameters to send along (optional)
+     * @param mixed  $headers    extra headers to send along (optional)
+     * @param array  $soapOptions
+     * @return ServiceResponse fallback to mixed if no interpreter available; make sure there is one
      */
-    public function call($method, $request = null, $parameters = null, $headers = null)
+    public function call($method, $request = null, $parameters = null, $headers = null, $soapOptions = [])
     {
         // build up ServiceRequest
         if (is_a($request, ServiceRequestInterface::class)) {
             /** @var ServiceRequestInterface $request */
             $this->request = $request->setMethod($method);
         } else {
-            $this->request = new ServiceRequest($request, $parameters, $headers, $method);
+            $this->request = app(
+                $this->requestDefaultsClass,
+                [ $request, $parameters, $headers, $method, $soapOptions ]
+            );
         }
 
         $this->supplementRequestWithDefaults();
@@ -215,8 +219,6 @@ abstract class AbstractService implements ServiceInterface
      */
     protected function interpretResponse()
     {
-        // todo: tell the interpreter more about the response..
-
         $this->response = $this->interpreter->interpret($this->request, $this->rawResponse, $this->responseInformation);
     }
 
