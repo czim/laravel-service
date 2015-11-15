@@ -13,10 +13,12 @@ class RestService extends AbstractService
 {
     const USER_AGENT = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)";
 
-    const METHOD_GET   = 'GET';
-    const METHOD_PATCH = 'PATCH';
-    const METHOD_POST  = 'POST';
-    const METHOD_PUT   = 'PUT';
+    const METHOD_DELETE  = 'PUT';
+    const METHOD_GET     = 'GET';
+    const METHOD_OPTIONS = 'OPTIONS';
+    const METHOD_PATCH   = 'PATCH';
+    const METHOD_POST    = 'POST';
+    const METHOD_PUT     = 'PUT';
 
 
     /**
@@ -103,6 +105,7 @@ class RestService extends AbstractService
                 }
                 break;
 
+            case static::METHOD_DELETE:
             case static::METHOD_GET:
                 $options['query'] = $request->getbody() ?: [];
                 break;
