@@ -6,6 +6,7 @@ use Czim\Service\Exceptions\CouldNotConnectException;
 use Czim\Service\Exceptions\CouldNotRetrieveException;
 use Czim\Service\Requests\ServiceSoapRequest;
 use Exception;
+use InvalidArgumentException;
 use SoapClient;
 use SoapFault;
 use SoapHeader;
@@ -62,9 +63,16 @@ class SoapService extends AbstractService
 
         try {
 
-            $response = $this->client->{ $this->request->getMethod() }(
-                $this->request->getBody()
-            );
+            if ( ! is_null($this->request->getBody())) {
+
+                $response = $this->client->{$this->request->getMethod()}(
+                    $this->request->getBody()
+                );
+
+            } else {
+
+                $response = $this->client->{$this->request->getMethod()}();
+            }
 
         } catch (SoapFault $e) {
 
@@ -110,6 +118,9 @@ class SoapService extends AbstractService
         $this->client->__setSoapHeaders($headers);
     }
 
+    /**
+     * Extracts information from SOAP client if tracing
+     */
     protected function parseTracedReponseInformation()
     {
         // nothing to set if we weren't tracing
@@ -202,8 +213,6 @@ class SoapService extends AbstractService
      */
     protected function supplementRequestWithDefaults()
     {
-        $this->checkRequestClassType($this->request);
-
         parent::supplementRequestWithDefaults();
 
         // set or expand with default options
@@ -214,18 +223,17 @@ class SoapService extends AbstractService
     }
 
     /**
-     * Checks whether we have the correct request class type for this service
-     *
-     * @param mixed $request
+     * Checks the request to be used in the next/upcoming call
      */
-    protected function checkRequestClassType($request)
+    protected function checkRequest()
     {
-        if ( ! is_a($request, ServiceSoapRequest::class)) {
+        parent::checkRequest();
 
-            throw new \RuntimeException("Request class is not a ServiceSoapRequest");
+        if ( ! is_a($this->request, ServiceSoapRequest::class)) {
+
+            throw new InvalidArgumentException("Request class is not a ServiceSoapRequest");
         }
     }
-
 
     // ------------------------------------------------------------------------------
     //      Getters, Setters and Configuration

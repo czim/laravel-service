@@ -118,6 +118,21 @@ abstract class AbstractService implements ServiceInterface
         return app($this->interpreterClass);
     }
 
+    /**
+     * Checks whether we have the correct request class type for this service
+     *
+     * @param mixed $request
+     */
+    protected function checkRequestClassType($request)
+    {
+        if ( ! is_a($request, ServiceREquestInterface::class)) {
+
+            throw new \InvalidArgumentException(
+                "Default requests is not a valid ServiceRequestInterface class ({$this->requestDefaultsClass})"
+            );
+        }
+    }
+
 
     /**
      * Performs a call on the service, returning an interpreted response
@@ -126,21 +141,28 @@ abstract class AbstractService implements ServiceInterface
      * @param mixed  $request    either: request object, or the request body
      * @param mixed  $parameters extra parameters to send along (optional)
      * @param mixed  $headers    extra headers to send along (optional)
-     * @param array  $soapOptions
+     * @param array  $options    extra options to set on f.i. the soap client used
      * @return ServiceResponse fallback to mixed if no interpreter available; make sure there is one
      */
-    public function call($method, $request = null, $parameters = null, $headers = null, $soapOptions = [])
+    public function call($method, $request = null, $parameters = null, $headers = null, $options = [])
     {
         // build up ServiceRequest
         if (is_a($request, ServiceRequestInterface::class)) {
             /** @var ServiceRequestInterface $request */
             $this->request = $request->setMethod($method);
+
         } else {
+            // $request is the request body
+
             $this->request = app(
                 $this->requestDefaultsClass,
-                [ $request, $parameters, $headers, $method, $soapOptions ]
+                [ $request, $parameters, $headers, $method, null, $options ]
             );
+
+            $this->checkRequestClassType($this->request);
         }
+
+        $this->checkRequest();
 
         $this->supplementRequestWithDefaults();
 
@@ -287,6 +309,15 @@ abstract class AbstractService implements ServiceInterface
      */
     protected function afterRaw()
     {
+    }
+
+    /**
+     * Checks the request to be used in the next/upcoming call
+     * Extend this to throw exceptions if the request is invalid or incomplete
+     */
+    protected function checkRequest()
+    {
+
     }
 
     
