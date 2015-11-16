@@ -6,7 +6,6 @@ use SimpleXMLElement;
 abstract class AbstractXmlInterpreter extends AbstractInterpreter
 {
 
-
     /**
      * Converts SimpleXml structure to array
      *
@@ -33,7 +32,7 @@ abstract class AbstractXmlInterpreter extends AbstractInterpreter
                         $array[ $key ] = (array) $value;
                     }
 
-                } else {
+                } elseif (is_array($value)) {
 
                     $array[ $key ] = $this->convertXmlObjectToArray($value);
                 }
