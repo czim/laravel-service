@@ -17,6 +17,19 @@ class BasicRawXmlInterpreter extends AbstractXmlInterpreter
     protected $asArray = false;
 
 
+    /**
+     * @param bool|null $asArray
+     */
+    public function __construct($asArray = null)
+    {
+        if ( ! is_null($asArray)) {
+            $this->asArray = $asArray;
+        }
+
+        parent::__construct();
+    }
+
+
     protected function doInterpretation()
     {
         $this->interpretedResponse->setSuccess(
