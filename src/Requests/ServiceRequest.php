@@ -11,6 +11,7 @@ use Czim\Service\Contracts\ServiceRequestInterface;
  * @property mixed[]  $headers
  * @property mixed    $body
  * @property string[] $credentials
+ * @property array    $options      key-value pairs
  */
 class ServiceRequest extends AbstractDataObject implements ServiceRequestInterface
 {
@@ -28,6 +29,7 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
             'password' => null,
             'domain'   => null,
         ],
+        'options'     => [],
     ];
 
 
@@ -37,14 +39,16 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
      * @param mixed[] $headers
      * @param string  $method
      * @param string  $location
+     * @param array   $options
      */
-    public function __construct($body = null, $parameters = null, array $headers = null, $method = null, $location = null)
+    public function __construct($body = null, $parameters = null, array $headers = null, $method = null, $location = null, $options = [])
     {
         $this->setBody($body);
         $this->setParameters($parameters);
         if ( ! is_null($headers)) $this->setHeaders($headers);
         $this->setMethod($method);
         $this->setLocation($location);
+        $this->setOptions($options);
 
         parent::__construct();
     }
@@ -200,4 +204,26 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
         return $this;
     }
 
+    /**
+     * Returns client-specific options (such as for SOAP)
+     *
+     * @return mixed[]
+     */
+    public function getOptions()
+    {
+        return $this->getAttribute('options') ?: [];
+    }
+
+    /**
+     * Sets request client-specific options
+     *
+     * @param mixed[] $options
+     * @return $this
+     */
+    public function setOptions(array $options)
+    {
+        $this->setAttribute('options', $options);
+
+        return $this;
+    }
 }
