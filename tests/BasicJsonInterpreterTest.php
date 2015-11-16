@@ -1,13 +1,9 @@
 <?php
 namespace Czim\Service\Test;
 
-use Czim\DataObject\Test\Helpers\TestMockInterpreter;
 use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Interpreters\BasicJsonInterpreter;
-use Czim\Service\Requests\ServiceRequest;
 use Czim\Service\Responses\ServiceResponse;
-use Czim\Service\Services\FileService;
-use Illuminate\Filesystem\Filesystem;
 
 class BasicJsonInterpreterTest extends TestCase
 {
@@ -46,4 +42,20 @@ class BasicJsonInterpreterTest extends TestCase
         $this->assertInternalType('object', $result->getData(), "Incorrect json-decoded data: should be an object");
         $this->assertArraySubset(['test' => 'data', 'does' => 'it work?' ], (array) $result->getData(), "Incorrect json-decoded data");
     }
+
+    /**
+     * @test
+     * @expectedException \Czim\Service\Exceptions\CouldNotInterpretJsonResponse
+     */
+    function it_throws_an_exception_if_response_is_invalid_json()
+    {
+        $interpreter = new BasicJsonInterpreter();
+
+        $mockRequest = $this->getMockBuilder(ServiceRequestInterface::class)
+                            ->getMock();
+
+        /** @var ServiceRequestInterface $mockRequest */
+        $interpreter->interpret($mockRequest, '{\'test\':"data","does":it work?}');
+    }
+
 }
