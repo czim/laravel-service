@@ -1,5 +1,6 @@
 <?php
 namespace Czim\Service\Interpreters;
+use Czim\Service\Exceptions\CouldNotInterpretXmlResponse;
 
 /**
  * Interprets raw XML string response data
@@ -53,15 +54,29 @@ class BasicRawXmlInterpreter extends AbstractXmlInterpreter
      *
      * @param  string $xml
      * @return object
+     * @throws CouldNotInterpretXmlResponse
      */
     protected function parseXml($xml)
     {
-        if (self::STRIP_CDATA_TAGS) {
+        try {
 
-            return simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+            if (self::STRIP_CDATA_TAGS) {
+
+                return simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+            }
+
+            return simplexml_load_string($xml);
+
+        } catch (\ErrorException $e) {
+
+            $message = $e->getMessage();
+
+            if (preg_match('#^\s*simplexml_load_string\(\):\s*(.*)$#i', $message, $matches)) {
+                $message = $matches[1];
+            }
+
+            throw new CouldNotInterpretXmlResponse($message, $e->getCode(), $e);
         }
-
-        return simplexml_load_string($xml);
     }
 
     /**
@@ -86,4 +101,5 @@ class BasicRawXmlInterpreter extends AbstractXmlInterpreter
 
         return $this->parseXml($xml);
     }
+
 }
