@@ -21,9 +21,9 @@ class ResponseMerger implements ResponseMergerInterface
         $response = $parts[0];
 
         $response->setData(
-            Arr::build($parts, function($part) {
+            Arr::build($parts, function($index, $part) {
                 /** @var ServiceResponse $part */
-                return $part->getData();
+                return [ $index, $part->getData() ];
             })
         );
 
