@@ -1,7 +1,9 @@
 <?php
 namespace Czim\Service;
 
+use Czim\Service\Contracts\ResponseMergerInterface;
 use Czim\Service\Contracts\Ssh2SftpConnectionInterface;
+use Czim\Service\Responses\Mergers\ResponseMerger;
 use Czim\Service\Services\Ssh\Ssh2SftpConnection;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
@@ -15,6 +17,9 @@ class ServiceServiceProvider extends ServiceProvider
 
     public function register()
     {
+
+        $this->app->bind(ResponseMergerInterface::class, ResponseMerger::class);
+
 
         // add bindings for SSH2 / SFTP services
 
