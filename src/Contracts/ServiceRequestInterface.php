@@ -103,4 +103,20 @@ interface ServiceRequestInterface extends DataObjectInterface
      */
     public function setCredentials($name, $password = null, $domain = null);
 
+    /**
+     * Returns the port number
+     * Note that this is optional, and may (for some services) be included in the location string
+     *
+     * @return int|null
+     */
+    public function getPort();
+
+    /**
+     * Sets the port number
+     *
+     * @param int|null $port
+     * @return $this
+     */
+    public function setPort($port);
+
 }

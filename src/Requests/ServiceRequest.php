@@ -6,6 +6,7 @@ use Czim\Service\Contracts\ServiceRequestInterface;
 
 /**
  * @property string   $location
+ * @property int      $port
  * @property string   $method
  * @property mixed    $parameters
  * @property mixed[]  $headers
@@ -20,6 +21,7 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
 
     protected $attributes = [
         'location'    => null,
+        'port'        => null,
         'method'      => null,
         'parameters'  => null,
         'headers'     => [],
@@ -226,4 +228,31 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
 
         return $this;
     }
+
+    /**
+     * Returns the port number
+     * Note that this is optional, and may (for some services) be included in the location string
+     *
+     * @return int|null
+     */
+    public function getPort()
+    {
+        return $this->getAttribute('port');
+    }
+
+    /**
+     * Sets the port number
+     *
+     * @param int|null $port
+     * @return $this
+     */
+    public function setPort($port)
+    {
+        if ( ! is_null($port)) $port = (int) $port;
+
+        $this->setAttribute('port', $port);
+
+        return $this;
+    }
+
 }
