@@ -21,6 +21,11 @@ $ composer require czim/laravel-service
 ... 
 
 
+## Requirements
+
+To use the `SshFileService`, you will require the `libssh2` PHP extension.
+
+
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
