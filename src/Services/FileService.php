@@ -32,8 +32,6 @@ class FileService extends AbstractService
     }
 
     /**
-     * Performs raw REST call
-     *
      * @param ServiceRequestInterface $request
      * @return mixed
      * @throws CouldNotConnectException
