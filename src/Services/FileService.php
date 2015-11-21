@@ -71,15 +71,11 @@ class FileService extends AbstractService
         if ( ! empty($location) && ! empty($method)) {
 
             return rtrim($location(), '/') . '/' . $method();
-
-        } elseif ( ! empty($location)) {
-
-            return $location;
-
-        } elseif ( ! empty($method)) {
-
-            return $method;
         }
+
+        if ( ! empty($location)) return $location;
+
+        if ( ! empty($method)) return $method;
 
         throw new CouldNotConnectException('No path given for FileService. Set a location and/or method to build a valid path.');
     }
