@@ -4,6 +4,10 @@ namespace Czim\Service\Services;
 use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Exceptions\CouldNotConnectException;
 
+/**
+ * Same as the RestService, but uses cURL instead of Guzzle.
+ * Only use this if you cannot use Guzzle for some reason.
+ */
 class RestCurlService extends AbstractService
 {
     const USER_AGENT = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)";
