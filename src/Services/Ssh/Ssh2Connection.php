@@ -11,6 +11,7 @@ use Czim\Service\Exceptions\Ssh2ConnectionException;
  */
 class Ssh2Connection implements Ssh2ConnectionInterface
 {
+
     /**
      * Whether currently connected
      *
@@ -62,10 +63,11 @@ class Ssh2Connection implements Ssh2ConnectionInterface
      */
     public function __construct($hostname, $user, $password, $port = 22, $fingerprint = null)
     {
-        $this->hostname = $hostname;
-        $this->port     = $port;
-        $this->user     = $user;
-        $this->password = $password;
+        $this->hostname    = $hostname;
+        $this->port        = $port;
+        $this->user        = $user;
+        $this->password    = $password;
+        $this->fingerprint = $fingerprint;
 
         $this->connect();
     }
