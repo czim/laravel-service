@@ -3,14 +3,9 @@ namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\ResponseMergerInterface;
 use Czim\Service\Contracts\ServiceInterpreterInterface;
-use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Contracts\Ssh2SftpConnectionInterface;
-use Czim\Service\Contracts\ServiceSshRequestInterface;
 use Czim\Service\Exceptions\CouldNotConnectException;
 use Czim\Service\Exceptions\Ssh2ConnectionException;
-use Czim\Service\Responses\ServiceResponse;
-use Exception;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 
 /**
@@ -21,28 +16,13 @@ use Illuminate\Filesystem\Filesystem;
  * If more than one file is parsed, it interprets the content and combines the results in a
  * single response object.
  */
-class SshFileService extends AbstractService
+class SshFileService extends MultiFileService
 {
-
-    /**
-     * @var ServiceSshRequestInterface
-     */
-    protected $request;
 
     /**
      * @var Ssh2SftpConnectionInterface
      */
     protected $ssh;
-
-    /**
-     * @var ResponseMergerInterface
-     */
-    protected $responseMerger;
-
-    /**
-     * @var Filesystem
-     */
-    protected $files;
 
 
     /**
@@ -56,80 +36,20 @@ class SshFileService extends AbstractService
                                 ResponseMergerInterface $responseMerger = null,
                                 Ssh2SftpConnectionInterface $sshConnection = null)
     {
-        if (is_null($files)) {
-            $this->files = app(Filesystem::class);
-        }
-
-        if (is_null($responseMerger)) {
-            $this->responseMerger = app(ResponseMergerInterface::class);
-        }
-
         if ( ! is_null($sshConnection)) {
             $this->ssh = $sshConnection;
         }
 
-        parent::__construct(null, $interpreter);
+        parent::__construct($files, $interpreter, $responseMerger);
     }
 
-    /**
-     * @param ServiceRequestInterface $request
-     * @return mixed
-     * @throws CouldNotConnectException
-     * @throws Exception
-     */
-    protected function callRaw(ServiceRequestInterface $request)
-    {
-        if ($this->request !== $request) $this->request = $request;
-
-        $files = $this->retrieveFiles();
-
-        $responseParts = [];
-
-        // if more than one, combine through a responseMergerInterface
-        foreach ($files as $file) {
-
-            $responseParts[] = $this->parseFileContents($file);
-        }
-
-        return $this->responseMerger->merge($responseParts);
-    }
-
-
-    /**
-     * Override to prevent normal interpretation from taking place
-     */
-    protected function interpretResponse()
-    {
-        // do not interpret, response is already a combination of interpreted responses at this point
-    }
-
-
-    /**
-     * Returns the contents from a locally stored file
-     *
-     * @param string $file
-     * @return string
-     * @throws CouldNotConnectException
-     */
-    protected function getLocalFileContent($file)
-    {
-        $path = rtrim($this->request->getLocalPath(), '/') . '/' . $file;
-
-        try {
-
-            $response = $this->files->get($path);
-
-        } catch (FileNotFoundException $e) {
-
-            throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
-        }
-
-        return $response;
-    }
 
     /**
      * Retrieves files from external (or local) source and returns the
      * paths to all of the files as an array
+     *
+     * The pattern will be used if non-empty; the fallback value will be the method,
+     * which might be used to indicate an exact file match.
      *
      * @return array    assoc filename => full path
      */
@@ -142,7 +62,7 @@ class SshFileService extends AbstractService
             $this->initializeSsh();
         }
 
-        $pattern   = $this->request->getPattern();
+        $pattern   = $this->request->getPattern() ?: $this->request->getMethod();
         $path      = rtrim($this->request->getPath(), '/');
         $localPath = rtrim($this->request->getLocalPath(), '/');
 
@@ -162,28 +82,6 @@ class SshFileService extends AbstractService
         }
 
         return $localFiles;
-    }
-
-
-    /**
-     * Loads data from a local file and parses it through the interpreter
-     *
-     * @param string $file
-     * @return ServiceResponse
-     * @throws CouldNotConnectException
-     */
-    protected function parseFileContents($file)
-    {
-        try {
-
-            $data = $this->files->get($file);
-
-        } catch (Exception $e) {
-
-            throw new CouldNotConnectException("Local file unreadable or unopenable: '{$file}'");
-        }
-
-        return $this->interpreter->interpret($this->request, $data);
     }
 
     /**
