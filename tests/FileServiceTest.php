@@ -48,7 +48,25 @@ class FileServiceTest extends TestCase
         $response = $service->call('tests/data/test.txt', $request);
 
         $this->assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
-        $this->assertRegExp('#\s*testing content in here\s*#', $response->getData(), "File service should return data from test.txt");
+        $this->assertRegExp(
+            '#\s*testing content in here\s*#',
+            $response->getData(),
+            "File service should return data from test.txt"
+        );
+    }
+
+    /**
+     * @test
+     * @expectedException \Czim\Service\Exceptions\CouldNotConnectException
+     * @expectedExceptionMessageRegExp #test_this_does_not_exist\.txt#i
+     */
+    function it_throws_an_exception_if_the_file_was_not_found()
+    {
+        $interpreter = new TestMockInterpreter();
+        $service     = new FileService(null, $interpreter);
+        $request     = new ServiceRequest();
+
+        $service->call('tests/data/test_this_does_not_exist.txt', $request);
     }
 
 }

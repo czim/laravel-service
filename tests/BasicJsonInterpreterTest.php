@@ -22,7 +22,11 @@ class BasicJsonInterpreterTest extends TestCase
         $result = $interpreter->interpret($mockRequest, '{"test":"data","does":"it work?"}');
 
         $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
-        $this->assertArraySubset(['test' => 'data', 'does' => 'it work?' ], $result->getData(), "Incorrect json-decoded data");
+        $this->assertArraySubset(
+            ['test' => 'data', 'does' => 'it work?' ],
+            $result->getData(),
+            "Incorrect json-decoded data"
+        );
     }
 
     /**
@@ -40,7 +44,11 @@ class BasicJsonInterpreterTest extends TestCase
 
         $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
         $this->assertInternalType('object', $result->getData(), "Incorrect json-decoded data: should be an object");
-        $this->assertArraySubset(['test' => 'data', 'does' => 'it work?' ], (array) $result->getData(), "Incorrect json-decoded data");
+        $this->assertArraySubset(
+            ['test' => 'data', 'does' => 'it work?' ],
+            (array) $result->getData(),
+            "Incorrect json-decoded data"
+        );
     }
 
     /**
