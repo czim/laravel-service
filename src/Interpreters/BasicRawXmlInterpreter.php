@@ -1,14 +1,14 @@
 <?php
 namespace Czim\Service\Interpreters;
-use Czim\Service\Exceptions\CouldNotInterpretXmlResponse;
+
+use Czim\Service\Contracts\XmlObjectConverterInterface;
+use Czim\Service\Contracts\XmlParserInterface;
 
 /**
  * Interprets raw XML string response data
  */
 class BasicRawXmlInterpreter extends AbstractXmlInterpreter
 {
-    // whether to remove CDATA tags to get all content normally
-    const STRIP_CDATA_TAGS = true;
 
     /**
      * Whether to decode as an associative array
@@ -17,17 +17,32 @@ class BasicRawXmlInterpreter extends AbstractXmlInterpreter
      */
     protected $asArray = false;
 
+    /**
+     * @var XmlParserInterface
+     */
+    protected $xmlParser;
+
 
     /**
-     * @param bool|null $asArray
+     * @param bool|null                   $asArray
+     * @param XmlParserInterface          $xmlParser
+     * @param XmlObjectConverterInterface $xmlConverter
      */
-    public function __construct($asArray = null)
+    public function __construct($asArray = null,
+                                XmlParserInterface $xmlParser = null,
+                                XmlObjectConverterInterface $xmlConverter = null)
     {
         if ( ! is_null($asArray)) {
             $this->asArray = $asArray;
         }
 
-        parent::__construct();
+        if (is_null($xmlParser)) {
+            $xmlParser = app(XmlParserInterface::class);
+        }
+
+        $this->xmlParser = $xmlParser;
+
+        parent::__construct($xmlConverter);
     }
 
 
@@ -37,69 +52,15 @@ class BasicRawXmlInterpreter extends AbstractXmlInterpreter
             $this->responseInformation->getStatusCode() == 200
         );
 
-        $this->response = $this->parseXml($this->response);
+        $this->response = $this->xmlParser->parse($this->response);
 
-        // if configured to, use the clunky way to build an array from the object
         if ($this->asArray) {
-            $this->response = $this->convertXmlObjectToArray($this->response);
+            $this->response = $this->xmlConverter->convert($this->response);
         }
 
         $this->interpretedResponse->setData(
             $this->response
         );
-    }
-
-    /**
-     * Parses XML string
-     *
-     * @param  string $xml
-     * @return object
-     * @throws CouldNotInterpretXmlResponse
-     */
-    protected function parseXml($xml)
-    {
-        try {
-
-            if (self::STRIP_CDATA_TAGS) {
-
-                return simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
-            }
-
-            return simplexml_load_string($xml);
-
-        } catch (\ErrorException $e) {
-
-            $message = $e->getMessage();
-
-            if (preg_match('#^\s*simplexml_load_string\(\):\s*(.*)$#i', $message, $matches)) {
-                $message = $matches[1];
-            }
-
-            throw new CouldNotInterpretXmlResponse($message, $e->getCode(), $e);
-        }
-    }
-
-    /**
-     * In special cases where XML is malformed, attempt to salvage the
-     * last element anyway.
-     *
-     * @param  string $xml
-     * @return array
-     */
-    protected function getArrayForSpecialCase($xml)
-    {
-        $regEx            = '#\s*(&lt;\?xml.*interface&gt;)\s*#is';
-        $regExReplace     = '#\s*>\s*(&lt;\?xml.*interface&gt;)\s*<[^>]+>\s*#is';
-        $regExReplaceWith = '/>';
-
-        // what can happen is that the valid XML element suddenly has,
-        // as its element content, a full version of url-encoded XML.
-        if ( ! preg_match($regEx, $xml)) {
-            return [0 => $xml];
-        }
-        $xml = preg_replace($regExReplace, $regExReplaceWith, $xml);
-
-        return $this->parseXml($xml);
     }
 
 }

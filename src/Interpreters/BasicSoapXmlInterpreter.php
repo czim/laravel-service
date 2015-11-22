@@ -21,9 +21,11 @@ class BasicSoapXmlInterpreter extends AbstractXmlInterpreter
             $this->responseInformation->getStatusCode() == 200
         );
 
-        // if configured to, use the clunky way to build an array from the object
+        // no need to call on a parser, since the data from SoapClient calls
+        // is already SimpleXml data
+
         if ($this->asArray) {
-            $this->response = $this->convertXmlObjectToArray($this->response);
+            $this->response = $this->xmlConverter->convert($this->response);
         }
 
         $this->interpretedResponse->setData(

@@ -1,57 +1,28 @@
 <?php
 namespace Czim\Service\Interpreters;
 
-use SimpleXMLElement;
+use Czim\Service\Contracts\XmlObjectConverterInterface;
 
 abstract class AbstractXmlInterpreter extends AbstractInterpreter
 {
+    /**
+     * @var XmlObjectConverterInterface
+     */
+    protected $xmlConverter;
+
 
     /**
-     * Converts SimpleXml structure to array
-     *
-     * @param SimpleXmlElement|array|object $xml
-     * @return array
+     * @param XmlObjectConverterInterface|null $xmlConverter
      */
-    protected function convertXmlObjectToArray($xml)
+    public function __construct(XmlObjectConverterInterface $xmlConverter = null)
     {
-        $array = (array) $xml;
-
-        if (count($array) == 0) {
-            $array = [ (string) $xml ];
+        if (is_null($xmlConverter)) {
+            $xmlConverter = app(XmlObjectConverterInterface::class);
         }
 
-        if (is_array($array)) {
+        $this->xmlConverter = $xmlConverter;
 
-            foreach ($array as $key => $value) {
-
-                if (is_object($value)) {
-
-                    if (strpos(get_class($value), "SimpleXML") !== false) {
-                        $array[ $key ] = $this->convertXmlObjectToArray($value);
-                    } else {
-                        $array[ $key ] = (array) $value;
-                    }
-
-                } elseif (is_array($value)) {
-
-                    $array[ $key ] = $this->convertXmlObjectToArray($value);
-                }
-            }
-        }
-
-        return $array;
-    }
-
-    /**
-     * Converts SimpleXml structure to array
-     * using the clunky json encode/decode method
-     *
-     * @param SimpleXmlElement|array|object $xml
-     * @return array|mixed
-     */
-    protected function convertXmlObjectToArrayViaJson($xml)
-    {
-        return json_decode(json_encode($xml), true);
+        parent::__construct();
     }
 
 }

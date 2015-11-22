@@ -3,6 +3,10 @@ namespace Czim\Service;
 
 use Czim\Service\Contracts\ResponseMergerInterface;
 use Czim\Service\Contracts\Ssh2SftpConnectionInterface;
+use Czim\Service\Contracts\XmlObjectConverterInterface;
+use Czim\Service\Contracts\XmlParserInterface;
+use Czim\Service\Interpreters\Xml\SimpleXmlParser;
+use Czim\Service\Interpreters\Xml\XmlObjectToArrayConverter;
 use Czim\Service\Responses\Mergers\ResponseMerger;
 use Czim\Service\Services\Ssh\Ssh2SftpConnection;
 use Illuminate\Contracts\Container\Container;
@@ -19,6 +23,9 @@ class ServiceServiceProvider extends ServiceProvider
     {
 
         $this->app->bind(ResponseMergerInterface::class, ResponseMerger::class);
+
+        $this->app->bind(XmlParserInterface::class, SimpleXmlParser::class);
+        $this->app->bind(XmlObjectConverterInterface::class, XmlObjectToArrayConverter::class);
 
 
         // add bindings for SSH2 / SFTP services
