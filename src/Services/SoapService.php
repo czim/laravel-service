@@ -6,6 +6,7 @@ use Czim\Service\Events\SoapCallCompleted;
 use Czim\Service\Exceptions\CouldNotConnectException;
 use Czim\Service\Exceptions\CouldNotRetrieveException;
 use Czim\Service\Requests\ServiceSoapRequest;
+use Czim\Service\Requests\ServiceSoapRequestDefaults;
 use Exception;
 use InvalidArgumentException;
 use SoapClient;
@@ -19,7 +20,7 @@ class SoapService extends AbstractService
      * The classname of the defaults object to instantiate if none is injected
      * @var string
      */
-    protected $requestDefaultsClass = \Czim\Service\Requests\ServiceSoapRequestDefaults::class;
+    protected $requestDefaultsClass = ServiceSoapRequestDefaults::class;
 
     /**
      * Classname/FQN of the SoapClient to use for calls
@@ -27,6 +28,11 @@ class SoapService extends AbstractService
      * @var string
      */
     protected $soapClientClass = SoapClient::class;
+
+    /**
+     * @var ServiceSoapRequestDefaults
+     */
+    protected $defaults;
 
     /**
      * @var ServiceSoapRequest
@@ -49,6 +55,16 @@ class SoapService extends AbstractService
      * @var array
      */
     protected $clientOptions = [];
+
+    /**
+     * Default SoapClient options to set if not explicitly defined
+     *
+     * @var array
+     */
+    protected $soapOptionDefaults = [
+        'exceptions' => true,
+        'features'   => SOAP_SINGLE_ELEMENT_ARRAYS,
+    ];
 
 
     /**
@@ -248,6 +264,30 @@ class SoapService extends AbstractService
     // ------------------------------------------------------------------------------
     //      Getters, Setters and Configuration
     // ------------------------------------------------------------------------------
+
+    /**
+     * Runs directly after construction
+     * Extend this to customize your service
+     *
+     * Defaults to 'exceptions' option enabled
+     */
+    protected function initialize()
+    {
+        parent::initialize();
+
+        // unless already configured, set default options to include exceptions
+        $options = $this->defaults->getOptions() ?: [];
+
+        foreach ($this->soapOptionDefaults as $option => $value) {
+
+            if ( ! array_key_exists($option, $options)) {
+
+                $options[ $option ] = $value;
+            }
+        }
+
+        $this->defaults->setOptions($options);
+    }
 
     /**
      * @return SoapClient
