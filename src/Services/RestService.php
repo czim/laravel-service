@@ -56,7 +56,7 @@ class RestService extends AbstractService
      */
     public function __construct(ServiceRequestDefaultsInterface $defaults = null, ServiceInterpreterInterface $interpreter = null, array $guzzleConfig = [])
     {
-        $this->client = new Client($guzzleConfig);
+        $this->client = app(Client::class, [ $guzzleConfig ]);
 
         parent::__construct($defaults, $interpreter);
     }
