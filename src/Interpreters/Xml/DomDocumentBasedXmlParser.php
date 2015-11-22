@@ -7,9 +7,9 @@ use DOMElement;
 
 /**
  * Parses XML to array through a DOM import approach.
- * Removes namespaces, cleaning the XML.
+ * Returns DOMElement, not a SimpleXml element!
  *
- * Useful to combine with the XmlObjectToArrayConverterWithoutNamespaces.
+ * Convert to array using DomObjectToArrayConverter
  */
 class DomDocumentBasedXmlParser implements XmlParserInterface
 {

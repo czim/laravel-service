@@ -2,7 +2,6 @@
 namespace Czim\Service\Interpreters\Xml;
 
 use Czim\Service\Contracts\XmlObjectConverterInterface;
-use SimpleXMLElement;
 
 /**
  * For converting SimpleXml objects to array through the json-encode/decode trick

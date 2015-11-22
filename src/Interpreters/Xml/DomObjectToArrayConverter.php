@@ -7,13 +7,13 @@ use DOMElement;
 use DOMNode;
 
 /**
- * For converting SimpleXml objects to array
+ * For converting DOMDocument/Element objects to array
  * if they were created using a DomDocument conversion approach, after which
  * the namespaces may be stripped before the result array is returned.
  *
  * Only use this to deal with problematic XML that cannot be interpreted/parsed/converted normally.
  */
-class XmlObjectToArrayConverterWithoutNamespaces implements XmlObjectConverterInterface
+class DomObjectToArrayConverter implements XmlObjectConverterInterface
 {
 
     /**
@@ -32,7 +32,7 @@ class XmlObjectToArrayConverterWithoutNamespaces implements XmlObjectConverterIn
      *  -> do benchmarks
      *  -> see if both handle attributes, CDATA and such equally well
      *
-     * @param  DomDocument|DomElement|DomNode $root
+     * @param  DOMDocument|DOMElement|DomNode $root
      * @return array
      */
     function convertDomToArray($root)
