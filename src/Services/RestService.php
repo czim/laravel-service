@@ -149,7 +149,11 @@ class RestService extends AbstractService
         event(
             new RestCallCompleted(
                 $url,
-                isset($options['form_params']) ? $options['form_params'] : $options['query'],
+                isset($options['form_params'])
+                    ?   $options['form_params']
+                    :   isset($options['query'])
+                            ?   $options['query']
+                            :   [],
                 ($this->sendResponseToEvent) ? $response : null
             )
         );
