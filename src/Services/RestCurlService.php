@@ -2,6 +2,7 @@
 namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\ServiceRequestInterface;
+use Czim\Service\Events\RestCallCompleted;
 use Czim\Service\Exceptions\CouldNotConnectException;
 
 /**
@@ -71,6 +72,7 @@ class RestCurlService extends AbstractService
             case RestService::METHOD_PATCH:
             case RestService::METHOD_POST:
             case RestService::METHOD_PUT:
+
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($request->getBody() ?: []));
 
@@ -82,7 +84,10 @@ class RestCurlService extends AbstractService
                 break;
 
             case RestService::METHOD_GET:
-                $url .= '?' . http_build_query($request->getbody() ?: []);
+
+                $parameters = $request->getbody();
+
+                $url .= '?' . http_build_query($parameters ?: []);
                 break;
 
             // default omitted on purpose
@@ -110,6 +115,15 @@ class RestCurlService extends AbstractService
         //$this->responseInformation->setHeaders();
 
         curl_close($curl);
+
+
+        event(
+            new RestCallCompleted(
+                $url,
+                isset($parameters) ? $parameters : [],
+                ($this->sendResponseToEvent) ? $response : null
+            )
+        );
 
         return $response;
     }

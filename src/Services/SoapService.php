@@ -2,6 +2,7 @@
 namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\ServiceRequestInterface;
+use Czim\Service\Events\SoapCallCompleted;
 use Czim\Service\Exceptions\CouldNotConnectException;
 use Czim\Service\Exceptions\CouldNotRetrieveException;
 use Czim\Service\Requests\ServiceSoapRequest;
@@ -78,6 +79,15 @@ class SoapService extends AbstractService
 
             throw new CouldNotRetrieveException($e->getMessage(), $e->getCode(), $e);
         }
+
+        event(
+            new SoapCallCompleted(
+                $this->request->getLocation(),
+                $this->request->getMethod(),
+                $this->request->getParameters(),
+                ($this->sendResponseToEvent) ? $response : null
+            )
+        );
 
         $this->parseTracedReponseInformation();
 

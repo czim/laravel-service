@@ -77,6 +77,15 @@ abstract class AbstractService implements ServiceInterface
      */
     protected $firstCallIsMade = false;
 
+    /**
+     * Wether to send the full response along with creating a *CallCompleted event
+     * This is disabled by default for performance reasons. Enable for debugging
+     * or if you need to do event-based full logging, etc.
+     *
+     * @var bool
+     */
+    protected $sendResponseToEvent = false;
+
 
     /**
      * @param ServiceRequestDefaultsInterface $defaults

@@ -4,6 +4,7 @@ namespace Czim\Service\Services;
 use Czim\Service\Contracts\ServiceInterpreterInterface;
 use Czim\Service\Contracts\ServiceRequestDefaultsInterface;
 use Czim\Service\Contracts\ServiceRequestInterface;
+use Czim\Service\Events\RestCallCompleted;
 use Czim\Service\Exceptions\CouldNotConnectException;
 use Exception;
 use GuzzleHttp\Client;
@@ -101,7 +102,7 @@ class RestService extends AbstractService
                 $parameters = $request->getParameters();
 
                 if ( ! empty($parameters)) {
-                    $options['query'] = $request->getParameters();
+                    $options['query'] = $parameters;
                 }
                 break;
 
@@ -143,6 +144,16 @@ class RestService extends AbstractService
         $this->responseInformation->setStatusCode( $response->getStatusCode() );
         $this->responseInformation->setMessage( $response->getReasonPhrase() );
         $this->responseInformation->setHeaders( $response->getHeaders() );
+
+
+        event(
+            new RestCallCompleted(
+                $url,
+                isset($options['form_params']) ? $options['form_params'] : $options['query'],
+                ($this->sendResponseToEvent) ? $response : null
+            )
+        );
+
 
         return $response->getBody()->getContents();
     }
