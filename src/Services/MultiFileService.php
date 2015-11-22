@@ -154,10 +154,10 @@ class MultiFileService extends AbstractService
         }
 
 
-        if ( ! count($files)) {
+        if ( ! count($localFiles)) {
 
             throw new EmptyRetrievedDataException(
-                "No local files retrieved for pattern '{$this->getFilePattern()}' for path: '{$localPath}'."
+                "No local files read for pattern '{$this->getFilePattern()}' for path: '{$localPath}'."
             );
         }
 

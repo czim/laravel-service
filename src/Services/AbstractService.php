@@ -7,7 +7,6 @@ use Czim\Service\Contracts\ServiceRequestDefaultsInterface;
 use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Contracts\ServiceResponseInformationInterface;
 use Czim\Service\Contracts\ServiceResponseInterface;
-use Czim\Service\Requests\ServiceRequest;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Responses\ServiceResponseInformation;
 

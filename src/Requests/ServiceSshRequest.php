@@ -4,7 +4,7 @@ namespace Czim\Service\Requests;
 use Czim\Service\Contracts\ServiceSshRequestInterface;
 
 /**
- * Request for SshFileService
+ * Request for SshFileService and MultiFileService
  *
  * @property string   $path
  * @property string   $localPath
