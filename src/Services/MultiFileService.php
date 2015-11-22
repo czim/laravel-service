@@ -6,6 +6,7 @@ use Czim\Service\Contracts\ServiceInterpreterInterface;
 use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Contracts\ServiceSshRequestInterface;
 use Czim\Service\Exceptions\CouldNotConnectException;
+use Czim\Service\Exceptions\EmptyRetrievedDataException;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Responses\ServiceResponseInformation;
 use Exception;
@@ -129,13 +130,14 @@ class MultiFileService extends AbstractService
      * Retrieves files from external (or local) source and returns the
      * paths to all of the files as an array
      *
-     * @return array    assoc filename => full path
+     * @return array assoc filename => full path
+     * @throws EmptyRetrievedDataException
      */
     protected function retrieveFiles()
     {
         $localFiles = [];
 
-        $pattern   = $this->request->getPattern() ?: $this->request->getMethod();
+        $pattern   = $this->getFilePattern();
         $localPath = rtrim($this->request->getLocalPath(), '/');
 
         // get local files based on given path and pattern
@@ -151,7 +153,25 @@ class MultiFileService extends AbstractService
             $localFiles[ $filename ] = $file;
         }
 
+
+        if ( ! count($files)) {
+
+            throw new EmptyRetrievedDataException(
+                "No local files retrieved for pattern '{$this->getFilePattern()}' for path: '{$localPath}'."
+            );
+        }
+
         return $localFiles;
+    }
+
+    /**
+     * Returns the pattern to check for (remote and/or local) files
+     *
+     * @return string
+     */
+    protected function getFilePattern()
+    {
+        return $this->request->getPattern() ?: $this->request->getMethod();
     }
 
 }

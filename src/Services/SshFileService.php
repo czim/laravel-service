@@ -5,6 +5,7 @@ use Czim\Service\Contracts\ResponseMergerInterface;
 use Czim\Service\Contracts\ServiceInterpreterInterface;
 use Czim\Service\Contracts\Ssh2SftpConnectionInterface;
 use Czim\Service\Exceptions\CouldNotConnectException;
+use Czim\Service\Exceptions\EmptyRetrievedDataException;
 use Czim\Service\Exceptions\Ssh2ConnectionException;
 use Illuminate\Filesystem\Filesystem;
 
@@ -51,7 +52,9 @@ class SshFileService extends MultiFileService
      * The pattern will be used if non-empty; the fallback value will be the method,
      * which might be used to indicate an exact file match.
      *
-     * @return array    assoc filename => full path
+     * @return array assoc filename => full path
+     * @throws CouldNotConnectException
+     * @throws EmptyRetrievedDataException
      */
     protected function retrieveFiles()
     {
@@ -62,7 +65,7 @@ class SshFileService extends MultiFileService
             $this->initializeSsh();
         }
 
-        $pattern   = $this->request->getPattern() ?: $this->request->getMethod();
+        $pattern   = $this->getFilePattern();
         $path      = rtrim($this->request->getPath(), '/');
         $localPath = rtrim($this->request->getLocalPath(), '/');
 
@@ -79,6 +82,15 @@ class SshFileService extends MultiFileService
             $this->ssh->downloadFile($path . '/' . $file, $localPath . '/' . $file);
 
             $localFiles[ $file ] = $localPath . '/' . $file;
+        }
+
+
+        if ( ! count($localFiles)) {
+
+            throw new EmptyRetrievedDataException(
+                "No files retrieved for pattern '{$pattern}' in local path: '{$localPath}', "
+                . "retrieved from remote path: '{$path}'."
+            );
         }
 
         return $localFiles;
