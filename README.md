@@ -35,6 +35,12 @@ $ composer require czim/laravel-service
 - authorisation errors as CouldNotAuthorizeException?
 
 
+## Notes
+
+When using the `DomDocumentBasedXmlParser`, note that this will not return a *SimpleXml*-type object, but a `DOMElement`.
+To sensibly use this, convert it to an array using the `DomObjectToArrayConverter`.
+This means that when rebinding or injecting one of these, treat them as a pair. 
+
 ## Requirements
 
 To use the `SshFileService`, you will require the `libssh2` PHP extension.
