@@ -30,12 +30,25 @@ $ composer require czim/laravel-service
         - make interpreters get injectable pre-interpreter array
         - and parse response through the array before interpreting (abstract class)
 
+
 ### Consider:
 
 - authorisation errors as CouldNotAuthorizeException?
 
 
 ## Notes
+
+### BeSimple SoapClient
+
+The `BeSimpleSoapService` service class is set up to use the BeSimple SoapClient.
+
+The only thing required to use it is to include the package:
+
+```
+composer require "besimple/soap-client"
+```
+
+### DOMDocument parsing as an alternative to SimpleXml
 
 When using the `DomDocumentBasedXmlParser`, note that this will not return a *SimpleXml*-type object, but a `DOMElement`.
 To sensibly use this, convert it to an array using the `DomObjectToArrayConverter`.
