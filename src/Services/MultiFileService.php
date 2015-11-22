@@ -7,11 +7,13 @@ use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Contracts\ServiceSshRequestInterface;
 use Czim\Service\Exceptions\CouldNotConnectException;
 use Czim\Service\Exceptions\EmptyRetrievedDataException;
+use Czim\Service\Requests\ServiceSshRequest;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Responses\ServiceResponseInformation;
 use Exception;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
+use InvalidArgumentException;
 
 /**
  * Retrieve multiple files and combine the results
@@ -172,6 +174,19 @@ class MultiFileService extends AbstractService
     protected function getFilePattern()
     {
         return $this->request->getPattern() ?: $this->request->getMethod();
+    }
+
+    /**
+     * Checks the request to be used in the next/upcoming call
+     */
+    protected function checkRequest()
+    {
+        parent::checkRequest();
+
+        if ( ! is_a($this->request, ServiceSshRequest::class)) {
+
+            throw new InvalidArgumentException("Request class is not a ServiceSshRequest");
+        }
     }
 
 }
