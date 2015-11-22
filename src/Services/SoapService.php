@@ -223,10 +223,22 @@ class SoapService extends AbstractService
         $this->wsdl          = $this->getRequestDefaults()->getLocation();
         $this->clientOptions = $this->getRequestDefaults()->getOptions();
 
+        $xdebugEnabled = extension_loaded('xdebug') && xdebug_is_enabled();
 
         try {
 
+            // temporarily disable xdebug to prevent PHP Fatal error
+            // while constructing SoapClient
+
+            if ($xdebugEnabled) xdebug_disable();
+
             $this->client = app($this->soapClientClass, [ $this->wsdl, $this->clientOptions ]);
+
+            if ($xdebugEnabled) xdebug_enable();
+
+        } catch (SoapFault $e) {
+
+            throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
 
         } catch (Exception $e) {
 
