@@ -151,9 +151,9 @@ class RestService extends AbstractService
                 $url,
                 isset($options['form_params'])
                     ?   $options['form_params']
-                    :   isset($options['query'])
+                    :   (isset($options['query'])
                             ?   $options['query']
-                            :   [],
+                            :   []),
                 ($this->sendResponseToEvent) ? $response : null
             )
         );
