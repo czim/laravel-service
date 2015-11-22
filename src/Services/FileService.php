@@ -22,7 +22,9 @@ class FileService extends AbstractService
      * @param ServiceInterpreterInterface $interpreter
      * @param array                       $guzzleConfig default config to pass into the guzzle client
      */
-    public function __construct(Filesystem $files = null, ServiceInterpreterInterface $interpreter = null, array $guzzleConfig = [])
+    public function __construct(Filesystem $files = null,
+                                ServiceInterpreterInterface $interpreter = null,
+                                array $guzzleConfig = [])
     {
         if (is_null($files)) {
             $this->files = app(Filesystem::class);
@@ -46,6 +48,10 @@ class FileService extends AbstractService
             $response = $this->files->get($path);
 
         } catch (FileNotFoundException $e) {
+
+            throw new CouldNotConnectException("Local file could not be found: '{$path}'");
+
+        } catch (Exception $e) {
 
             throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
         }
@@ -77,7 +83,9 @@ class FileService extends AbstractService
 
         if ( ! empty($method)) return $method;
 
-        throw new CouldNotConnectException('No path given for FileService. Set a location and/or method to build a valid path.');
+        throw new CouldNotConnectException(
+            'No path given for FileService. Set a location and/or method to build a valid path.'
+        );
     }
 
 }
