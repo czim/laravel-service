@@ -22,19 +22,11 @@ $ composer require czim/laravel-service
 
 ## To Do
 
-- make it easy to set up loggers (before/after)
-    - make it easier by providing some extensions in the package that will log with some log configuration
 - make it easy to 'prepareResponse' through a standard interface
     - so we can fix broken XML before interpreting it
     - this should be part of the interpreters! keep the services themselves clean
         - make interpreters get injectable pre-interpreter array
         - and parse response through the array before interpreting (abstract class)
-
-
-### Consider:
-
-- authorisation errors as CouldNotAuthorizeException?
-
 
 ## Notes
 
