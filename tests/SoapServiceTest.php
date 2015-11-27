@@ -49,7 +49,7 @@ class SoapServiceTest extends TestCase
 
         $this->assertEquals('first call', $response->getData(), "First call has incorrect response");
 
-        
+
         // set up for second call
         // change some non-default-included option, which should trigger re-initialization
 
@@ -122,7 +122,6 @@ class SoapServiceTest extends TestCase
                          ->disableOriginalConstructor()
                          ->getMock();
 
-        //$soapMock->method('testMethod')->willReturn('some test content');
         $soapMock->expects($this->any())
                  ->method('__call')
                  ->with($this->logicalOr('testMethod', []))
