@@ -18,6 +18,7 @@ class SoapService extends AbstractService
 
     /**
      * The classname of the defaults object to instantiate if none is injected
+     * 
      * @var string
      */
     protected $requestDefaultsClass = ServiceSoapRequestDefaults::class;
@@ -57,6 +58,13 @@ class SoapService extends AbstractService
     protected $clientOptions = [];
 
     /**
+     * Hash for checking whether client needs to be re-initialized
+     *
+     * @var string
+     */
+    protected $clientHash;
+
+    /**
      * Default SoapClient options to set if not explicitly defined
      *
      * @var array
@@ -75,8 +83,6 @@ class SoapService extends AbstractService
     protected function callRaw(ServiceRequestInterface $request)
     {
         $this->applySoapHeaders();
-
-        // todo: if soap options changed, need to re-initialize the soap client!
 
         try {
 
@@ -196,15 +202,17 @@ class SoapService extends AbstractService
         return $headersArray;
     }
 
-
     /**
-     * Initializes SoapClient before first call is made
+     * Runs before any call is made
      *
-     * @throws CouldNotConnectException
+     * Initializes SoapClient before first call is made or when changed settings require it
      */
-    protected function beforeFirstCall()
+    protected function before()
     {
-        if (empty($this->client)) {
+        if (    empty($this->client)
+            ||  empty($this->clientHash)
+            ||  $this->clientHash !== $this->makeSoapClientHash()
+        ) {
             $this->initializeClient();
         }
     }
@@ -220,8 +228,11 @@ class SoapService extends AbstractService
         // so it can be injected in the SoapClient and compared
         // for changes later
 
-        $this->wsdl          = $this->getRequestDefaults()->getLocation();
-        $this->clientOptions = $this->getRequestDefaults()->getOptions();
+        $this->wsdl          = $this->request->getLocation();
+        $this->clientOptions = $this->request->getOptions();
+
+        // store hash to make it possible to detect changes to the client
+        $this->clientHash = $this->makeSoapClientHash();
 
         $xdebugEnabled = extension_loaded('xdebug') && xdebug_is_enabled();
 
@@ -245,6 +256,20 @@ class SoapService extends AbstractService
             throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
         }
     }
+
+    /**
+     * Creates a hash from the combination of all settings that need to
+     * be tracked to see whether a new soapclient should be instantiated
+     */
+    protected function makeSoapClientHash()
+    {
+        return sha1(
+            $this->request->getLocation()
+            . json_encode($this->request->getOptions())
+            . json_encode($this->request->getHeaders())
+        );
+    }
+
 
     /**
      * Supplements request with soap options, in addition to the standard supplements
