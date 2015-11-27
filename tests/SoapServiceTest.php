@@ -16,17 +16,7 @@ class SoapServiceTest extends TestCase
      */
     function it_returns_mocked_data_as_service_response()
     {
-        $soapMock = $this->getMockBuilder(SoapClient::class)
-                         ->disableOriginalConstructor()
-                         ->getMock();
-
-        //$soapMock->method('testMethod')->willReturn('some test content');
-        $soapMock->expects($this->any())
-                 ->method('__call')
-                 ->with($this->logicalOr('testMethod', []))
-                 ->will($this->returnCallback(function() {
-                     return 'some test content';
-                 }));
+        $soapMock = $this->createSimpleSoapMock();
 
         app()->bind(SoapClient::class, function() use ($soapMock) { return $soapMock; });
 
@@ -38,6 +28,52 @@ class SoapServiceTest extends TestCase
 
         $this->assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
         $this->assertEquals('some test content', $response->getData(), "Mocked service should return fixed data");
+    }
+
+    /**
+     * @test
+     */
+    function it_reinitializes_the_soapclient_when_settings_change()
+    {
+        $interpreter = new TestMockInterpreter();
+        $service     = new SoapService(null, $interpreter);
+        $request     = new ServiceSoapRequest();
+
+        // set up mock and bind for first call
+
+        $soapMock = $this->createSimpleSoapMock('first call');
+
+        app()->bind(SoapClient::class, function() use ($soapMock) { return $soapMock; });
+
+        $response = $service->call('testMethod', $request);
+
+        $this->assertEquals('first call', $response->getData(), "First call has incorrect response");
+
+        
+        // set up for second call
+        // change some non-default-included option, which should trigger re-initialization
+
+        $soapMock = $this->createSimpleSoapMock('second call');
+
+        app()->bind(SoapClient::class, function() use ($soapMock) { return $soapMock; });
+
+        $request->setOptions(['version' => SOAP_1_1]);
+
+        $response = $service->call('testMethod', $request);
+
+        $this->assertEquals('second call', $response->getData(), "Second call has incorrect response");
+
+
+        // do third call that should NOT change even though the client is rebound again
+        // since its settings do not change
+
+        $soapMock = $this->createSimpleSoapMock('third call');
+
+        app()->bind(SoapClient::class, function() use ($soapMock) { return $soapMock; });
+
+        $response = $service->call('testMethod', $request);
+
+        $this->assertEquals('second call', $response->getData(), "Third call should have same response as second");
     }
 
     /**
@@ -75,4 +111,27 @@ class SoapServiceTest extends TestCase
     //    $service->call('nothing_here', $request);
     //}
 
+
+    /**
+     * @param string $return
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function createSimpleSoapMock($return = 'some test content')
+    {
+        $soapMock = $this->getMockBuilder(SoapClient::class)
+                         ->disableOriginalConstructor()
+                         ->getMock();
+
+        //$soapMock->method('testMethod')->willReturn('some test content');
+        $soapMock->expects($this->any())
+                 ->method('__call')
+                 ->with($this->logicalOr('testMethod', []))
+                 ->will($this->returnCallback(
+                     function() use ($return) {
+                        return $return;
+                     }
+                 ));
+
+        return $soapMock;
+    }
 }
