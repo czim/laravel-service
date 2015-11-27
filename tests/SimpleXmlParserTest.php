@@ -23,4 +23,15 @@ class SimpleXmlParserTest extends TestCase
         );
     }
 
+    /**
+     * @test
+     * @expectedException \Czim\Service\Exceptions\CouldNotInterpretXmlResponse
+     */
+    function it_throw_an_exception_for_invalid_raw_xml()
+    {
+        $parser = new SimpleXmlParser();
+
+        $parser->parse( $this->xml->getInvalidXmlContent() );
+    }
+
 }
