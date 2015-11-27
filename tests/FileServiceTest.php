@@ -21,12 +21,8 @@ class FileServiceTest extends TestCase
         $filesMock->method('get')
                   ->willReturn('some test content');
 
-        // mocking through service container because passing it to the
-        // constructor makes it 'null' for some glitchy reason
-        app()->bind(Filesystem::class, function() use ($filesMock) { return $filesMock; });
-
         $interpreter = new TestMockInterpreter();
-        $service     = new FileService(null, $interpreter);
+        $service     = new FileService($filesMock, $interpreter);
         $request     = new ServiceRequest();
 
         $response = $service->call('does not matter', $request);
@@ -43,8 +39,7 @@ class FileServiceTest extends TestCase
         $interpreter = new TestMockInterpreter();
         $service     = new FileService(null, $interpreter);
         $request     = new ServiceRequest();
-
-        //dd(getcwd());
+        
         $response = $service->call('tests/data/test.txt', $request);
 
         $this->assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
