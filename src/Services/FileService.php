@@ -27,8 +27,10 @@ class FileService extends AbstractService
                                 array $guzzleConfig = [])
     {
         if (is_null($files)) {
-            $this->files = app(Filesystem::class);
+            $files = app(Filesystem::class);
         }
+
+        $this->files = $files;
 
         parent::__construct(null, $interpreter);
     }
