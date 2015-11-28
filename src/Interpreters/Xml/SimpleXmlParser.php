@@ -17,14 +17,24 @@ class SimpleXmlParser implements XmlParserInterface
      */
     public function parse($xml)
     {
+        // note that this resets the PHP error handler -- if anything goes wrong,
+        // look here first
+        libxml_use_internal_errors(true);
+
         try {
 
-            if (self::STRIP_CDATA_TAGS) {
+            $parsed = (self::STRIP_CDATA_TAGS)
+                    ?   simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)
+                    :   $parsed = simplexml_load_string($xml);
 
-                return simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+            if ( ! $parsed) {
+
+                throw new CouldNotInterpretXmlResponse( $this->getLibXmlErrorMessage() );
             }
 
-            return simplexml_load_string($xml);
+            libxml_clear_errors();
+
+            return $parsed;
 
         } catch (\ErrorException $e) {
 
@@ -36,6 +46,25 @@ class SimpleXmlParser implements XmlParserInterface
 
             throw new CouldNotInterpretXmlResponse($message, $e->getCode(), $e);
         }
+    }
+
+    /**
+     * Returns combined error message to pass to exception
+     *
+     * @return string
+     */
+    protected function getLibXmlErrorMessage()
+    {
+        $errors = [];
+
+        /** @var \LibXMLError $libError */
+        foreach (libxml_get_errors() as $libError) {
+
+            $errors[] = $libError->message
+                      . "(lev: {$libError->level}, line/col: {$libError->line} / {$libError->column})";
+        }
+
+        return implode('; ', $errors);
     }
 
 
