@@ -4,6 +4,8 @@
 [![Software License][ico-license]](LICENSE.md)
 [![Build Status](https://travis-ci.org/czim/laravel-service.svg?branch=master)](https://travis-ci.org/czim/laravel-service)
 [![Latest Stable Version](http://img.shields.io/packagist/v/czim/laravel-service.svg)](https://packagist.org/packages/czim/laravel-service)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/b916d372-6e69-4179-9e76-513f1ecda9ed/mini.png)](https://insight.sensiolabs.com/projects/b916d372-6e69-4179-9e76-513f1ecda9ed)
+
 
 Basic framework for making standardized but flexible webservice classes.
 
