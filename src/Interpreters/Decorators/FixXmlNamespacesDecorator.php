@@ -33,7 +33,9 @@ class FixXmlNamespacesDecorator implements ServiceInterpreterInterface
      * @param ServiceResponseInformationInterface $responseInformation
      * @return ServiceResponseInterface
      */
-    public function interpret(ServiceRequestInterface $request, $response, ServiceResponseInformationInterface $responseInformation = null)
+    public function interpret(ServiceRequestInterface $request,
+                              $response,
+                              ServiceResponseInformationInterface $responseInformation = null)
     {
         return $this->interpreter->interpret(
             $request,
