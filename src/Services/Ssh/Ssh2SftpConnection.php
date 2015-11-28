@@ -10,6 +10,7 @@ use Illuminate\Filesystem\Filesystem;
 
 class Ssh2SftpConnection extends Ssh2Connection implements Ssh2SftpConnectionInterface
 {
+    const DIRECTORY_CREATE_MODE = 0666;
 
     /**
      * ssh2 sftp2 connection
@@ -112,7 +113,7 @@ class Ssh2SftpConnection extends Ssh2Connection implements Ssh2SftpConnectionInt
         // ensure that local file may be created
         if ( ! is_dir(dirname($pathTo))) {
 
-            $this->files->makeDirectory(dirname($pathTo), $mode = 0666, true, true);
+            $this->files->makeDirectory(dirname($pathTo), static::DIRECTORY_CREATE_MODE, true, true);
         }
 
         if ( ! $localStream = @fopen($pathTo, 'w')) {
@@ -123,9 +124,6 @@ class Ssh2SftpConnection extends Ssh2Connection implements Ssh2SftpConnectionInt
         // write from our remote stream to our local stream
 
         if ($this->chunking) {
-
-            // not used now, but might be used for a completion check
-            //$fileSize = filesize("ssh2.sftp://{$this->ftpConnection}/{$pathFrom}");
 
             $bytesRead = 0;
 

@@ -111,8 +111,6 @@ class RestCurlService extends AbstractService
         }
 
         $this->responseInformation->setStatusCode( curl_getinfo($curl, CURLINFO_HTTP_CODE) );
-        //$this->responseInformation->setMessage();
-        //$this->responseInformation->setHeaders();
 
         curl_close($curl);
 

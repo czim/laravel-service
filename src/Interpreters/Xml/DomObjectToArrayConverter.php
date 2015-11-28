@@ -28,10 +28,6 @@ class DomObjectToArrayConverter implements XmlObjectConverterInterface
     /**
      * Converts DomDocument to array with all attributes in it
      *
-     * ToDo: compare this to convertXmlObjectToArray($xml) in SimpleXmlParser
-     *  -> do benchmarks
-     *  -> see if both handle attributes, CDATA and such equally well
-     *
      * @param  DOMDocument|DOMElement|DomNode $root
      * @return array
      */
