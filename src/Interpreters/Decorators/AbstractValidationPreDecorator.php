@@ -5,7 +5,7 @@ use Czim\Service\Contracts\ServiceInterpreterInterface;
 use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Contracts\ServiceResponseInformationInterface;
 use Czim\Service\Contracts\ServiceResponseInterface;
-use Czim\Service\Exceptions\CouldNotInterpretResponse;
+use Czim\Service\Exceptions\CouldNotValidateResponse;
 
 /**
  * Validates raw response before interpretation
@@ -41,7 +41,9 @@ abstract class AbstractValidationPreDecorator implements ServiceInterpreterInter
      * @param ServiceResponseInformationInterface $responseInformation
      * @return ServiceResponseInterface
      */
-    public function interpret(ServiceRequestInterface $request, $response, ServiceResponseInformationInterface $responseInformation = null)
+    public function interpret(ServiceRequestInterface $request,
+                              $response,
+                              ServiceResponseInformationInterface $responseInformation = null)
     {
         if ( ! $this->validate($response)) {
             $this->throwValidationException();
@@ -62,11 +64,11 @@ abstract class AbstractValidationPreDecorator implements ServiceInterpreterInter
     /**
      * Throws an exception, indicating that validation failed
      *
-     * @throws CouldNotInterpretResponse
+     * @throws CouldNotValidateResponse
      */
     protected function throwValidationException()
     {
-        throw new CouldNotInterpretResponse( $this->getErrorMessage(), $this->getErrors() );
+        throw new CouldNotValidateResponse( $this->getErrorMessage(), $this->getErrors() );
     }
 
     /**
