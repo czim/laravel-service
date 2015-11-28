@@ -40,14 +40,42 @@ Standard available interpreters:
 
 - `BasicDefaultInterpreter`: sets up response, but does not manipulate the raw data in any way
 - `BasicJsonInterpreter`: converts a string with raw JSON to an object or associative array
+- `BasicQueryStringInterpreter`: converts a query string to an object or array
 - `BasicRawXmlInterpreter`: converts a string with raw XML to SimpleXML objects
 - `BasicRawXmlAsArrayInterpreter`: same, but converts to an associative array
 - `BasicSoapXmlInterpreter`: makes response for SimpleXML object returned by a SoapClient
 - `BasicSoapXmlAsArrayInterpreter`: same, but converts to an associative array
 
+
 It is recommended to extend these or roll your own interpreter for complex services.
 I often build interpreters that use [`czim/laravel-dataobject`](https://github.com/czim/laravel-dataobject) to convert raw data into validatable, specific data objects.
 See the [AbstractServiceInterpreter source](https://github.com/czim/laravel-service/blob/master/src/Interpreters/AbstractInterpreter.php) for hints and useful methods.
+
+
+#### Interpreter Decorators
+
+Some decorators for interpreters are provided:
+
+- `FixXmlNamespacesDecorator`: rewrites relative path namespaces to absolute in raw XML, since some XML may be uninterpretable otherwise (hacky).
+- `RemoveXmlNamespacesDecorator`: removes XML namespaces from raw XML entirely (hacky).
+
+
+They follow the standard decorator pattern for interpreters, so they may be used as follows:
+
+```php
+
+    // Decorate a raw XML interpreter with a namespace removal decorator
+    $interpreter = new \Czim\Service\Interpreters\Decorators\RemoveXmlNamespacesDecorator(
+        new \Czim\Service\Interpreters\Decorators\BasicRawXmlInterpreter()
+    );
+    
+    // Inject the interpreter into a new service
+    $service = new \Czim\Service\Services\FileService(null, $interpreter);
+
+```
+
+The `AbstractValidationPreDecorator` may be extended to easily set up validation of raw data before the decorated interpreter does its business.
+Likewise the `AbstractValidationPostDecorator` may be extended to validate the `ServiceResponse` object returned *after* the interpreter has treated the response.
 
 
 ### Service Collection
@@ -66,21 +94,11 @@ You can set one up just as you would a normal Collection:
 
     // Performing calls on a service 
     $service->get('service name')
-            ->call('method', [ 'param' => 'value' ]);
+            ->call('someMethod', [ 'param' => 'value' ]);
 
 ```
 
 Note that calling `get()` on the collection for a non-existant service will throw an exception; as will trying to store something other than a `ServiceInterface` in it.
-
-
-
-## To Do
-
-- add XML validator decorator
-- add abstract 'post' validator decorator
-- add tests for decorators
-
-- finish documentation
 
 
 ## Notes
