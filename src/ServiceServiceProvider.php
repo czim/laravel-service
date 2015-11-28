@@ -34,8 +34,7 @@ class ServiceServiceProvider extends ServiceProvider
 
         // add bindings for SSH2 / SFTP services
 
-        $this->app->bind(Ssh2SftpConnectionInterface::class, function ($app, array $parameters) {
-            /** @var Container $app */
+        $this->app->bind(Ssh2SftpConnectionInterface::class, function (Container $app, array $parameters) {
 
             $host        = $parameters[0];
             $user        = $parameters[1];

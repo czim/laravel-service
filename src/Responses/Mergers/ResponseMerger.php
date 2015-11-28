@@ -2,6 +2,7 @@
 namespace Czim\Service\Responses\Mergers;
 
 use Czim\Service\Contracts\ResponseMergerInterface;
+use Czim\Service\Contracts\ServiceResponseInterface;
 use Czim\Service\Responses\ServiceResponse;
 use Illuminate\Support\Arr;
 
@@ -16,8 +17,8 @@ class ResponseMerger implements ResponseMergerInterface
     /**
      * Merges parts of a response (or parsed file contents) into a single body
      *
-     * @param ServiceResponse[] $parts
-     * @return ServiceResponse
+     * @param ServiceResponseInterface[] $parts
+     * @return ServiceResponseInterface
      */
     public function merge(array $parts)
     {
@@ -30,7 +31,7 @@ class ResponseMerger implements ResponseMergerInterface
 
         // if there were more parts, combine their data as an array
         $response->setData(
-            Arr::build($parts, function($index, $part) {
+            Arr::build($parts, function($index, ServiceResponseInterface $part) {
                 /** @var ServiceResponse $part */
                 return [ $index, $part->getData() ];
             })
