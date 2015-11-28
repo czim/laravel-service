@@ -66,6 +66,7 @@ For a simple SOAP service, this might be as follows:
 
 ```
 
+
 #### Available Services
 
 - `RestService`: for HTTP REST requests, requires a `ServiceRestRequest` object for defaults/requests.
@@ -76,6 +77,8 @@ For a simple SOAP service, this might be as follows:
 - `FileService`: for retrieving the contents of a single file, requires a `ServiceSshRequest` object for defaults/requests.
 - `MultiFileService`: for retrieving the contents of multiple files and merging their interpretations, requires a `ServiceSshRequest` object for defaults/requests.
 - `SshFileService`: like the MultiFileService, but retrieves files by logging into an SSH server. See requirements above.
+
+See this [list of examples](EXAMPLES.md) for more information.
 
 
 #### RestServices and HTTP methods
