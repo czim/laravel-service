@@ -80,7 +80,9 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     }
 
     /**
-     * Returns the method or endpoint name to send the request to
+     * Returns the method or endpoint name to send the request to.
+     *
+     * Note that this does NOT refer to the HTTP method.
      *
      * @return string
      */
@@ -94,6 +96,8 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
      *
      * If this is a HTTP-based call, this should be the path that will be appended to
      * the base URI of the service. For SOAP services, it should be the actual method name.
+     *
+     * Note that this does NOT refer to the HTTP method.
      *
      * @param string $method
      * @return $this

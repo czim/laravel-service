@@ -3,6 +3,7 @@ namespace Czim\Service\Test;
 
 use Czim\DataObject\Test\Helpers\TestMockInterpreter;
 use Czim\Service\Requests\ServiceRequest;
+use Czim\Service\Requests\ServiceRestRequest;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Services\RestService;
 use GuzzleHttp\Client;
@@ -43,7 +44,7 @@ class RestServiceTest extends TestCase
 
         $interpreter = new TestMockInterpreter();
         $service     = new RestService(null, $interpreter);
-        $request     = new ServiceRequest();
+        $request     = new ServiceRestRequest();
 
         $response = $service->call('testing', $request);
 
@@ -59,9 +60,21 @@ class RestServiceTest extends TestCase
     {
         $interpreter = new TestMockInterpreter();
         $service     = new RestService(null, $interpreter);
-        $request     = new ServiceRequest();
+        $request     = new ServiceRestRequest();
 
         $service->call('nothing_here', $request);
+    }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
+    function it_throws_an_exception_if_an_incorrect_service_request_is_used()
+    {
+        $service = new RestService();
+        $request = new ServiceRequest();
+
+        $service->call(null, $request);
     }
 
 }

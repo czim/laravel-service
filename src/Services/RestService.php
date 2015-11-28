@@ -6,9 +6,12 @@ use Czim\Service\Contracts\ServiceRequestDefaultsInterface;
 use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Events\RestCallCompleted;
 use Czim\Service\Exceptions\CouldNotConnectException;
+use Czim\Service\Requests\ServiceRestRequest;
+use Czim\Service\Requests\ServiceRestRequestDefaults;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception as GuzzleException;
+use InvalidArgumentException;
 
 class RestService extends AbstractService
 {
@@ -23,11 +26,23 @@ class RestService extends AbstractService
 
 
     /**
-     * The method to use for the HTTP call
+     * The classname of the defaults object to instantiate if none is injected
      *
      * @var string
      */
-    protected $method = self::METHOD_POST;
+    protected $requestDefaultsClass = ServiceRestRequestDefaults::class;
+
+    /**
+     * @var ServiceRestRequest
+     */
+    protected $request;
+
+    /**
+     * The default method to use for the HTTP call
+     *
+     * @var string
+     */
+    protected $httpMethod = self::METHOD_POST;
 
     /**
      * Whether to use basic authentication
@@ -54,7 +69,9 @@ class RestService extends AbstractService
      * @param ServiceInterpreterInterface     $interpreter
      * @param array                           $guzzleConfig     default config to pass into the guzzle client
      */
-    public function __construct(ServiceRequestDefaultsInterface $defaults = null, ServiceInterpreterInterface $interpreter = null, array $guzzleConfig = [])
+    public function __construct(ServiceRequestDefaultsInterface $defaults = null,
+                                ServiceInterpreterInterface $interpreter = null,
+                                array $guzzleConfig = [])
     {
         $this->client = app(Client::class, [ $guzzleConfig ]);
 
@@ -72,6 +89,8 @@ class RestService extends AbstractService
     protected function callRaw(ServiceRequestInterface $request)
     {
         $url = rtrim($request->getLocation(), '/') . '/' . $request->getMethod();
+
+        $httpMethod = $this->determineHttpMethod($request);
 
         $options = [
             'http_errors' => false,
@@ -92,7 +111,7 @@ class RestService extends AbstractService
 
         // handle parameters and body
 
-        switch ($this->method) {
+        switch ($httpMethod) {
 
             case static::METHOD_PATCH:
             case static::METHOD_POST:
@@ -126,7 +145,7 @@ class RestService extends AbstractService
 
         try {
 
-            $response = $this->client->request($this->method, $url, $options);
+            $response = $this->client->request($httpMethod, $url, $options);
 
         } catch (Exception $e) {
 
@@ -163,6 +182,18 @@ class RestService extends AbstractService
     }
 
     /**
+     * Returns HTTP method to use based on request & default
+     *
+     * @param ServiceRequestInterface|ServiceRestRequest $request
+     * @return string
+     */
+    protected function determineHttpMethod(ServiceRequestInterface $request)
+    {
+        // use method set in request, or fall back to default
+        return $request->getHttpMethod() ?: $this->httpMethod;
+    }
+
+    /**
      * Returns whether the given is a standard Guzzle exception
      *
      * @param Exception $e
@@ -181,26 +212,59 @@ class RestService extends AbstractService
         );
     }
 
+    /**
+     * Checks the request to be used in the next/upcoming call
+     */
+    protected function checkRequest()
+    {
+        parent::checkRequest();
+
+        if ( ! is_a($this->request, ServiceRestRequest::class)) {
+
+            throw new InvalidArgumentException("Request class is not a ServiceRestRequest");
+        }
+    }
+
+    /**
+     * Supplements request with soap options, in addition to the standard supplements
+     */
+    protected function supplementRequestWithDefaults()
+    {
+        parent::supplementRequestWithDefaults();
+
+        // set the HTTP Method if it is set in the defaults
+        if (empty($this->request->getHttpMethod()) && ! empty($this->defaults['http_method'])) {
+
+            $this->request->setHttpMethod( $this->defaults['http_method'] );
+        }
+    }
+
+
     // ------------------------------------------------------------------------------
     //      Getters, Setters and Configuration
     // ------------------------------------------------------------------------------
 
     /**
+     * Sets the default HTTP method
+     *
      * @param string $method GET, POST, etc
      * @return $this
      */
-    public function setMethod($method)
+    public function setHttpMethod($method)
     {
-        $this->method = (string) $method;
+        $this->httpMethod = (string) $method;
 
         return $this;
     }
 
     /**
+     * Returns the default HTTP method
+     *
      * @return string
      */
-    public function getMethod()
+    public function getHttpMethod()
     {
-        return $this->method;
+        return $this->httpMethod;
     }
+
 }
