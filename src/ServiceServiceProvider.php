@@ -1,7 +1,9 @@
 <?php
 namespace Czim\Service;
 
+use Czim\Service\Collections\ServiceCollection;
 use Czim\Service\Contracts\ResponseMergerInterface;
+use Czim\Service\Contracts\ServiceCollectionInterface;
 use Czim\Service\Contracts\Ssh2SftpConnectionInterface;
 use Czim\Service\Contracts\XmlObjectConverterInterface;
 use Czim\Service\Contracts\XmlParserInterface;
@@ -21,6 +23,8 @@ class ServiceServiceProvider extends ServiceProvider
 
     public function register()
     {
+
+        $this->app->bind(ServiceCollectionInterface::class, ServiceCollection::class);
 
         $this->app->bind(ResponseMergerInterface::class, ResponseMerger::class);
 

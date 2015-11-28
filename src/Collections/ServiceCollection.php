@@ -1,6 +1,7 @@
 <?php
 namespace Czim\Service\Collections;
 
+use Czim\Service\Contracts\ServiceCollectionInterface;
 use Czim\Service\Contracts\ServiceInterface;
 use Czim\Service\Exceptions\InvalidCollectionContentException;
 use Czim\Service\Exceptions\ServiceNotFoundInCollectionException;
@@ -10,7 +11,7 @@ use Illuminate\Support\Collection;
  * Simple extension of the Collection object that is set up to only allow
  * ServiceInterface entries.
  */
-class ServiceCollection extends Collection
+class ServiceCollection extends Collection implements ServiceCollectionInterface
 {
 
     /**
