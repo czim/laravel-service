@@ -20,11 +20,9 @@ class FileService extends AbstractService
     /**
      * @param Filesystem                  $files
      * @param ServiceInterpreterInterface $interpreter
-     * @param array                       $guzzleConfig default config to pass into the guzzle client
      */
     public function __construct(Filesystem $files = null,
-                                ServiceInterpreterInterface $interpreter = null,
-                                array $guzzleConfig = [])
+                                ServiceInterpreterInterface $interpreter = null)
     {
         if (is_null($files)) {
             $files = app(Filesystem::class);
