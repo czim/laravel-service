@@ -1,12 +1,10 @@
 <?php
 namespace Czim\Service\Interpreters;
 
-use Czim\Service\Exceptions\CouldNotInterpretJsonResponse;
-
 /**
  * Interprets JSON response data by decoding it as an array
  */
-class BasicJsonInterpreter extends AbstractInterpreter
+class BasicQueryStringInterpreter extends AbstractInterpreter
 {
 
     /**
@@ -36,14 +34,31 @@ class BasicJsonInterpreter extends AbstractInterpreter
             $this->responseInformation->getStatusCode() == 200
         );
 
-        $decoded = json_decode($this->response, $this->asArray);
+        $decoded = $this->decodeQueryString($this->response);
 
-        if (is_null($decoded) && ! is_null($this->response)) {
 
-            throw new CouldNotInterpretJsonResponse('Invalid JSON content in response');
+        if ( ! $this->asArray) {
+
+            $decoded = (object) $decoded;
         }
 
+
         $this->interpretedResponse->setData($decoded);
+    }
+
+    /**
+     * Decodes a query string to an array
+     *
+     * @param $string
+     * @return array
+     */
+    protected function decodeQueryString($string)
+    {
+        $responseArray = [];
+
+        parse_str($string, $responseArray);
+
+        return $responseArray;
     }
 
 }
