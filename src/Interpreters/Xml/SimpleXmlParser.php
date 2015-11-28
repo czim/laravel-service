@@ -29,7 +29,7 @@ class SimpleXmlParser implements XmlParserInterface
 
             if ( ! $parsed) {
 
-                throw new CouldNotInterpretXmlResponse( $this->getLibXmlErrorMessage() );
+                throw new CouldNotInterpretXmlResponse( $this->getLibXmlErrorMessage(), $this->getLibXmlErrors() );
             }
 
             libxml_clear_errors();
@@ -44,7 +44,7 @@ class SimpleXmlParser implements XmlParserInterface
                 $message = $matches[1];
             }
 
-            throw new CouldNotInterpretXmlResponse($message, $e->getCode(), $e);
+            throw new CouldNotInterpretXmlResponse($message, [ $message ], $e->getCode(), $e);
         }
     }
 
@@ -55,16 +55,26 @@ class SimpleXmlParser implements XmlParserInterface
      */
     protected function getLibXmlErrorMessage()
     {
+        return implode('; ', $this->getLibXmlErrors());
+    }
+
+    /**
+     * Returns errors encountered by libxml
+     *
+     * @return array
+     */
+    protected function getLibXmlErrors()
+    {
         $errors = [];
 
         /** @var \LibXMLError $libError */
         foreach (libxml_get_errors() as $libError) {
 
             $errors[] = $libError->message
-                      . "(lev: {$libError->level}, line/col: {$libError->line} / {$libError->column})";
+                . "(lev: {$libError->level}, line/col: {$libError->line} / {$libError->column})";
         }
 
-        return implode('; ', $errors);
+        return $errors;
     }
 
 

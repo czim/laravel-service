@@ -66,7 +66,7 @@ abstract class AbstractValidationPreDecorator implements ServiceInterpreterInter
      */
     protected function throwValidationException()
     {
-        throw new CouldNotInterpretResponse( $this->getErrorMessage() );
+        throw new CouldNotInterpretResponse( $this->getErrorMessage(), $this->getErrors() );
     }
 
     /**
