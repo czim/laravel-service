@@ -73,6 +73,8 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
 
         $this->after();
 
+        $this->cleanUp();
+
         return $this->interpretedResponse;
     }
 
@@ -89,6 +91,16 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
         $this->interpretedResponse->setData(null);
     }
 
+
+    /**
+     * Cleans up the interpreter instance after interpretation process has completed
+     */
+    protected function cleanUp()
+    {
+        unset($this->request);
+        unset($this->response);
+        unset($this->responseInformation);
+    }
 
     // ------------------------------------------------------------------------------
     //      Abstract
