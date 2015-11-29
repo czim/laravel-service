@@ -143,6 +143,46 @@ abstract class AbstractService implements ServiceInterface
 
 
     /**
+     * Applies mass configuration to default request
+     *
+     * @param array $config
+     * @return $this
+     */
+    public function config(array $config)
+    {
+        if (array_key_exists('location', $config)) {
+            $this->defaults->setLocation($config['location']);
+        }
+
+        if (array_key_exists('port', $config)) {
+            $this->defaults->setPort($config['port']);
+        }
+
+        if (array_key_exists('headers', $config)) {
+            $this->defaults->setHeaders($config['headers']);
+        }
+
+        if (array_key_exists('credentials', $config)) {
+            $this->defaults->setCredentials($config['credentials']);
+        }
+
+        if (array_key_exists('method', $config)) {
+            $this->defaults->setMethod($config['method']);
+        }
+
+        if (array_key_exists('parameters', $config)) {
+            $this->defaults->setParameters($config['parameters']);
+        }
+
+        if (array_key_exists('body', $config)) {
+            $this->defaults->setBody($config['body']);
+        }
+
+        return $this;
+    }
+
+
+    /**
      * Performs a call on the service, returning an interpreted response
      *
      * @param string $method     name of the method to call through the service

@@ -15,6 +15,13 @@ interface ServiceInterface
      */
     public function call($method, $request = null, $parameters = null, $headers = null);
 
+    /**
+     * Applies mass configuration to default request
+     *
+     * @param array $config
+     * @return $this
+     */
+    public function config(array $config);
 
     /**
      * Returns the raw response data for the most recent call made

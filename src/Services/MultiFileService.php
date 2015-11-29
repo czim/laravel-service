@@ -26,6 +26,11 @@ class MultiFileService extends AbstractService
     /**
      * @var ServiceSshRequestInterface
      */
+    protected $defaults;
+
+    /**
+     * @var ServiceSshRequestInterface
+     */
     protected $request;
 
     /**
@@ -57,6 +62,34 @@ class MultiFileService extends AbstractService
         }
 
         parent::__construct(null, $interpreter);
+    }
+
+
+    /**
+     * Applies mass configuration to default request
+     *
+     * @param array $config
+     * @return $this
+     */
+    public function config(array $config)
+    {
+        parent::config($config);
+
+        if (array_key_exists('fingerprint', $config)) {
+            $this->defaults->setFingerprint($config['fingerprint']);
+        }
+
+        if (array_key_exists('path', $config)) {
+            $this->defaults->setPath($config['path']);
+        }
+
+        if (array_key_exists('localPath', $config)) {
+            $this->defaults->setLocalPath($config['localPath']);
+        }
+
+        if (array_key_exists('pattern', $config)) {
+            $this->defaults->setPattern($config['pattern']);
+        }
     }
 
 

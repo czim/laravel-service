@@ -33,6 +33,11 @@ class RestService extends AbstractService
     protected $requestDefaultsClass = ServiceRestRequestDefaults::class;
 
     /**
+     * @var ServiceRestRequest;
+     */
+    protected $defaults;
+
+    /**
      * @var ServiceRestRequest
      */
     protected $request;
@@ -77,6 +82,23 @@ class RestService extends AbstractService
 
         parent::__construct($defaults, $interpreter);
     }
+
+
+    /**
+     * Applies mass configuration to default request
+     *
+     * @param array $config
+     * @return $this
+     */
+    public function config(array $config)
+    {
+        parent::config($config);
+
+        if (array_key_exists('httpMethod', $config)) {
+            $this->defaults->setHttpMethod($config['httpMethod']);
+        }
+    }
+
 
     /**
      * Performs raw REST call
