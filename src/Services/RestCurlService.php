@@ -26,7 +26,7 @@ class RestCurlService extends AbstractService
      *
      * @var bool
      */
-    protected $basicAuth = false;
+    protected $basicAuth = true;
 
     /**
      * HTTP headers
@@ -149,4 +149,21 @@ class RestCurlService extends AbstractService
     {
         return $this->method;
     }
+
+    /**
+     * Disables basic authentication, even if credentials are provided
+     */
+    public function disableBasicAuth()
+    {
+        $this->basicAuth = false;
+    }
+
+    /**
+     * Enables basic authentication, uses the request's credentials
+     */
+    public function enableBasicAuth()
+    {
+        $this->basicAuth = true;
+    }
+    
 }
