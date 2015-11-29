@@ -219,8 +219,14 @@ abstract class AbstractService implements ServiceInterface
             $this->request->setBody( $this->defaults->getBody() );
         }
 
-        if (empty($this->request->getCredentials())) {
-            $this->request->setCredentials( $this->defaults->getCredentials() );
+        if (    $this->credentialsAreEmpty($this->request->getCredentials())
+            &&  ! $this->credentialsAreEmpty($this->defaults->getCredentials())
+        ) {
+            $this->request->setCredentials(
+                $this->defaults->getCredentials()['name'],
+                $this->defaults->getCredentials()['password'],
+                $this->defaults->getCredentials()['domain']
+            );
         }
 
 
@@ -234,6 +240,17 @@ abstract class AbstractService implements ServiceInterface
             ));
         }
 
+    }
+
+    /**
+     * Returns whether a credentials array should be considered empty
+     *
+     * @param array $credentials
+     * @return bool
+     */
+    protected function credentialsAreEmpty(array $credentials)
+    {
+        return (empty($credentials['name']) || empty($credentials['password']));
     }
 
     /**
