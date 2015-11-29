@@ -225,6 +225,8 @@ When using the `DomDocumentBasedXmlParser`, note that this will not return a *Si
 To sensibly use this, convert it to an array using the `DomObjectToArrayConverter`.
 This means that when rebinding or injecting one of these, treat them as a pair. 
 
+Note that the DOMDocument method is slower and uses significantly more memory. If you have no specific reason to use this, stick to the default.
+
 
 ## Contributing
 
