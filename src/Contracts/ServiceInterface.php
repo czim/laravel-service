@@ -68,4 +68,11 @@ interface ServiceInterface
      */
     public function getInterpreter();
 
+    /**
+     * Frees up memory where possible
+     *
+     * @return $this
+     */
+    public function free();
+
 }

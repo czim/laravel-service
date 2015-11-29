@@ -253,6 +253,20 @@ abstract class AbstractService implements ServiceInterface
     }
 
 
+    /**
+     * Frees up memory where possible
+     *
+     * @return $this
+     */
+    public function free()
+    {
+        unset( $this->rawResponse );
+        unset( $this->response );
+        unset( $this->responseInformation );
+
+        return $this;
+    }
+
 
     // ------------------------------------------------------------------------------
     //      Abstract
