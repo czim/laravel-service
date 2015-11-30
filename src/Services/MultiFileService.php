@@ -8,6 +8,7 @@ use Czim\Service\Contracts\ServiceSshRequestInterface;
 use Czim\Service\Exceptions\CouldNotConnectException;
 use Czim\Service\Exceptions\EmptyRetrievedDataException;
 use Czim\Service\Requests\ServiceSshRequest;
+use Czim\Service\Requests\ServiceSshRequestDefaults;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Responses\ServiceResponseInformation;
 use Exception;
@@ -22,6 +23,11 @@ use InvalidArgumentException;
  */
 class MultiFileService extends AbstractService
 {
+
+    /**
+     * @var string
+     */
+    protected $requestDefaultsClass = ServiceSshRequestDefaults::class;
 
     /**
      * @var ServiceSshRequestInterface
