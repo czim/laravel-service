@@ -98,6 +98,24 @@ class MultiFileService extends AbstractService
         }
     }
 
+    /**
+     * Returns the rules to validate the config against
+     *
+     * @return array
+     */
+    protected function getConfigValidationRules()
+    {
+        return array_merge(
+            parent::getConfigValidationRules(),
+            [
+                'fingerprint' => 'string',
+                'path'        => 'string',
+                'local_path'  => 'string',
+                'pattern'     => 'string',
+            ]
+        );
+    }
+
 
     /**
      * @param ServiceRequestInterface $request

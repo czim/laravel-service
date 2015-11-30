@@ -7,8 +7,10 @@ use Czim\Service\Contracts\ServiceRequestDefaultsInterface;
 use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Contracts\ServiceResponseInformationInterface;
 use Czim\Service\Contracts\ServiceResponseInterface;
+use Czim\Service\Exceptions\ServiceConfigurationException;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Responses\ServiceResponseInformation;
+use Validator;
 
 abstract class AbstractService implements ServiceInterface
 {
@@ -150,6 +152,9 @@ abstract class AbstractService implements ServiceInterface
      */
     public function config(array $config)
     {
+        $this->validateConfig($config);
+
+
         if (array_key_exists('location', $config)) {
             $this->defaults->setLocation($config['location']);
         }
@@ -163,7 +168,11 @@ abstract class AbstractService implements ServiceInterface
         }
 
         if (array_key_exists('credentials', $config)) {
-            $this->defaults->setCredentials($config['credentials']);
+            $this->defaults->setCredentials(
+                array_get($config['credentials'], 'name'),
+                array_get($config['credentials'], 'password'),
+                array_get($config['credentials'], 'domain')
+            );
         }
 
         if (array_key_exists('method', $config)) {
@@ -178,7 +187,51 @@ abstract class AbstractService implements ServiceInterface
             $this->defaults->setBody($config['body']);
         }
 
+        if (array_key_exists('options', $config)) {
+            $this->defaults->setOptions($config['options']);
+        }
+
         return $this;
+    }
+
+    /**
+     * Checks config against validation rules
+     *
+     * @param array $config
+     * @throws ServiceConfigurationException
+     */
+    protected function validateConfig(array $config)
+    {
+        $validator = Validator::make($config, $this->getConfigValidationRules());
+
+        if ($validator->fails()) {
+
+            throw new ServiceConfigurationException(
+                'Invalid configuration: ' . print_r($validator->messages()->toArray(), true),
+                $validator->messages()->toArray()
+            );
+        }
+    }
+
+    /**
+     * Returns the rules to validate the config against
+     *
+     * @return array
+     */
+    protected function getConfigValidationRules()
+    {
+        return [
+            'location'             => 'string',
+            'port'                 => 'integer',
+            'method'               => 'string',
+            'headers'              => 'array',
+            'parameters'           => 'array',
+            'credentials'          => 'array',
+            'credentials.name'     => 'string',
+            'credentials.password' => 'string',
+            'credentials.domain'   => 'string',
+            'options'              => 'array',
+        ];
     }
 
 

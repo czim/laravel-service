@@ -97,6 +97,20 @@ class RestService extends AbstractService
         }
     }
 
+    /**
+     * Returns the rules to validate the config against
+     *
+     * @return array
+     */
+    protected function getConfigValidationRules()
+    {
+        return array_merge(
+            parent::getConfigValidationRules(),
+            [
+                'http_method' => 'in:DELETE,GET,PATCH,POST,PUT,OPTIONS',
+            ]
+        );
+    }
 
     /**
      * Performs raw REST call
