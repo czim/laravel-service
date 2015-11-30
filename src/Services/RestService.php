@@ -200,6 +200,7 @@ class RestService extends AbstractService
         $this->responseInformation->setMessage( $response->getReasonPhrase() );
         $this->responseInformation->setHeaders( $response->getHeaders() );
 
+        $responseBody = $response->getBody()->getContents();
 
         event(
             new RestCallCompleted(
@@ -209,12 +210,11 @@ class RestService extends AbstractService
                     :   (isset($options['query'])
                             ?   $options['query']
                             :   []),
-                ($this->sendResponseToEvent) ? $response->getBody()->getContents() : null
+                ($this->sendResponseToEvent) ? $responseBody : null
             )
         );
 
-
-        return $response->getBody()->getContents();
+        return $responseBody;
     }
 
     /**
