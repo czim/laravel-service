@@ -26,8 +26,6 @@ class RestService extends AbstractService
 
 
     /**
-     * The classname of the defaults object to instantiate if none is injected
-     *
      * @var string
      */
     protected $requestDefaultsClass = ServiceRestRequestDefaults::class;
@@ -94,8 +92,8 @@ class RestService extends AbstractService
     {
         parent::config($config);
 
-        if (array_key_exists('httpMethod', $config)) {
-            $this->defaults->setHttpMethod($config['httpMethod']);
+        if (array_key_exists('http_method', $config)) {
+            $this->defaults->setHttpMethod($config['http_method']);
         }
     }
 

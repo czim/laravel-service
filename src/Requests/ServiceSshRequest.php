@@ -28,7 +28,7 @@ class ServiceSshRequest extends ServiceRequest implements ServiceSshRequestInter
         'options'     => [],
 
         'path'        => null,
-        'localPath'   => null,
+        'local_path'  => null,
         'pattern'     => null,
         'fingerprint' => null,
     ];
@@ -64,7 +64,7 @@ class ServiceSshRequest extends ServiceRequest implements ServiceSshRequestInter
      */
     public function getLocalPath()
     {
-        return $this->getAttribute('localPath');
+        return $this->getAttribute('local_path');
     }
 
     /**
@@ -75,7 +75,7 @@ class ServiceSshRequest extends ServiceRequest implements ServiceSshRequestInter
      */
     public function setLocalPath($localPath)
     {
-        $this->setAttribute('localPath', (string) $localPath);
+        $this->setAttribute('local_path', (string) $localPath);
 
         return $this;
     }

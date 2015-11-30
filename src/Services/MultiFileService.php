@@ -83,8 +83,8 @@ class MultiFileService extends AbstractService
             $this->defaults->setPath($config['path']);
         }
 
-        if (array_key_exists('localPath', $config)) {
-            $this->defaults->setLocalPath($config['localPath']);
+        if (array_key_exists('local_path', $config)) {
+            $this->defaults->setLocalPath($config['local_path']);
         }
 
         if (array_key_exists('pattern', $config)) {
