@@ -209,7 +209,7 @@ class RestService extends AbstractService
                     :   (isset($options['query'])
                             ?   $options['query']
                             :   []),
-                ($this->sendResponseToEvent) ? $response : null
+                ($this->sendResponseToEvent) ? $response->getBody()->getContents() : null
             )
         );
 
