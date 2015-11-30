@@ -60,12 +60,16 @@ class MultiFileService extends AbstractService
                                 ResponseMergerInterface $responseMerger = null)
     {
         if (is_null($files)) {
-            $this->files = app(Filesystem::class);
+            $files = app(Filesystem::class);
         }
 
+        $this->files = $files;
+
         if (is_null($responseMerger)) {
-            $this->responseMerger = app(ResponseMergerInterface::class);
+            $responseMerger = app(ResponseMergerInterface::class);
         }
+
+        $this->responseMerger = $responseMerger;
 
         parent::__construct(null, $interpreter);
     }
