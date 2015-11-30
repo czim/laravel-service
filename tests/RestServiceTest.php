@@ -2,6 +2,7 @@
 namespace Czim\Service\Test;
 
 use Czim\DataObject\Test\Helpers\TestMockInterpreter;
+use Czim\Service\Exceptions\ServiceConfigurationException;
 use Czim\Service\Requests\ServiceRequest;
 use Czim\Service\Requests\ServiceRestRequest;
 use Czim\Service\Responses\ServiceResponse;
@@ -75,6 +76,99 @@ class RestServiceTest extends TestCase
         $request = new ServiceRequest();
 
         $service->call(null, $request);
+    }
+
+    /**
+     * @test
+     */
+    function it_takes_an_array_config_and_stores_its_contents_as_defaults()
+    {
+        $service = new RestService();
+
+        $service->config([
+            // standard config
+            'location'    => 'http://test.com',
+            'port'        => 1234,
+            'credentials' => [
+                'name'     => 'piet',
+                'password' => 'paaltjens',
+            ],
+            'method'      => 'comment/11',
+            'headers'     => ['some' => 'header'],
+            'parameters'  => ['some' => 'parameter'],
+            'options'     => ['some' => 'option'],
+            'body'        => 'test',
+
+            // specific for rest
+            'http_method' => 'DELETE',
+        ]);
+
+        $defaults = $service->getRequestDefaults();
+
+        $this->assertEquals('http://test.com', $defaults->getLocation());
+        $this->assertEquals(1234, $defaults->getPort());
+        $this->assertEquals('comment/11', $defaults->getMethod());
+        $this->assertEquals('test', $defaults->getBody());
+
+        $this->assertArraySubset(['some' => 'header'], $defaults->getHeaders());
+        $this->assertArraySubset(['some' => 'parameter'], $defaults->getParameters());
+        $this->assertArraySubset(['some' => 'option'], $defaults->getOptions());
+        $this->assertArraySubset([
+            'name'     => 'piet',
+            'password' => 'paaltjens',
+        ], $defaults->getCredentials());
+
+        $this->assertEquals('DELETE', $defaults['http_method']);
+    }
+
+    /**
+     * @test
+     */
+    function it_throws_an_exception_on_invalid_config()
+    {
+        $service = new RestService();
+
+        try {
+
+            $service->config([
+                'location'    => true,
+                'port'        => 'not a port',
+                'credentials' => [
+                    'name'     => ['not a string'],
+                    'password' => false,
+                ],
+                'method'      => ['not a string'],
+                'headers'     => 'not an array',
+                'parameters'  => 'not an array',
+                'options'     => 'not an array',
+
+                'http_method' => 'FALSE_METHOD',
+            ]);
+
+            $this->fail('Expecting ServiceConfigurationException');
+
+        } catch (ServiceConfigurationException $e) {
+
+            $errors = $e->getErrors();
+
+            foreach (
+                [
+                    'location',
+                    'port',
+                    'credentials.name',
+                    'credentials.password',
+                    'method',
+                    'headers',
+                    'parameters',
+                    'options',
+
+                    'http_method',
+                ]
+                as $key
+            ) {
+                $this->assertArrayHasKey($key, $errors, 'Missing validation error for: ' . $key);
+            }
+        }
     }
 
 }

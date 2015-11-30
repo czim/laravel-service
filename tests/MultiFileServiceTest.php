@@ -2,6 +2,7 @@
 namespace Czim\Service\Test;
 
 use Czim\DataObject\Test\Helpers\TestMockInterpreter;
+use Czim\Service\Exceptions\ServiceConfigurationException;
 use Czim\Service\Requests\ServiceRequest;
 use Czim\Service\Requests\ServiceSshRequest;
 use Czim\Service\Responses\ServiceResponse;
@@ -138,4 +139,62 @@ class MultiFileServiceTest extends TestCase
         $service->call(null, $request);
     }
 
+    /**
+     * @test
+     */
+    function it_takes_an_array_config_and_stores_its_contents_as_defaults()
+    {
+        $service = new MultiFileService();
+
+        $service->config([
+            // specific for multifile
+            'fingerprint' => '089370823740237480239',
+            'path'        => 'test/tmp',
+            'local_path'  => 'local/test',
+            'pattern'     => '*.txt',
+        ]);
+
+        $defaults = $service->getRequestDefaults();
+
+        $this->assertEquals('089370823740237480239', $defaults->getFingerprint());
+        $this->assertEquals('test/tmp', $defaults->getPath());
+        $this->assertEquals('local/test', $defaults->getLocalPath());
+        $this->assertEquals('*.txt', $defaults->getPattern());
+    }
+
+    /**
+     * @test
+     */
+    function it_throws_an_exception_on_invalid_config()
+    {
+        $service = new MultiFileService();
+
+        try {
+
+            $service->config([
+                'fingerprint' => [ 'not a string' ],
+                'path'        => false,
+                'local_path'  => true,
+                'pattern'     => [ 'not a string' ],
+            ]);
+
+            $this->fail('Expecting ServiceConfigurationException');
+
+        } catch (ServiceConfigurationException $e) {
+
+            $errors = $e->getErrors();
+
+            foreach (
+                [
+                    'fingerprint',
+                    'path',
+                    'local_path',
+                    'pattern',
+                ]
+                as $key
+            ) {
+                $this->assertArrayHasKey($key, $errors, 'Missing validation error for: ' . $key);
+            }
+        }
+    }
 }
