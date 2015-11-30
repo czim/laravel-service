@@ -76,7 +76,7 @@ class FileService extends AbstractService
 
         if ( ! empty($location) && ! empty($method)) {
 
-            return rtrim($location(), '/') . '/' . $method();
+            return rtrim($location(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $method();
         }
 
         if ( ! empty($location)) return $location;

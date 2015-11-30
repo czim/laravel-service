@@ -66,8 +66,8 @@ class SshFileService extends MultiFileService
         }
 
         $pattern   = $this->getFilePattern();
-        $path      = rtrim($this->request->getPath(), '/');
-        $localPath = rtrim($this->request->getLocalPath(), '/');
+        $path      = rtrim($this->request->getPath(), DIRECTORY_SEPARATOR);
+        $localPath = rtrim($this->request->getLocalPath(), DIRECTORY_SEPARATOR);
 
         // list all files in path
         $files = $this->ssh->listFiles($path);
@@ -79,9 +79,9 @@ class SshFileService extends MultiFileService
             // skip files not matching pattern, IF pattern is set
             if ( ! empty($pattern) && ! fnmatch($pattern, $file)) continue;
 
-            $this->ssh->downloadFile($path . '/' . $file, $localPath . '/' . $file);
+            $this->ssh->downloadFile($path . DIRECTORY_SEPARATOR . $file, $localPath . DIRECTORY_SEPARATOR . $file);
 
-            $localFiles[ $file ] = $localPath . '/' . $file;
+            $localFiles[ $file ] = $localPath . DIRECTORY_SEPARATOR . $file;
         }
 
 

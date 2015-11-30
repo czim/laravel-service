@@ -197,7 +197,7 @@ class MultiFileService extends AbstractService
         $localFiles = [];
 
         $pattern   = $this->getFilePattern();
-        $localPath = rtrim($this->request->getLocalPath(), '/');
+        $localPath = rtrim($this->request->getLocalPath(), DIRECTORY_SEPARATOR);
 
         // get local files based on given path and pattern
         $files = $this->files->files($localPath);
