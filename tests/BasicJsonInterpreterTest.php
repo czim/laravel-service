@@ -53,7 +53,7 @@ class BasicJsonInterpreterTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Czim\Service\Exceptions\CouldNotInterpretJsonResponse
+     * @expectedException \Czim\Service\Exceptions\CouldNotInterpretJsonResponseException
      */
     function it_throws_an_exception_if_response_is_invalid_json()
     {

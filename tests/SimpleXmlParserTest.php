@@ -25,7 +25,7 @@ class SimpleXmlParserTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Czim\Service\Exceptions\CouldNotInterpretXmlResponse
+     * @expectedException \Czim\Service\Exceptions\CouldNotInterpretXmlResponseException
      */
     function it_throw_an_exception_for_invalid_raw_xml()
     {

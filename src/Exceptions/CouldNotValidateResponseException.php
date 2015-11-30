@@ -5,6 +5,6 @@ namespace Czim\Service\Exceptions;
  * Validation exception thrown during interpretation of response.
  * See Interpreters\Decorators.
  */
-class CouldNotValidateResponseException extends CouldNotInterpretResponse
+class CouldNotValidateResponseException extends CouldNotInterpretResponseException
 {
 }

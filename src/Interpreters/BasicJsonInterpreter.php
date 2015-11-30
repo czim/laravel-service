@@ -1,7 +1,7 @@
 <?php
 namespace Czim\Service\Interpreters;
 
-use Czim\Service\Exceptions\CouldNotInterpretJsonResponse;
+use Czim\Service\Exceptions\CouldNotInterpretJsonResponseException;
 
 /**
  * Interprets JSON response data by decoding it as an array
@@ -40,7 +40,7 @@ class BasicJsonInterpreter extends AbstractInterpreter
 
         if (is_null($decoded) && ! is_null($this->response)) {
 
-            throw new CouldNotInterpretJsonResponse('Invalid JSON content in response');
+            throw new CouldNotInterpretJsonResponseException('Invalid JSON content in response');
         }
 
         $this->interpretedResponse->setData($decoded);

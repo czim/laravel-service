@@ -2,7 +2,7 @@
 namespace Czim\Service\Interpreters\Xml;
 
 use Czim\Service\Contracts\XmlParserInterface;
-use Czim\Service\Exceptions\CouldNotInterpretXmlResponse;
+use Czim\Service\Exceptions\CouldNotInterpretXmlResponseException;
 
 class SimpleXmlParser implements XmlParserInterface
 {
@@ -13,7 +13,7 @@ class SimpleXmlParser implements XmlParserInterface
     /**
      * @param string $xml
      * @return mixed
-     * @throws CouldNotInterpretXmlResponse
+     * @throws CouldNotInterpretXmlResponseException
      */
     public function parse($xml)
     {
@@ -29,7 +29,7 @@ class SimpleXmlParser implements XmlParserInterface
 
             if ( ! $parsed) {
 
-                throw new CouldNotInterpretXmlResponse( $this->getLibXmlErrorMessage(), $this->getLibXmlErrors() );
+                throw new CouldNotInterpretXmlResponseException( $this->getLibXmlErrorMessage(), $this->getLibXmlErrors() );
             }
 
             libxml_clear_errors();
@@ -44,7 +44,7 @@ class SimpleXmlParser implements XmlParserInterface
                 $message = $matches[1];
             }
 
-            throw new CouldNotInterpretXmlResponse($message, [ $message ], $e->getCode(), $e);
+            throw new CouldNotInterpretXmlResponseException($message, [ $message ], $e->getCode(), $e);
         }
     }
 
@@ -86,7 +86,7 @@ class SimpleXmlParser implements XmlParserInterface
      *
      * @param string $xml
      * @return array
-     * @throws CouldNotInterpretXmlResponse
+     * @throws CouldNotInterpretXmlResponseException
      */
     protected function getArrayForSpecialCase($xml)
     {
