@@ -3,7 +3,7 @@ namespace Czim\Service\Test;
 
 use Czim\DataObject\Test\Helpers\TestMockInterpreter;
 use Czim\Service\Contracts\ServiceRequestInterface;
-use Czim\Service\Exceptions\CouldNotValidateResponse;
+use Czim\Service\Exceptions\CouldNotValidateResponseException;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Test\Helpers\TestPostValidator;
 
@@ -42,12 +42,13 @@ class ValidationPostDecoratorTest extends TestCase
             /** @var ServiceRequestInterface $mockRequest */
             $decorator->interpret($mockRequest, 'wrong');
 
-        } catch (CouldNotValidateResponse $e) {
+            $this->fail('Expecting CouldNotValidateResponseException');
+
+        } catch (CouldNotValidateResponseException $e) {
 
             // check if errors are present
             $this->assertArraySubset([ 'wrong response' ], $e->getErrors(), "Errors not present in exception instance");
         }
-
     }
 
 }
