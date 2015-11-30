@@ -1,5 +1,31 @@
 # Examples
 
+## Setting service configuration as array
+
+```php
+
+    // Can pass in NULL as the defaults, since they will be set by a config later
+    $service = new SoapService(
+        null,
+        new \Czim\Service\Interpreters\BasicSoapXmlAsArrayInterpreter()
+    );
+
+    // You can pass in an array with settings, which will be set as the defaults for the service.
+    // The contents of this config will be validated, but unknown keys will be ignored without
+    // warning.
+    
+    $service->config([
+        'location' => 'http://some.wsdl.url.com/?WSDL',
+        'port'     => 8000,
+        'options'  => [
+            'trace' => false,
+        ],
+    ]);
+
+
+```
+
+
 ## Soap
 
 ```php
