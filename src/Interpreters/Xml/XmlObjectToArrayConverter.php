@@ -29,7 +29,8 @@ class XmlObjectToArrayConverter implements XmlObjectConverterInterface
     {
         $array = (array) $xml;
 
-        if (count($array) == 0) {
+        if (count($array) == 0 && ! is_array($xml)) {
+
             $array = [ (string) $xml ];
         }
 
@@ -45,7 +46,7 @@ class XmlObjectToArrayConverter implements XmlObjectConverterInterface
 
                     } else {
 
-                        $array[ $key ] = (array) $value;
+                        $array[ $key ] = $this->convertXmlObjectToArray( (array) $value );
                     }
 
                 } elseif (is_array($value)) {
