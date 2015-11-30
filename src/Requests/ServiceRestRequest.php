@@ -6,7 +6,7 @@ use InvalidArgumentException;
 class ServiceRestRequest extends ServiceRequest
 {
 
-    const METHOD_DELETE  = 'PUT';
+    const METHOD_DELETE  = 'DELETE';
     const METHOD_GET     = 'GET';
     const METHOD_OPTIONS = 'OPTIONS';
     const METHOD_PATCH   = 'PATCH';
