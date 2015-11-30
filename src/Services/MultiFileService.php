@@ -122,6 +122,32 @@ class MultiFileService extends AbstractService
         );
     }
 
+    /**
+     * Takes the current request and supplements it with the service's defaults
+     * to merge them into a complete request.
+     */
+    protected function supplementRequestWithDefaults()
+    {
+        parent::supplementRequestWithDefaults();
+
+        if (empty($this->request->getFingerprint())) {
+            $this->request->setFingerprint( $this->defaults->getFingerprint() );
+        }
+
+        if (empty($this->request->getPath())) {
+            $this->request->setPath( $this->defaults->getPath() );
+        }
+
+        if (empty($this->request->getLocalPath())) {
+            $this->request->setLocalPath( $this->defaults->getLocalPath() );
+        }
+
+        if (empty($this->request->getPattern())) {
+            $this->request->setPattern( $this->defaults->getPattern() );
+        }
+
+    }
+
 
     /**
      * @param ServiceRequestInterface $request
