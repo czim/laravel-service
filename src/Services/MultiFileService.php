@@ -96,6 +96,8 @@ class MultiFileService extends AbstractService
         if (array_key_exists('pattern', $config)) {
             $this->defaults->setPattern($config['pattern']);
         }
+
+        return $this;
     }
 
     /**

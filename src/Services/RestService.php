@@ -95,6 +95,8 @@ class RestService extends AbstractService
         if (array_key_exists('http_method', $config)) {
             $this->defaults->setHttpMethod($config['http_method']);
         }
+
+        return $this;
     }
 
     /**
