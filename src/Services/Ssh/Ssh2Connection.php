@@ -138,7 +138,16 @@ class Ssh2Connection implements Ssh2ConnectionInterface
             );
         }
 
-        if ( ! @ssh2_auth_password($this->connection, $this->user, $this->password)) {
+        try {
+
+            if ( ! ssh2_auth_password($this->connection, $this->user, $this->password)) {
+
+                throw new Ssh2ConnectionException(
+                    "Could not authorize as {$this->user} on {$this->hostname}:{$this->port}."
+                );
+            }
+
+        } catch (\Exception $e) {
 
             throw new Ssh2ConnectionException(
                 "Could not authorize as {$this->user} on {$this->hostname}:{$this->port}."
