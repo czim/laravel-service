@@ -104,6 +104,21 @@ interface ServiceRequestInterface extends DataObjectInterface
     public function setCredentials($name, $password = null, $domain = null);
 
     /**
+     * Returns client-specific options (such as for SOAP)
+     *
+     * @return mixed[]
+     */
+    public function getOptions();
+
+    /**
+     * Sets request client-specific options
+     *
+     * @param mixed[] $options
+     * @return $this
+     */
+    public function setOptions(array $options);
+
+    /**
      * Returns the port number
      * Note that this is optional, and may (for some services) be included in the location string
      *
