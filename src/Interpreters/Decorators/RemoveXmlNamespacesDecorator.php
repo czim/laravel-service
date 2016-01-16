@@ -52,7 +52,11 @@ class RemoveXmlNamespacesDecorator implements ServiceInterpreterInterface
      */
     protected function removeNamespaces($xml)
     {
-        return preg_replace('#((xmlns(:[a-z]+)?)="([^"]+)")#i', '', $xml);
+        return preg_replace(
+            '#((xmlns(:[a-z]+)?)="([^"]+)")#i',
+            '',
+            preg_replace('#(<\/?)([a-z0-9_-]+:)#i', "\\1", $xml)
+        );
     }
 
 }
