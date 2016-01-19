@@ -122,15 +122,15 @@ FIXEDNAMESPACEXML;
     {
         return <<<FIXEDNAMESPACEXML
 <?xml version="1.0" encoding="UTF-8"?>
-<s:Envelope >
-    <s:Body>
+<Envelope >
+    <Body>
         <GetProductResponse >
             <GetProductResult  >
-                <a:ProfileCode>WEBSITE</a:ProfileCode>
+                <ProfileCode>WEBSITE</ProfileCode>
             </GetProductResult>
         </GetProductResponse>
-    </s:Body>
-</s:Envelope>
+    </Body>
+</Envelope>
 FIXEDNAMESPACEXML;
     }
 }
