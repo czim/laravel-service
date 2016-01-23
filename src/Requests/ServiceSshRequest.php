@@ -12,6 +12,7 @@ use Czim\Service\Contracts\ServiceSshRequestInterface;
  * @property string        $pattern
  * @property string        $fingerprint
  * @property null|\Closure $files_callback
+ * @property boolean       $do_cleanup
  */
 class ServiceSshRequest extends ServiceRequest implements ServiceSshRequestInterface
 {
@@ -33,6 +34,7 @@ class ServiceSshRequest extends ServiceRequest implements ServiceSshRequestInter
         'pattern'        => null,
         'fingerprint'    => null,
         'files_callback' => null,
+        'do_cleanup'     => null,
     ];
 
 
@@ -150,6 +152,30 @@ class ServiceSshRequest extends ServiceRequest implements ServiceSshRequestInter
     public function setFilesCallback(Closure $callback = null)
     {
         $this->setAttribute('files_callback', $callback);
+
+        return $this;
+    }
+
+    /**
+     * Returns whether old (local) files should be deleted after downloading new
+     * ones. Cleanup function, only used for ssh file service.
+     *
+     * @return boolean
+     */
+    public function getDoCleanup()
+    {
+        return $this->getAttribute('do_cleanup');
+    }
+
+    /**
+     * Sets whether old files cleanup should be done after retrieval
+     *
+     * @param boolean $enable
+     * @return $this
+     */
+    public function setDoCleanup($enable)
+    {
+        $this->setAttribute('do_cleanup', (boolean) $enable);
 
         return $this;
     }

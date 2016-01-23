@@ -106,6 +106,10 @@ class MultiFileService extends AbstractService
             $this->defaults->setFilesCallback($config['files_callback']);
         }
 
+        if (array_key_exists('do_cleanup', $config)) {
+            $this->defaults->setDoCleanup($config['do_cleanup']);
+        }
+
         return $this;
     }
 
@@ -155,6 +159,9 @@ class MultiFileService extends AbstractService
             $this->request->setFilesCallback( $this->defaults->getFilesCallback() );
         }
 
+        if (empty($this->request->getDoCleanup())) {
+            $this->request->setDoCleanup( $this->defaults->getDoCleanup() );
+        }
     }
 
 

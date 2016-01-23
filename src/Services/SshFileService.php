@@ -5,6 +5,7 @@ use Closure;
 use Czim\Service\Contracts\ResponseMergerInterface;
 use Czim\Service\Contracts\ServiceInterpreterInterface;
 use Czim\Service\Contracts\Ssh2SftpConnectionInterface;
+use Czim\Service\Events\SshLocalFileDeleted;
 use Czim\Service\Exceptions\CouldNotConnectException;
 use Czim\Service\Exceptions\EmptyRetrievedDataException;
 use Czim\Service\Exceptions\Ssh2ConnectionException;
@@ -98,7 +99,36 @@ class SshFileService extends MultiFileService
             );
         }
 
+
+        // do cleanup by deleting any files in the local directory that were not downloaded
+        if ($this->request->getDoCleanup()) {
+
+            $this->cleanupLocalFiles($localFiles);
+        }
+
         return $localFiles;
+    }
+
+    /**
+     * Removes locally files that are not newly downloaded
+     *
+     * @param string[] $newFiles
+     */
+    protected function cleanupLocalFiles(array $newFiles)
+    {
+        $localPath = rtrim($this->request->getLocalPath(), DIRECTORY_SEPARATOR);
+
+        // get local files not in newly downloaded files
+        $deleteFiles = array_diff($this->files->files($localPath), $newFiles);
+
+        foreach ($deleteFiles as $file) {
+
+            if ( ! $this->files->delete($file)) {
+                throw new \RuntimeException("Failed to delete local file for cleanup: {$file}");
+            }
+
+            event( new SshLocalFileDeleted($file, $localPath) );
+        }
     }
 
     /**

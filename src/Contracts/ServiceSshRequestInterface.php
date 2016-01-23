@@ -84,4 +84,20 @@ interface ServiceSshRequestInterface extends ServiceRequestInterface
      */
     public function setFilesCallback(Closure $callback = null);
 
+    /**
+     * Returns whether old (local) files should be deleted after downloading new
+     * ones. Cleanup function, only used for ssh file service.
+     *
+     * @return boolean
+     */
+    public function getDoCleanup();
+
+    /**
+     * Sets whether old files cleanup should be done after retrieval
+     *
+     * @param boolean $enable
+     * @return $this
+     */
+    public function setDoCleanup($enable);
+
 }
