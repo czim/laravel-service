@@ -133,7 +133,7 @@ class ServiceSshRequest extends ServiceRequest implements ServiceSshRequestInter
      * Returns the closure to run over the files array to retrieve/parse
      * This should be a function that takes an array of strings and returns an array of strings
      *
-     * @return Closure
+     * @return null|Closure
      */
     public function getFilesCallback()
     {
@@ -144,10 +144,10 @@ class ServiceSshRequest extends ServiceRequest implements ServiceSshRequestInter
      * Sets the closure to run over the files array for retrieval and/or parsing (if local)
      * This should be a function that takes an array of strings and returns an array of strings
      *
-     * @param Closure $callback
+     * @param null|Closure $callback
      * @return $this
      */
-    public function setFilesCallback(Closure $callback)
+    public function setFilesCallback(Closure $callback = null)
     {
         $this->setAttribute('files_callback', $callback);
 
