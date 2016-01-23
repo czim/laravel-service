@@ -1,6 +1,7 @@
 <?php
 namespace Czim\Service\Services;
 
+use Closure;
 use Czim\Service\Contracts\ResponseMergerInterface;
 use Czim\Service\Contracts\ServiceInterpreterInterface;
 use Czim\Service\Contracts\Ssh2SftpConnectionInterface;
@@ -68,10 +69,14 @@ class SshFileService extends MultiFileService
         $pattern   = $this->getFilePattern();
         $path      = rtrim($this->request->getPath(), DIRECTORY_SEPARATOR);
         $localPath = rtrim($this->request->getLocalPath(), DIRECTORY_SEPARATOR);
+        $callback  = $this->request->getFilesCallback();
 
         // list all files in path
         $files = $this->ssh->listFiles($path);
 
+        if ($callback instanceof Closure) {
+            $files = $callback($files);
+        }
 
         // retrieve files that match the pattern (or all if no pattern given)
         foreach ($files as $file) {

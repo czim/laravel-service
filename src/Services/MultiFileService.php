@@ -1,6 +1,7 @@
 <?php
 namespace Czim\Service\Services;
 
+use Closure;
 use Czim\Service\Contracts\ResponseMergerInterface;
 use Czim\Service\Contracts\ServiceInterpreterInterface;
 use Czim\Service\Contracts\ServiceRequestInterface;
@@ -101,6 +102,10 @@ class MultiFileService extends AbstractService
             $this->defaults->setPattern($config['pattern']);
         }
 
+        if (array_key_exists('files_callback', $config)) {
+            $this->defaults->setFilesCallback($config['files_callback']);
+        }
+
         return $this;
     }
 
@@ -144,6 +149,10 @@ class MultiFileService extends AbstractService
 
         if (empty($this->request->getPattern())) {
             $this->request->setPattern( $this->defaults->getPattern() );
+        }
+
+        if (empty($this->request->getFilesCallback())) {
+            $this->request->setFilesCallback( $this->defaults->getFilesCallback() );
         }
 
     }
@@ -230,9 +239,14 @@ class MultiFileService extends AbstractService
 
         $pattern   = $this->getFilePattern();
         $localPath = rtrim($this->request->getLocalPath(), DIRECTORY_SEPARATOR);
+        $callback  = $this->request->getFilesCallback();
 
         // get local files based on given path and pattern
         $files = $this->files->files($localPath);
+
+        if ($callback instanceof Closure) {
+            $files = $callback($files);
+        }
 
         foreach ($files as $file) {
 
