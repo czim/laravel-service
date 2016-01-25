@@ -8,6 +8,7 @@ use Czim\Service\Exceptions\CouldNotRetrieveException;
 use Czim\Service\Requests\ServiceSoapRequest;
 use Czim\Service\Requests\ServiceSoapRequestDefaults;
 use Exception;
+use Illuminate\Contracts\Support\Arrayable;
 use InvalidArgumentException;
 use SoapClient;
 use SoapFault;
@@ -89,7 +90,9 @@ class SoapService extends AbstractService
             if ( ! is_null($this->request->getBody())) {
 
                 $response = $this->client->{$this->request->getMethod()}(
-                    $this->request->getBody()
+                    ($this->request->getBody() instanceof Arrayable)
+                        ? $this->request->getBody()->toArray()
+                        : $this->request->getBody()
                 );
 
             } else {
