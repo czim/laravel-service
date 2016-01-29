@@ -129,6 +129,63 @@ class RestService extends AbstractService
 
         $httpMethod = $this->determineHttpMethod($request);
 
+        $options = $this->prepareGuzzleOptions($request, $httpMethod);
+
+        $this->beforeGuzzleCall($options);
+
+        try {
+
+            $response = $this->client->request($httpMethod, $url, $options);
+
+        } catch (Exception $e) {
+
+            // throw as CouldNotConnect if it is a guzzle error
+            // or rethrow if unexpected
+
+            if ($this->isGuzzleException($e)) {
+
+                throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
+            }
+
+            throw $e;
+        }
+
+        $this->afterGuzzleCall();
+
+        $this->responseInformation->setStatusCode( $response->getStatusCode() );
+        $this->responseInformation->setMessage( $response->getReasonPhrase() );
+        $this->responseInformation->setHeaders( $response->getHeaders() );
+
+        $responseBody = $response->getBody()->getContents();
+
+        event(
+            new RestCallCompleted(
+                $url,
+                isset($options['form_params'])
+                    ?   $options['form_params']
+                    :   (isset($options['query'])
+                            ?   $options['query']
+                            :   []),
+                ($this->sendResponseToEvent) ? $responseBody : null
+            )
+        );
+
+        return $responseBody;
+    }
+
+    /**
+     * Prepares and returns guzzle options array for next call
+     *
+     * @param ServiceRequestInterface $request
+     * @param null|string             $httpMethod
+     * @return array
+     */
+    protected function prepareGuzzleOptions(ServiceRequestInterface $request, $httpMethod = null)
+    {
+        if ( ! $httpMethod) {
+            $httpMethod = $this->determineHttpMethod($request);
+        }
+
         $options = [
             'http_errors' => false,
         ];
@@ -178,44 +235,24 @@ class RestService extends AbstractService
             $options['headers'] = $headers;
         }
 
-        // perform request
+        return $options;
+    }
 
-        try {
+    /**
+     * Called before any guzzle-based call.
+     * Use this to make custom changes to the options array
+     *
+     * @param array $options
+     */
+    protected function beforeGuzzleCall(array &$options)
+    {
+    }
 
-            $response = $this->client->request($httpMethod, $url, $options);
-
-        } catch (Exception $e) {
-
-            // throw as CouldNotConnect if it is a guzzle error
-            // or rethrow if unexpected
-
-            if ($this->isGuzzleException($e)) {
-
-                throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
-            }
-
-            throw $e;
-        }
-
-        $this->responseInformation->setStatusCode( $response->getStatusCode() );
-        $this->responseInformation->setMessage( $response->getReasonPhrase() );
-        $this->responseInformation->setHeaders( $response->getHeaders() );
-
-        $responseBody = $response->getBody()->getContents();
-
-        event(
-            new RestCallCompleted(
-                $url,
-                isset($options['form_params'])
-                    ?   $options['form_params']
-                    :   (isset($options['query'])
-                            ?   $options['query']
-                            :   []),
-                ($this->sendResponseToEvent) ? $responseBody : null
-            )
-        );
-
-        return $responseBody;
+    /**
+     * Called directly after a succesful guzzle call
+     */
+    protected function afterGuzzleCall()
+    {
     }
 
     /**
