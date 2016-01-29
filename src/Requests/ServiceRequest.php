@@ -43,8 +43,14 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
      * @param string  $location
      * @param array   $options
      */
-    public function __construct($body = null, $parameters = null, array $headers = null, $method = null, $location = null, $options = [])
-    {
+    public function __construct(
+        $body = null,
+        $parameters = null,
+        array $headers = null,
+        $method = null,
+        $location = null,
+        $options = []
+    ) {
         $this->setBody($body);
         $this->setParameters($parameters);
         if ( ! is_null($headers)) $this->setHeaders($headers);

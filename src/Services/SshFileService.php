@@ -34,11 +34,12 @@ class SshFileService extends MultiFileService
      * @param ResponseMergerInterface     $responseMerger
      * @param Ssh2SftpConnectionInterface $sshConnection        optional
      */
-    public function __construct(Filesystem $files = null,
-                                ServiceInterpreterInterface $interpreter = null,
-                                ResponseMergerInterface $responseMerger = null,
-                                Ssh2SftpConnectionInterface $sshConnection = null)
-    {
+    public function __construct(
+        Filesystem $files = null,
+        ServiceInterpreterInterface $interpreter = null,
+        ResponseMergerInterface $responseMerger = null,
+        Ssh2SftpConnectionInterface $sshConnection = null
+    ) {
         if ( ! is_null($sshConnection)) {
             $this->ssh = $sshConnection;
         }

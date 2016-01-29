@@ -21,9 +21,10 @@ class FileService extends AbstractService
      * @param Filesystem                  $files
      * @param ServiceInterpreterInterface $interpreter
      */
-    public function __construct(Filesystem $files = null,
-                                ServiceInterpreterInterface $interpreter = null)
-    {
+    public function __construct(
+        Filesystem $files = null,
+        ServiceInterpreterInterface $interpreter = null
+    ) {
         if (is_null($files)) {
             $files = app(Filesystem::class);
         }

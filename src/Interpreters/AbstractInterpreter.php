@@ -53,8 +53,11 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
      * @param ServiceResponseInformationInterface $responseInformation  optional
      * @return ServiceResponseInterface
      */
-    public function interpret(ServiceRequestInterface $request, $response, ServiceResponseInformationInterface $responseInformation = null)
-    {
+    public function interpret(
+        ServiceRequestInterface $request,
+        $response,
+        ServiceResponseInformationInterface $responseInformation = null
+    ) {
         $this->resetInterpretedResponse();
 
         if (is_null($responseInformation)) {

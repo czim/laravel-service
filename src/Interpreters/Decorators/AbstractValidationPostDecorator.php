@@ -17,10 +17,11 @@ abstract class AbstractValidationPostDecorator extends AbstractValidationPreDeco
      * @param ServiceResponseInformationInterface $responseInformation
      * @return ServiceResponseInterface
      */
-    public function interpret(ServiceRequestInterface $request,
-                              $response,
-                              ServiceResponseInformationInterface $responseInformation = null)
-    {
+    public function interpret(
+        ServiceRequestInterface $request,
+        $response,
+        ServiceResponseInformationInterface $responseInformation = null
+    ) {
         $response = $this->interpreter->interpret($request, $response, $responseInformation);
 
         if ( ! $this->validate($response)) {

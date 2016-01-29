@@ -56,10 +56,11 @@ class MultiFileService extends AbstractService
      * @param ServiceInterpreterInterface $interpreter
      * @param ResponseMergerInterface     $responseMerger
      */
-    public function __construct(Filesystem $files = null,
-                                ServiceInterpreterInterface $interpreter = null,
-                                ResponseMergerInterface $responseMerger = null)
-    {
+    public function __construct(
+        Filesystem $files = null,
+        ServiceInterpreterInterface $interpreter = null,
+        ResponseMergerInterface $responseMerger = null
+    ) {
         if (is_null($files)) {
             $files = app(Filesystem::class);
         }

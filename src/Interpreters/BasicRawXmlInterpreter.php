@@ -28,10 +28,11 @@ class BasicRawXmlInterpreter extends AbstractXmlInterpreter
      * @param XmlParserInterface          $xmlParser
      * @param XmlObjectConverterInterface $xmlConverter
      */
-    public function __construct($asArray = null,
-                                XmlParserInterface $xmlParser = null,
-                                XmlObjectConverterInterface $xmlConverter = null)
-    {
+    public function __construct(
+        $asArray = null,
+        XmlParserInterface $xmlParser = null,
+        XmlObjectConverterInterface $xmlConverter = null
+    ) {
         if ( ! is_null($asArray)) {
             $this->asArray = $asArray;
         }
