@@ -347,6 +347,8 @@ class RestService extends AbstractService
     public function disableBasicAuth()
     {
         $this->basicAuth = false;
+
+        return $this;
     }
 
     /**
