@@ -11,6 +11,7 @@ use Czim\Service\Requests\ServiceRestRequestDefaults;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception as GuzzleException;
+use Illuminate\Contracts\Support\Arrayable;
 use InvalidArgumentException;
 
 class RestService extends AbstractService
@@ -65,6 +66,13 @@ class RestService extends AbstractService
      * @var Client
      */
     protected $client;
+
+    /**
+     * Whether to send form parameters as multipart data
+     *
+     * @var bool
+     */
+    protected $multipart = false;
 
 
     /**
@@ -210,7 +218,11 @@ class RestService extends AbstractService
             case static::METHOD_PATCH:
             case static::METHOD_POST:
             case static::METHOD_PUT:
-                $options['form_params'] = $request->getBody();
+                if ($this->multipart) {
+                    $options['multipart'] = $this->prepareMultipartData($request->getBody());
+                } else {
+                    $options['form_params'] = $request->getBody();
+                }
 
                 $parameters = $request->getParameters();
 
@@ -313,6 +325,52 @@ class RestService extends AbstractService
         }
     }
 
+    /**
+     * Converts a given array with parameters to the multipart array format
+     *
+     * @param array|Arrayable $params
+     * @return array
+     */
+    protected function prepareMultipartData($params)
+    {
+        $multipart = [];
+
+        if ($params instanceof Arrayable) {
+            $params = $params->toArray();
+        }
+
+        foreach ($params as $key => $value) {
+
+            if ( ! is_array($value)) {
+
+                $multipart[] = [
+                    'name'     => $key,
+                    'contents' => $value,
+                ];
+
+                continue;
+            }
+
+            foreach (array_dot($value) as $dotKey => $leafValue) {
+
+                $partKey = $key
+                    . implode(
+                        array_map(
+                            function($partKey) { return "[{$partKey}]"; },
+                            explode('.', $dotKey)
+                        )
+                    );
+
+                $multipart[] = [
+                    'name'     => $partKey,
+                    'contents' => $leafValue,
+                ];
+            }
+        }
+        
+        return $multipart;
+    }
+
 
     // ------------------------------------------------------------------------------
     //      Getters, Setters and Configuration
@@ -357,6 +415,28 @@ class RestService extends AbstractService
     public function enableBasicAuth()
     {
         $this->basicAuth = true;
+
+        return $this;
+    }
+
+    /**
+     * Enables sending form parameters as multipart data
+     */
+    public function enableMultipart()
+    {
+        $this->multipart = true;
+
+        return $this;
+    }
+
+    /**
+     * Disables sending form parameters as multipart data
+     */
+    public function disableMultipart()
+    {
+        $this->multipart = false;
+
+        return $this;
     }
 
 }
