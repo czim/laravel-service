@@ -221,7 +221,7 @@ class RestService extends AbstractService
 
             case static::METHOD_DELETE:
             case static::METHOD_GET:
-                $options['query'] = $request->getbody() ?: [];
+                $options['query'] = $request->getBody() ?: [];
                 break;
 
             // default omitted on purpose
