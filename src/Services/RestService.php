@@ -13,6 +13,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception as GuzzleException;
 use Illuminate\Contracts\Support\Arrayable;
 use InvalidArgumentException;
+use Psr\Http\Message\ResponseInterface;
 
 class RestService extends AbstractService
 {
@@ -158,7 +159,7 @@ class RestService extends AbstractService
             throw $e;
         }
 
-        $this->afterGuzzleCall();
+        $this->afterGuzzleCall($response);
 
         $this->responseInformation->setStatusCode( $response->getStatusCode() );
         $this->responseInformation->setMessage( $response->getReasonPhrase() );
@@ -262,8 +263,10 @@ class RestService extends AbstractService
 
     /**
      * Called directly after a succesful guzzle call
+     *
+     * @param ResponseInterface $response
      */
-    protected function afterGuzzleCall()
+    protected function afterGuzzleCall(ResponseInterface $response)
     {
     }
 
