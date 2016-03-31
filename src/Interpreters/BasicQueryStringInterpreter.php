@@ -31,7 +31,8 @@ class BasicQueryStringInterpreter extends AbstractInterpreter
     protected function doInterpretation()
     {
         $this->interpretedResponse->setSuccess(
-            $this->responseInformation->getStatusCode() == 200
+                $this->responseInformation->getStatusCode() > 199
+            &&  $this->responseInformation->getStatusCode() < 300
         );
 
         $decoded = $this->decodeQueryString($this->response);

@@ -50,7 +50,8 @@ class BasicRawXmlInterpreter extends AbstractXmlInterpreter
     protected function doInterpretation()
     {
         $this->interpretedResponse->setSuccess(
-            $this->responseInformation->getStatusCode() == 200
+                $this->responseInformation->getStatusCode() > 199
+            &&  $this->responseInformation->getStatusCode() < 300
         );
 
         $this->response = $this->xmlParser->parse($this->response);

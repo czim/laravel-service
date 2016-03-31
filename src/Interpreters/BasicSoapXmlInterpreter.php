@@ -18,7 +18,8 @@ class BasicSoapXmlInterpreter extends AbstractXmlInterpreter
     protected function doInterpretation()
     {
         $this->interpretedResponse->setSuccess(
-            $this->responseInformation->getStatusCode() == 200
+                $this->responseInformation->getStatusCode() > 199
+            &&  $this->responseInformation->getStatusCode() < 300
         );
 
         // no need to call on a parser, since the data from SoapClient calls

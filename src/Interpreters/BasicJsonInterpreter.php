@@ -33,7 +33,8 @@ class BasicJsonInterpreter extends AbstractInterpreter
     protected function doInterpretation()
     {
         $this->interpretedResponse->setSuccess(
-            $this->responseInformation->getStatusCode() == 200
+                $this->responseInformation->getStatusCode() > 199
+            &&  $this->responseInformation->getStatusCode() < 300
         );
 
         $decoded = json_decode($this->response, $this->asArray);
