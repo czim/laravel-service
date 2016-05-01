@@ -135,7 +135,7 @@ abstract class AbstractService implements ServiceInterface
      */
     protected function checkRequestClassType($request)
     {
-        if ( ! is_a($request, ServiceREquestInterface::class)) {
+        if ( ! is_a($request, ServiceRequestInterface::class)) {
 
             throw new \InvalidArgumentException(
                 "Default requests is not a valid ServiceRequestInterface class ({$this->requestDefaultsClass})"
