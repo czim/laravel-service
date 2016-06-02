@@ -75,6 +75,13 @@ class RestService extends AbstractService
      */
     protected $multipart = false;
 
+    /**
+     * Whether to send POST/PUT/PATCH body data as json (multipart will override this)
+     *
+     * @var bool
+     */
+    protected $sendJson = false;
+
 
     /**
      * @param ServiceRequestDefaultsInterface $defaults
@@ -221,6 +228,8 @@ class RestService extends AbstractService
             case static::METHOD_PUT:
                 if ($this->multipart) {
                     $options['multipart'] = $this->prepareMultipartData($request->getBody());
+                } elseif ($this->sendJson) {
+                    $options['json'] = $request->getBody();
                 } else {
                     $options['form_params'] = $request->getBody();
                 }
@@ -424,6 +433,8 @@ class RestService extends AbstractService
 
     /**
      * Enables sending form parameters as multipart data
+     *
+     * @return $this
      */
     public function enableMultipart()
     {
@@ -434,10 +445,36 @@ class RestService extends AbstractService
 
     /**
      * Disables sending form parameters as multipart data
+     *
+     * @return $this
      */
     public function disableMultipart()
     {
         $this->multipart = false;
+
+        return $this;
+    }
+
+    /**
+     * Enables sending PUT/POST/PATCH as json
+     *
+     * @return $this
+     */
+    public function enableSendJson()
+    {
+        $this->sendJson = true;
+
+        return $this;
+    }
+
+    /**
+     * Disables sending PUT/POST/PATCH as json
+     *
+     * @return $this
+     */
+    public function disableSendJson()
+    {
+        $this->sendJson = false;
 
         return $this;
     }
