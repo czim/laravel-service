@@ -179,7 +179,7 @@ class Ssh2SftpConnection extends Ssh2Connection implements Ssh2SftpConnectionInt
      */
     public function uploadFile($pathFrom, $pathTo)
     {
-        if ( ! $localStream = @fopen($pathTo, 'r')) {
+        if ( ! $localStream = @fopen($pathFrom, 'r')) {
 
             throw new SftpLocalFileException("Unable to open local file: '{$pathFrom}'.");
         }
