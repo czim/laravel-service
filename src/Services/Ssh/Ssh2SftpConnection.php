@@ -33,6 +33,11 @@ class Ssh2SftpConnection extends Ssh2Connection implements Ssh2SftpConnectionInt
      */
     protected $chunkSize = 8192;
 
+    /**
+     * @var Filesystem
+     */
+    protected $files;
+
 
     /**
      * @param string     $hostname
