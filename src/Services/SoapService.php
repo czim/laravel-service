@@ -103,6 +103,10 @@ class SoapService extends AbstractService
         } catch (SoapFault $e) {
 
             throw $this->makeCouldNotRetrieveExceptionFromSoapFault($e);
+
+        } catch (Exception $e) {
+
+            throw $this->makeCouldNotRetrieveExceptionFromException($e);
         }
 
         event(
@@ -131,6 +135,18 @@ class SoapService extends AbstractService
         $exception = new CouldNotRetrieveException($soapFault->getMessage(), $soapFault->getCode(), $soapFault);
 
         return $exception;
+    }
+
+    /**
+     * Makes a generic service exception based on the given soapfault.
+     * Extend or override this to deal with specific error information that your service might respond with
+     *
+     * @param Exception $exception
+     * @return CouldNotRetrieveException
+     */
+    protected function makeCouldNotRetrieveExceptionFromException(Exception $exception)
+    {
+        return new CouldNotRetrieveException($exception->getMessage(), $exception->getCode(), $exception);
     }
 
     /**
