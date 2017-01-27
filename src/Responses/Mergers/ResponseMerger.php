@@ -31,13 +31,31 @@ class ResponseMerger implements ResponseMergerInterface
 
         // if there were more parts, combine their data as an array
         $response->setData(
-            Arr::build($parts, function($index, ServiceResponseInterface $part) {
+            $this->rebuildArray($parts, function($index, ServiceResponseInterface $part) {
                 /** @var ServiceResponse $part */
                 return [ $index, $part->getData() ];
             })
         );
 
         return $response;
+    }
+
+    /**
+     * @param array    $array
+     * @param callable $callback
+     * @return array
+     */
+    protected function rebuildArray(array $array, callable $callback)
+    {
+        $results = [];
+
+        foreach ($array as $key => $value) {
+            list($innerKey, $innerValue) = call_user_func($callback, $key, $value);
+
+            $results[$innerKey] = $innerValue;
+        }
+
+        return $results;
     }
 
 
