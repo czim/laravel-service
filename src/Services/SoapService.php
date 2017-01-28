@@ -157,14 +157,14 @@ class SoapService extends AbstractService
     {
         $headers = $this->request->getHeaders() ?: [];
 
-        if (is_a($headers, SoapHeader::class)) {
+        if ($headers instanceof SoapHeader) {
 
             $headers = [ $headers ];
 
         } else {
 
             foreach ($headers as &$header) {
-                if (is_a($header, SoapHeader::class)) continue;
+                if ($header instanceof SoapHeader) continue;
 
                 $namespace      = isset($header['namespace']) ? $header['namespace'] : null;
                 $name           = isset($header['name']) ? $header['name'] : null;
@@ -172,10 +172,7 @@ class SoapService extends AbstractService
                 $mustUnderstand = isset($header['mustunderstand']) ? $header['mustunderstand'] : null;
                 $actor          = isset($header['actor']) ? $header['actor'] : null;
 
-                $header = app(
-                    SoapHeader::class,
-                    [$namespace, $name, $data, $mustUnderstand, $actor]
-                );
+                $header = new SoapHeader($namespace, $name, $data, $mustUnderstand, $actor);
             }
         }
 

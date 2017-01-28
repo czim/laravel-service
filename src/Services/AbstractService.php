@@ -255,10 +255,9 @@ abstract class AbstractService implements ServiceInterface
         } else {
             // $request is the request body
 
-            $this->request = app(
-                $this->requestDefaultsClass,
-                [ $request, $parameters, $headers, $method, null, $options ]
-            );
+            $class = $this->requestDefaultsClass;
+
+            $this->request = new $class($request, $parameters, $headers, $method, null, $options);
 
             $this->checkRequestClassType($this->request);
         }
