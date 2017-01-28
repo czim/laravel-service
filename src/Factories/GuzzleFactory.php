@@ -1,9 +1,10 @@
 <?php
 namespace Czim\Service\Factories;
 
+use Czim\Service\Contracts\GuzzleFactoryInterface;
 use GuzzleHttp\Client;
 
-class GuzzleFactory
+class GuzzleFactory implements GuzzleFactoryInterface
 {
 
     /**

@@ -45,8 +45,6 @@ class RestServiceTest extends TestCase
 
         $factoryMock->method('make')->willReturn($guzzleMock);
 
-        // mocking through service container because passing it to the
-        // constructor makes it 'null' for some glitchy reason
         app()->instance(GuzzleFactoryInterface::class, $factoryMock);
 
         $interpreter = new TestMockInterpreter();
