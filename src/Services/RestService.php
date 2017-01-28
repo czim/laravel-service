@@ -1,6 +1,7 @@
 <?php
 namespace Czim\Service\Services;
 
+use Czim\Service\Contracts\GuzzleFactoryInterface;
 use Czim\Service\Contracts\ServiceInterpreterInterface;
 use Czim\Service\Contracts\ServiceRequestDefaultsInterface;
 use Czim\Service\Contracts\ServiceRequestInterface;
@@ -93,7 +94,7 @@ class RestService extends AbstractService
         ServiceInterpreterInterface $interpreter = null,
         array $guzzleConfig = []
     ) {
-        $this->client = app(Client::class, [ $guzzleConfig ]);
+        $this->client = $this->createGuzzleClient($guzzleConfig);
 
         parent::__construct($defaults, $interpreter);
     }
@@ -381,6 +382,18 @@ class RestService extends AbstractService
         }
         
         return $multipart;
+    }
+
+    /**
+     * @param array $config
+     * @return \GuzzleHttp\ClientInterface
+     */
+    protected function createGuzzleClient(array $config)
+    {
+        /** @var GuzzleFactoryInterface $factory */
+        $factory = app(GuzzleFactoryInterface::class);
+
+        return $factory->make($config);
     }
 
 

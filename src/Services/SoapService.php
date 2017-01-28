@@ -2,6 +2,7 @@
 namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\ServiceRequestInterface;
+use Czim\Service\Contracts\SoapFactoryInterface;
 use Czim\Service\Events\SoapCallCompleted;
 use Czim\Service\Exceptions\CouldNotConnectException;
 use Czim\Service\Exceptions\CouldNotRetrieveException;
@@ -276,7 +277,9 @@ class SoapService extends AbstractService
 
             if ($xdebugEnabled) xdebug_disable();
 
-            $this->client = app($this->soapClientClass, [ $this->wsdl, $this->clientOptions ]);
+            $class = $this->soapClientClass;
+
+            $this->client = $this->getSoapClientFactory()->make($class, $this->wsdl, $this->clientOptions);
 
             if ($xdebugEnabled) xdebug_enable();
 
@@ -288,6 +291,14 @@ class SoapService extends AbstractService
 
             throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
         }
+    }
+
+    /**
+     * @return SoapFactoryInterface
+     */
+    protected function getSoapClientFactory()
+    {
+        return app(SoapFactoryInterface::class);
     }
 
     /**
