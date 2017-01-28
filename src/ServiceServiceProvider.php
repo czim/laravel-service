@@ -27,14 +27,10 @@ class ServiceServiceProvider extends ServiceProvider
 
     public function register()
     {
-
         $this->app->bind(ServiceCollectionInterface::class, ServiceCollection::class);
-
         $this->app->bind(ResponseMergerInterface::class, ResponseMerger::class);
-
         $this->app->bind(XmlParserInterface::class, SimpleXmlParser::class);
         $this->app->bind(XmlObjectConverterInterface::class, XmlObjectToArrayConverter::class);
-
         $this->app->bind(GuzzleFactoryInterface::class, GuzzleFactory::class);
         $this->app->bind(SoapFactoryInterface::class, SoapFactory::class);
 
