@@ -2,6 +2,7 @@
 namespace Czim\Service\Test;
 
 use Czim\DataObject\Test\Helpers\TestMockInterpreter;
+use Czim\Service\Contracts\GuzzleFactoryInterface;
 use Czim\Service\Exceptions\ServiceConfigurationException;
 use Czim\Service\Requests\ServiceRequest;
 use Czim\Service\Requests\ServiceRestRequest;
@@ -39,9 +40,14 @@ class RestServiceTest extends TestCase
         $guzzleMock->method('request')
                    ->willReturn($responseMock);
 
+        $factoryMock = $this->getMockBuilder(GuzzleFactoryInterface::class)
+                            ->getMock();
+
+        $factoryMock->method('make')->willReturn($guzzleMock);
+
         // mocking through service container because passing it to the
         // constructor makes it 'null' for some glitchy reason
-        app()->bind(Client::class, function() use ($guzzleMock) { return $guzzleMock; });
+        app()->instance(GuzzleFactoryInterface::class, $factoryMock);
 
         $interpreter = new TestMockInterpreter();
         $service     = new RestService(null, $interpreter);

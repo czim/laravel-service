@@ -2,6 +2,7 @@
 namespace Czim\Service\Test;
 
 use Czim\DataObject\Test\Helpers\TestMockInterpreter;
+use Czim\Service\Contracts\SoapFactoryInterface;
 use Czim\Service\Requests\ServiceRequest;
 use Czim\Service\Requests\ServiceSoapRequest;
 use Czim\Service\Responses\ServiceResponse;
@@ -17,8 +18,9 @@ class SoapServiceTest extends TestCase
     function it_returns_mocked_data_as_service_response()
     {
         $soapMock = $this->createSimpleSoapMock();
+        $factoryMock = $this->createMockSoapFactory($soapMock);
 
-        app()->bind(SoapClient::class, function() use ($soapMock) { return $soapMock; });
+        app()->instance(SoapFactoryInterface::class, $factoryMock);
 
         $interpreter = new TestMockInterpreter();
         $service     = new SoapService(null, $interpreter);
@@ -42,8 +44,9 @@ class SoapServiceTest extends TestCase
         // set up mock and bind for first call
 
         $soapMock = $this->createSimpleSoapMock('first call');
+        $factoryMock = $this->createMockSoapFactory($soapMock);
 
-        app()->bind(SoapClient::class, function() use ($soapMock) { return $soapMock; });
+        app()->instance(SoapFactoryInterface::class, $factoryMock);
 
         $response = $service->call('testMethod', $request);
 
@@ -54,8 +57,9 @@ class SoapServiceTest extends TestCase
         // change some non-default-included option, which should trigger re-initialization
 
         $soapMock = $this->createSimpleSoapMock('second call');
+        $factoryMock = $this->createMockSoapFactory($soapMock);
 
-        app()->bind(SoapClient::class, function() use ($soapMock) { return $soapMock; });
+        app()->instance(SoapFactoryInterface::class, $factoryMock);
 
         $request->setOptions(['version' => SOAP_1_1]);
 
@@ -68,8 +72,9 @@ class SoapServiceTest extends TestCase
         // since its settings do not change
 
         $soapMock = $this->createSimpleSoapMock('third call');
+        $factoryMock = $this->createMockSoapFactory($soapMock);
 
-        app()->bind(SoapClient::class, function() use ($soapMock) { return $soapMock; });
+        app()->instance(SoapFactoryInterface::class, $factoryMock);
 
         $response = $service->call('testMethod', $request);
 
@@ -111,10 +116,23 @@ class SoapServiceTest extends TestCase
     //    $service->call('nothing_here', $request);
     //}
 
+    /**
+     * @param $client
+     * @return \PHPUnit_Framework_MockObject_MockObject|SoapFactoryInterface
+     */
+    protected function createMockSoapFactory($client)
+    {
+        $factoryMock = $this->getMockBuilder(SoapFactoryInterface::class)
+                            ->getMock();
+
+        $factoryMock->method('make')->willReturn($client);
+
+        return $factoryMock;
+    }
 
     /**
      * @param string $return
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject|SoapClient
      */
     protected function createSimpleSoapMock($return = 'some test content')
     {
@@ -133,4 +151,5 @@ class SoapServiceTest extends TestCase
 
         return $soapMock;
     }
+
 }
