@@ -4,6 +4,7 @@ namespace Czim\Service\Services;
 use Closure;
 use Czim\Service\Contracts\ResponseMergerInterface;
 use Czim\Service\Contracts\ServiceInterpreterInterface;
+use Czim\Service\Contracts\Ssh2SftpConnectionFactoryInterface;
 use Czim\Service\Contracts\Ssh2SftpConnectionInterface;
 use Czim\Service\Events\SshLocalFileDeleted;
 use Czim\Service\Exceptions\CouldNotConnectException;
@@ -141,18 +142,28 @@ class SshFileService extends MultiFileService
     {
         try {
 
-            $this->ssh = app(Ssh2SftpConnectionInterface::class, [
-                $this->request->getLocation(),
-                $this->request->getCredentials()['name'],
-                $this->request->getCredentials()['password'],
-                $this->request->getPort(),
-                $this->request->getFingerprint(),
-            ]);
+            $this->ssh = $this->getSsh2SftpConnectionFactory()
+                ->make(
+                    Ssh2SftpConnectionInterface::class,
+                    $this->request->getLocation(),
+                    $this->request->getCredentials()['name'],
+                    $this->request->getCredentials()['password'],
+                    $this->request->getPort(),
+                    $this->request->getFingerprint()
+                );
 
         } catch (Ssh2ConnectionException $e) {
 
             throw new CouldNotConnectException($e->getMessage(), 0, $e);
         }
+    }
+
+    /**
+     * @return Ssh2SftpConnectionFactoryInterface
+     */
+    protected function getSsh2SftpConnectionFactory()
+    {
+        return app(Ssh2SftpConnectionFactoryInterface::class);
     }
 
 }

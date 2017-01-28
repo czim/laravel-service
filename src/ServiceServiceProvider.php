@@ -6,16 +6,15 @@ use Czim\Service\Contracts\GuzzleFactoryInterface;
 use Czim\Service\Contracts\ResponseMergerInterface;
 use Czim\Service\Contracts\ServiceCollectionInterface;
 use Czim\Service\Contracts\SoapFactoryInterface;
-use Czim\Service\Contracts\Ssh2SftpConnectionInterface;
+use Czim\Service\Contracts\Ssh2SftpConnectionFactoryInterface;
 use Czim\Service\Contracts\XmlObjectConverterInterface;
 use Czim\Service\Contracts\XmlParserInterface;
 use Czim\Service\Factories\GuzzleFactory;
 use Czim\Service\Factories\SoapFactory;
+use Czim\Service\Factories\Ssh2SftpConnectionFactory;
 use Czim\Service\Interpreters\Xml\SimpleXmlParser;
 use Czim\Service\Interpreters\Xml\XmlObjectToArrayConverter;
 use Czim\Service\Responses\Mergers\ResponseMerger;
-use Czim\Service\Services\Ssh\Ssh2SftpConnection;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
 
 class ServiceServiceProvider extends ServiceProvider
@@ -33,21 +32,7 @@ class ServiceServiceProvider extends ServiceProvider
         $this->app->bind(XmlObjectConverterInterface::class, XmlObjectToArrayConverter::class);
         $this->app->bind(GuzzleFactoryInterface::class, GuzzleFactory::class);
         $this->app->bind(SoapFactoryInterface::class, SoapFactory::class);
-
-        // add bindings for SSH2 / SFTP services
-
-        $this->app->bind(Ssh2SftpConnectionInterface::class, function (Container $app, array $parameters) {
-
-            $host        = $parameters[0];
-            $user        = $parameters[1];
-            $password    = $parameters[2];
-            $port        = isset($parameters[3]) ? $parameters[3] : 22;
-            $fingerprint = isset($parameters[4]) ? $parameters[4] : null;
-
-            $filesystem  = isset($parameters[5]) ? $parameters[5] : $app->make('files');
-
-            return new Ssh2SftpConnection($host, $user, $password, $port, $fingerprint, $filesystem);
-        });
+        $this->app->bind(Ssh2SftpConnectionFactoryInterface::class, Ssh2SftpConnectionFactory::class);
     }
 
 }
