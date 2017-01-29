@@ -17,7 +17,7 @@ class DomObjectToArrayConverter implements XmlObjectConverterInterface
 {
 
     /**
-     * @param mixed|DomDocument|DomElement|DomNode $object
+     * @param mixed|DOMDocument|DOMElement|DOMNode $object
      * @return array
      */
     public function convert($object)
@@ -31,7 +31,7 @@ class DomObjectToArrayConverter implements XmlObjectConverterInterface
      * @param  DOMDocument|DOMElement|DomNode $root
      * @return array
      */
-    function convertDomToArray($root)
+    protected function convertDomToArray($root)
     {
         $result = [];
 
