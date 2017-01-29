@@ -4,7 +4,6 @@ namespace Czim\Service\Responses\Mergers;
 use Czim\Service\Contracts\ResponseMergerInterface;
 use Czim\Service\Contracts\ServiceResponseInterface;
 use Czim\Service\Responses\ServiceResponse;
-use Illuminate\Support\Arr;
 
 /**
  * Default merger that does not do any content-based selection;
