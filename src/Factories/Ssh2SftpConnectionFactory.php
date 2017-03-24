@@ -25,7 +25,7 @@ class Ssh2SftpConnectionFactory implements Ssh2SftpConnectionFactoryInterface
             $class = $this->getDefaultConnectionClass();
         }
 
-        return $class($hostname, $user, $password, $port, $fingerprint, app('files'));
+        return new $class($hostname, $user, $password, $port, $fingerprint, app('files'));
     }
 
     /**
