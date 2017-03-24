@@ -148,7 +148,7 @@ class SshFileService extends MultiFileService
                     $this->request->getLocation(),
                     $this->request->getCredentials()['name'],
                     $this->request->getCredentials()['password'],
-                    $this->request->getPort(),
+                    $this->request->getPort() ?: 22,
                     $this->request->getFingerprint()
                 );
 
