@@ -3,7 +3,6 @@ namespace Czim\Service\Test;
 
 use Czim\Service\ServiceServiceProvider;
 use Czim\Service\Test\Helpers\XmlDataProvider;
-use Mockery;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -13,21 +12,19 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     protected $xml;
 
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        $this->xml = new XmlDataProvider();
+        $this->xml = new XmlDataProvider;
     }
 
     /**
      * Define environment setup.
      *
      * @param  \Illuminate\Foundation\Application   $app
-     *
-     * @return void
      */
-    protected function getEnvironmentSetUp($app)
+    protected function getEnvironmentSetUp($app): void
     {
         $app->register(ServiceServiceProvider::class);
     }
