@@ -131,7 +131,7 @@ class MultiFileServiceTest extends TestCase
         $filesMock->method('files')
                   ->willReturn(['test1.txt', 'test2.txt']);
 
-        $service = new MultiFileService();
+        $service = new MultiFileService($filesMock);
         $request = new ServiceSshRequest();
 
         $request->setPattern('*.xml');
@@ -197,4 +197,5 @@ class MultiFileServiceTest extends TestCase
             }
         }
     }
+
 }
