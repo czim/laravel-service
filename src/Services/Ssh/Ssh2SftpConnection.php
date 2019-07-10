@@ -206,4 +206,27 @@ class Ssh2SftpConnection extends Ssh2Connection implements Ssh2SftpConnectionInt
         return $bytesWritten;
     }
 
+    /**
+     * Renames a file over SFTP
+     *
+     * @param string $pathFrom
+     * @param string $pathTo
+     * @return boolean
+     */
+    public function renameFile($pathFrom, $pathTo)
+    {
+        return ssh2_sftp_rename($this->ftpConnection, $pathFrom, $pathTo);
+    }
+
+    /**
+     * Deletes file over SFTP
+     *
+     * @param string $path
+     * @return boolean
+     */
+    public function deleteFile($path)
+    {
+        return ssh2_sftp_unlink($this->ftpConnection, $path);
+    }
+
 }

@@ -12,7 +12,6 @@ interface SftpConnectionInterface
      */
     public function listFiles($path = '/./');
 
-
     /**
      * Downloads files via SFTP
      *
@@ -30,5 +29,22 @@ interface SftpConnectionInterface
      * @return boolean
      */
     public function uploadFile($pathFrom, $pathTo);
+
+    /**
+     * Renames a file over SFTP
+     *
+     * @param string $pathFrom
+     * @param string $pathTo
+     * @return boolean
+     */
+    public function renameFile($pathFrom, $pathTo);
+
+    /**
+     * Deletes file over SFTP
+     *
+     * @param string $path
+     * @return boolean
+     */
+    public function deleteFile($path);
 
 }
