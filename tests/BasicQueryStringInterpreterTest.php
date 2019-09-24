@@ -22,7 +22,7 @@ class BasicQueryStringInterpreterTest extends TestCase
         $result = $interpreter->interpret($mockRequest, 'test=1&tosti[0]=piet&tosti[1]=paaltjens&taster[test]=tosti');
 
         $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
-        $this->assertArraySubset(
+        $this->assertEquals(
             [ 'test' => '1', 'tosti' => [ 'piet', 'paaltjens' ], 'taster' => [ 'test' => 'tosti' ] ],
             $result->getData(),
             "Incorrect parsed data"
@@ -43,8 +43,8 @@ class BasicQueryStringInterpreterTest extends TestCase
         $result = $interpreter->interpret($mockRequest, 'test=1&tosti[0]=piet&tosti[1]=paaltjens&taster[test]=tosti');
 
         $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
-        $this->assertInternalType('object', $result->getData(), "Incorrect json-decoded data: should be an object");
-        $this->assertArraySubset(
+        $this->assertIsObject($result->getData(), "Incorrect json-decoded data: should be an object");
+        $this->assertEquals(
             [ 'test' => '1', 'tosti' => [ 'piet', 'paaltjens' ], 'taster' => [ 'test' => 'tosti' ] ],
             (array) $result->getData(),
             "Incorrect parsed data"

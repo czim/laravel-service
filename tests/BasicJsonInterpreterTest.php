@@ -22,7 +22,7 @@ class BasicJsonInterpreterTest extends TestCase
         $result = $interpreter->interpret($mockRequest, '{"test":"data","does":"it work?"}');
 
         $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
-        $this->assertArraySubset(
+        $this->assertEquals(
             ['test' => 'data', 'does' => 'it work?' ],
             $result->getData(),
             "Incorrect json-decoded data"
@@ -43,8 +43,8 @@ class BasicJsonInterpreterTest extends TestCase
         $result = $interpreter->interpret($mockRequest, '{"test":"data","does":"it work?"}');
 
         $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
-        $this->assertInternalType('object', $result->getData(), "Incorrect json-decoded data: should be an object");
-        $this->assertArraySubset(
+        $this->assertIsObject($result->getData(), "Incorrect json-decoded data: should be an object");
+        $this->assertEquals(
             ['test' => 'data', 'does' => 'it work?' ],
             (array) $result->getData(),
             "Incorrect json-decoded data"
@@ -53,10 +53,10 @@ class BasicJsonInterpreterTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Czim\Service\Exceptions\CouldNotInterpretJsonResponseException
      */
     function it_throws_an_exception_if_response_is_invalid_json()
     {
+        $this->expectException(\Czim\Service\Exceptions\CouldNotInterpretJsonResponseException::class);
         $interpreter = new BasicJsonInterpreter();
 
         $mockRequest = $this->getMockBuilder(ServiceRequestInterface::class)

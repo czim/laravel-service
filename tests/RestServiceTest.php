@@ -59,10 +59,11 @@ class RestServiceTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Czim\Service\Exceptions\CouldNotConnectException
      */
     function it_throws_a_normalized_exception_if_guzzle_connect_fails()
     {
+        $this->expectException(\Czim\Service\Exceptions\CouldNotConnectException::class);
+
         $interpreter = new TestMockInterpreter();
         $service     = new RestService(null, $interpreter);
         $request     = new ServiceRestRequest();
@@ -72,10 +73,11 @@ class RestServiceTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
      */
     function it_throws_an_exception_if_an_incorrect_service_request_is_used()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $service = new RestService();
         $request = new ServiceRequest();
 
@@ -114,12 +116,13 @@ class RestServiceTest extends TestCase
         $this->assertEquals('comment/11', $defaults->getMethod());
         $this->assertEquals('test', $defaults->getBody());
 
-        $this->assertArraySubset(['some' => 'header'], $defaults->getHeaders());
-        $this->assertArraySubset(['some' => 'parameter'], $defaults->getParameters());
-        $this->assertArraySubset(['some' => 'option'], $defaults->getOptions());
-        $this->assertArraySubset([
+        $this->assertEquals(['some' => 'header'], $defaults->getHeaders());
+        $this->assertEquals(['some' => 'parameter'], $defaults->getParameters());
+        $this->assertEquals(['some' => 'option'], $defaults->getOptions());
+        $this->assertEquals([
             'name'     => 'piet',
             'password' => 'paaltjens',
+            'domain'   => null,
         ], $defaults->getCredentials());
 
         $this->assertEquals('DELETE', $defaults['http_method']);

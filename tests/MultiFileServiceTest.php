@@ -40,7 +40,7 @@ class MultiFileServiceTest extends TestCase
         $response = $service->call(null, $request);
 
         $this->assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
-        $this->assertArraySubset(
+        $this->assertEquals(
             ['some test content', 'some more test content'],
             $response->getData(),
             "Mocked service should return fixed data"
@@ -106,10 +106,11 @@ class MultiFileServiceTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
      */
     function it_throws_an_exception_if_an_incorrect_service_request_is_used()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $service = new MultiFileService();
         $request = new ServiceRequest();
 
@@ -118,10 +119,11 @@ class MultiFileServiceTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Czim\Service\Exceptions\EmptyRetrievedDataException
      */
     function it_throws_an_exception_if_no_files_are_matched()
     {
+        $this->expectException(\Czim\Service\Exceptions\EmptyRetrievedDataException::class);
+
         $filesMock = $this->getMockBuilder(Filesystem::class)
                           ->getMock();
 

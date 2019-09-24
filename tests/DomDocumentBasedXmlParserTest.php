@@ -3,6 +3,7 @@ namespace Czim\Service\Test;
 
 use Czim\Service\Interpreters\Xml\DomDocumentBasedXmlParser;
 use Czim\Service\Interpreters\Xml\DomObjectToArrayConverter;
+use Illuminate\Support\Arr;
 
 /**
  * Tests both the DomDocumentBased parser and the DomObjectToArrayConverter that acompanies it
@@ -34,11 +35,9 @@ class DomDocumentBasedXmlParserTest extends TestCase
         $result = $parser->parse( $this->xml->getMinimalValidXmlContent() );
         $result = $converter->convert($result);
 
-        $this->assertArraySubset(
-            $this->xml->getMinimalXmlContentAsArray(),
-            $result,
-            "Incorrect parsed xml-decoded data after conversion"
-        );
+        $this->assertEquals('en', Arr::get($result, '@attributes.lang'));
+        $this->assertEquals('Minimal XHTML 1.0 Document', Arr::get($result, 'head.title'));
+        $this->assertEquals('This is a minimal document.', Arr::get($result, 'body.p'));
     }
 
 }

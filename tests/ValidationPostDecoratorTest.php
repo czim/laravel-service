@@ -47,7 +47,7 @@ class ValidationPostDecoratorTest extends TestCase
         } catch (CouldNotValidateResponseException $e) {
 
             // check if errors are present
-            $this->assertArraySubset([ 'wrong response' ], $e->getErrors(), "Errors not present in exception instance");
+            $this->assertEquals([ 'wrong response' ], $e->getErrors(), "Errors not present in exception instance");
         }
     }
 

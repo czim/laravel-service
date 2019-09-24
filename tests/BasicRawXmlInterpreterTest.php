@@ -24,7 +24,7 @@ class BasicRawXmlInterpreterTest extends TestCase
         $result = $interpreter->interpret($mockRequest, $this->xml->getMinimalValidXmlContent());
 
         $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
-        $this->assertArraySubset(
+        $this->assertEquals(
             $this->xml->getMinimalXmlContentAsArray(),
             $result->getData(),
             "Incorrect xml-decoded data"
@@ -45,7 +45,7 @@ class BasicRawXmlInterpreterTest extends TestCase
         $result = $interpreter->interpret($mockRequest, $this->xml->getMinimalValidXmlContent());
 
         $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
-        $this->assertArraySubset(
+        $this->assertEquals(
             $this->xml->getMinimalXmlContentAsArray(),
             $result->getData(),
             "Incorrect xml-decoded data"
@@ -67,7 +67,7 @@ class BasicRawXmlInterpreterTest extends TestCase
 
         $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
         $this->assertInstanceOf('SimpleXmlElement', $result->getData(), "Data should be SimpleXmlElement");
-        $this->assertArraySubset(
+        $this->assertEquals(
             $this->xml->getMinimalXmlContentAsArray(),
             json_decode(json_encode($result->getData()), true),
             "Incorrect xml-decoded data (encode/decode test)"

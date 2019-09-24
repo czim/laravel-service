@@ -16,7 +16,7 @@ class SimpleXmlParserTest extends TestCase
         $result = $parser->parse( $this->xml->getMinimalValidXmlContent() );
 
         $this->assertInstanceOf('SimpleXmlElement', $result, "Parsed data should be SimpleXmlElement");
-        $this->assertArraySubset(
+        $this->assertEquals(
             $this->xml->getMinimalXmlContentAsArray(),
             json_decode(json_encode($result), true),
             "Incorrect xml-decoded data (encode/decode test)"
@@ -25,10 +25,11 @@ class SimpleXmlParserTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Czim\Service\Exceptions\CouldNotInterpretXmlResponseException
      */
     function it_throw_an_exception_for_invalid_raw_xml()
     {
+        $this->expectException(\Czim\Service\Exceptions\CouldNotInterpretXmlResponseException::class);
+
         $parser = new SimpleXmlParser();
 
         $parser->parse( $this->xml->getInvalidXmlContent() );

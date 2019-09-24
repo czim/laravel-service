@@ -83,10 +83,11 @@ class SoapServiceTest extends TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
      */
     function it_throws_an_exception_if_an_incorrect_service_request_is_used()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $service = new SoapService();
         $request = new ServiceRequest();
 
@@ -97,10 +98,11 @@ class SoapServiceTest extends TestCase
      * Disabled this test to prevent unstoppable binding resolution fatal error
      *
      * @test
-     * @expectedException \Czim\Service\Exceptions\CouldNotConnectException
      */
     //function it_throws_a_normalized_exception_if_soap_connect_fails()
     //{
+    //    $this->expectException(\Czim\Service\Exceptions\CouldNotConnectException::class);
+    //
     //    app()->bind(SoapClient::class, function($app, $parameters) {
     //
     //        return @new SoapClient($parameters[0], $parameters[1]);

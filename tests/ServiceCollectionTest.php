@@ -30,22 +30,23 @@ class ServiceCollectionTest extends TestCase
         $this->assertSame($mockServiceB, $collection->get('b'));
     }
 
-    
+
     /**
      * @test
-     * @expectedException \Czim\Service\Exceptions\InvalidCollectionContentException
      */
     function it_throws_an_exception_when_constructing_with_incorrect_content()
     {
+        $this->expectException(\Czim\Service\Exceptions\InvalidCollectionContentException::class);
+
         $collection = new ServiceCollection([ 'not_a_service' ]);
     }
 
     /**
      * @test
-     * @expectedException \Czim\Service\Exceptions\InvalidCollectionContentException
      */
     function it_throws_an_exception_when_storing_incorrect_content()
     {
+        $this->expectException(\Czim\Service\Exceptions\InvalidCollectionContentException::class);
         $collection = new ServiceCollection();
 
         $mockObject = $this->getMockBuilder(ServiceInterpreterInterface::class)
@@ -56,11 +57,12 @@ class ServiceCollectionTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Czim\Service\Exceptions\ServiceNotFoundInCollectionException
-     * @exceptionRegExp #does_not_exist#
      */
     function it_throws_an_exception_when_retrieving_unset_service_by_name()
     {
+        $this->expectException(\Czim\Service\Exceptions\ServiceNotFoundInCollectionException::class);
+        $this->expectExceptionMessageRegExp('#does_not_exist#');
+
         $collection = new ServiceCollection();
 
         $collection->get('does_not_exist');

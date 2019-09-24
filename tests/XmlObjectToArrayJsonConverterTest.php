@@ -15,7 +15,7 @@ class XmlObjectToArrayJsonConverterTest extends TestCase
 
         $result = $converter->convert( $this->xml->getSimpleXmlElement() );
 
-        $this->assertArraySubset(
+        $this->assertEquals(
             $this->xml->getMinimalXmlContentAsArray(),
             $result,
             "Incorrect converted array data"
