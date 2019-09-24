@@ -10,6 +10,7 @@ use Czim\Service\Contracts\ServiceResponseInterface;
 use Czim\Service\Exceptions\ServiceConfigurationException;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Responses\ServiceResponseInformation;
+use Illuminate\Support\Arr;
 use Validator;
 
 abstract class AbstractService implements ServiceInterface
@@ -169,9 +170,9 @@ abstract class AbstractService implements ServiceInterface
 
         if (array_key_exists('credentials', $config)) {
             $this->defaults->setCredentials(
-                array_get($config['credentials'], 'name'),
-                array_get($config['credentials'], 'password'),
-                array_get($config['credentials'], 'domain')
+                Arr::get($config['credentials'], 'name'),
+                Arr::get($config['credentials'], 'password'),
+                Arr::get($config['credentials'], 'domain')
             );
         }
 
