@@ -43,5 +43,12 @@
         "test": "phpunit"
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Czim\\Service\\Providers\\ServiceServiceProvider"
+            ]
+        }
+    }
 }
