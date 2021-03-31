@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Contracts\ServiceRequestInterface;
@@ -9,7 +10,6 @@ use Czim\Service\Responses\ServiceResponse;
 
 class BasicRawXmlInterpreterTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -39,7 +39,7 @@ class BasicRawXmlInterpreterTest extends TestCase
         $interpreter = new BasicRawXmlInterpreter(true, new SimpleXmlParser(), new XmlObjectToArrayConverter());
 
         $mockRequest = $this->getMockBuilder(ServiceRequestInterface::class)
-                            ->getMock();
+            ->getMock();
 
         /** @var ServiceRequestInterface $mockRequest */
         $result = $interpreter->interpret($mockRequest, $this->xml->getMinimalValidXmlContent());
@@ -73,5 +73,4 @@ class BasicRawXmlInterpreterTest extends TestCase
             "Incorrect xml-decoded data (encode/decode test)"
         );
     }
-
 }

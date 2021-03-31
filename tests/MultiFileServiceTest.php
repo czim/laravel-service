@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\DataObject\Test\Helpers\TestMockInterpreter;
@@ -11,7 +12,6 @@ use Illuminate\Filesystem\Filesystem;
 
 class MultiFileServiceTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -125,13 +125,13 @@ class MultiFileServiceTest extends TestCase
         $this->expectException(\Czim\Service\Exceptions\EmptyRetrievedDataException::class);
 
         $filesMock = $this->getMockBuilder(Filesystem::class)
-                          ->getMock();
+            ->getMock();
 
         $filesMock->method('get')
-                  ->willReturn('some test content');
+            ->willReturn('some test content');
 
         $filesMock->method('files')
-                  ->willReturn(['test1.txt', 'test2.txt']);
+            ->willReturn(['test1.txt', 'test2.txt']);
 
         $service = new MultiFileService($filesMock);
         $request = new ServiceSshRequest();
@@ -172,7 +172,6 @@ class MultiFileServiceTest extends TestCase
         $service = new MultiFileService();
 
         try {
-
             $service->config([
                 'fingerprint' => [ 'not a string' ],
                 'path'        => false,
@@ -181,23 +180,19 @@ class MultiFileServiceTest extends TestCase
             ]);
 
             $this->fail('Expecting ServiceConfigurationException');
-
         } catch (ServiceConfigurationException $e) {
-
             $errors = $e->getErrors();
 
-            foreach (
-                [
-                    'fingerprint',
-                    'path',
-                    'local_path',
-                    'pattern',
-                ]
-                as $key
-            ) {
+            $keys = [
+                'fingerprint',
+                'path',
+                'local_path',
+                'pattern',
+            ];
+
+            foreach ($keys as $key) {
                 $this->assertArrayHasKey($key, $errors, 'Missing validation error for: ' . $key);
             }
         }
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\DataObject\Test\Helpers\TestMockInterpreter;
@@ -14,20 +15,19 @@ use Psr\Http\Message\StreamInterface;
 
 class RestServiceTest extends TestCase
 {
-
     /**
      * @test
      */
     function it_returns_mocked_data_as_service_response()
     {
         $guzzleMock = $this->getMockBuilder(Client::class)
-                           ->getMock();
+            ->getMock();
 
         $responseMock = $this->getMockBuilder(Response::class)
-                             ->getMock();
+            ->getMock();
 
         $responseBodyMock = $this->getMockBuilder(StreamInterface::class)
-                                 ->getMock();
+            ->getMock();
 
         $responseBodyMock->method('getContents')->willReturn('some test content');
 
@@ -38,10 +38,10 @@ class RestServiceTest extends TestCase
 
 
         $guzzleMock->method('request')
-                   ->willReturn($responseMock);
+            ->willReturn($responseMock);
 
         $factoryMock = $this->getMockBuilder(GuzzleFactoryInterface::class)
-                            ->getMock();
+            ->getMock();
 
         $factoryMock->method('make')->willReturn($guzzleMock);
 
@@ -136,7 +136,6 @@ class RestServiceTest extends TestCase
         $service = new RestService();
 
         try {
-
             $service->config([
                 'location'    => true,
                 'port'        => 'not a port',
@@ -153,29 +152,24 @@ class RestServiceTest extends TestCase
             ]);
 
             $this->fail('Expecting ServiceConfigurationException');
-
         } catch (ServiceConfigurationException $e) {
-
             $errors = $e->getErrors();
 
-            foreach (
-                [
-                    'location',
-                    'port',
-                    'credentials.name',
-                    'credentials.password',
-                    'method',
-                    'headers',
-                    'parameters',
-                    'options',
+            $keys = [
+                'location',
+                'port',
+                'credentials.name',
+                'credentials.password',
+                'method',
+                'headers',
+                'parameters',
+                'options',
+                'http_method',
+            ];
 
-                    'http_method',
-                ]
-                as $key
-            ) {
+            foreach ($keys as $key) {
                 $this->assertArrayHasKey($key, $errors, 'Missing validation error for: ' . $key);
             }
         }
     }
-
 }

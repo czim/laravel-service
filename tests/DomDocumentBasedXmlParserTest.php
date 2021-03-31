@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Interpreters\Xml\DomDocumentBasedXmlParser;
@@ -10,7 +11,6 @@ use Illuminate\Support\Arr;
  */
 class DomDocumentBasedXmlParserTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -39,5 +39,4 @@ class DomDocumentBasedXmlParserTest extends TestCase
         $this->assertEquals('Minimal XHTML 1.0 Document', Arr::get($result, 'head.title'));
         $this->assertEquals('This is a minimal document.', Arr::get($result, 'body.p'));
     }
-
 }

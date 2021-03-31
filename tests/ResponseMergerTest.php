@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Contracts\ServiceResponseInterface;
@@ -7,7 +8,6 @@ use Czim\Service\Responses\ServiceResponse;
 
 class ResponseMergerTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -22,10 +22,10 @@ class ResponseMergerTest extends TestCase
         $responseA = new ServiceResponse([ 'data' => 'first response' ]);
 
         $mockResponseB = $this->getMockBuilder(ServiceResponseInterface::class)
-                              ->getMock();
+            ->getMock();
 
         $mockResponseB->method('getData')
-                      ->willReturn('second response');
+            ->willReturn('second response');
 
         $result = $merger->merge([ $responseA, $mockResponseB ]);
 
@@ -50,5 +50,4 @@ class ResponseMergerTest extends TestCase
 
         $this->assertSame($responseA, $result, "Response should use the same object reference");
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\DataObject\Test\Helpers\TestMockInterpreter;
@@ -11,7 +12,6 @@ use SoapClient;
 
 class SoapServiceTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -101,7 +101,7 @@ class SoapServiceTest extends TestCase
     protected function createMockSoapFactory($client)
     {
         $factoryMock = $this->getMockBuilder(SoapFactoryInterface::class)
-                            ->getMock();
+            ->getMock();
 
         $factoryMock->method('make')->willReturn($client);
 
@@ -115,19 +115,18 @@ class SoapServiceTest extends TestCase
     protected function createSimpleSoapMock($return = 'some test content')
     {
         $soapMock = $this->getMockBuilder(SoapClient::class)
-                         ->disableOriginalConstructor()
-                         ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $soapMock->expects($this->any())
-                 ->method('__call')
-                 ->with($this->logicalOr('testMethod', []))
-                 ->will($this->returnCallback(
-                     function() use ($return) {
-                        return $return;
-                     }
-                 ));
+            ->method('__call')
+            ->with($this->logicalOr('testMethod', []))
+            ->will($this->returnCallback(
+                function() use ($return) {
+                    return $return;
+                }
+            ));
 
         return $soapMock;
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Contracts\ServiceRequestInterface;
@@ -16,7 +17,7 @@ class BasicQueryStringInterpreterTest extends TestCase
         $interpreter = new BasicQueryStringInterpreter(true);
 
         $mockRequest = $this->getMockBuilder(ServiceRequestInterface::class)
-                            ->getMock();
+            ->getMock();
 
         /** @var ServiceRequestInterface $mockRequest */
         $result = $interpreter->interpret($mockRequest, 'test=1&tosti[0]=piet&tosti[1]=paaltjens&taster[test]=tosti');
@@ -37,7 +38,7 @@ class BasicQueryStringInterpreterTest extends TestCase
         $interpreter = new BasicQueryStringInterpreter(false);
 
         $mockRequest = $this->getMockBuilder(ServiceRequestInterface::class)
-                            ->getMock();
+            ->getMock();
 
         /** @var ServiceRequestInterface $mockRequest */
         $result = $interpreter->interpret($mockRequest, 'test=1&tosti[0]=piet&tosti[1]=paaltjens&taster[test]=tosti');
@@ -50,5 +51,4 @@ class BasicQueryStringInterpreterTest extends TestCase
             "Incorrect parsed data"
         );
     }
-
 }

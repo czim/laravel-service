@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Collections\ServiceCollection;
@@ -7,17 +8,16 @@ use Czim\Service\Contracts\ServiceInterpreterInterface;
 
 class ServiceCollectionTest extends TestCase
 {
-
     /**
      * @test
      */
     function it_stores_services()
     {
         $mockServiceA = $this->getMockBuilder(ServiceInterface::class)
-                             ->getMock();
+            ->getMock();
 
         $mockServiceB = $this->getMockBuilder(ServiceInterface::class)
-                             ->getMock();
+            ->getMock();
 
         $collection = new ServiceCollection([ 'a' => $mockServiceA ]);
 
@@ -68,5 +68,4 @@ class ServiceCollectionTest extends TestCase
 
         $collection->get('does_not_exist');
     }
-
 }

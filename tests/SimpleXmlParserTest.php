@@ -1,11 +1,11 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Interpreters\Xml\SimpleXmlParser;
 
 class SimpleXmlParserTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -13,7 +13,9 @@ class SimpleXmlParserTest extends TestCase
     {
         $parser = new SimpleXmlParser();
 
-        $result = $parser->parse( $this->xml->getMinimalValidXmlContent() );
+        $result = $parser->parse(
+            $this->xml->getMinimalValidXmlContent()
+        );
 
         $this->assertInstanceOf('SimpleXmlElement', $result, "Parsed data should be SimpleXmlElement");
         $this->assertEquals(
@@ -32,7 +34,8 @@ class SimpleXmlParserTest extends TestCase
 
         $parser = new SimpleXmlParser();
 
-        $parser->parse( $this->xml->getInvalidXmlContent() );
+        $parser->parse(
+            $this->xml->getInvalidXmlContent()
+        );
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Contracts\ServiceRequestInterface;
@@ -15,7 +16,7 @@ class BasicJsonInterpreterTest extends TestCase
         $interpreter = new BasicJsonInterpreter(true);
 
         $mockRequest = $this->getMockBuilder(ServiceRequestInterface::class)
-                            ->getMock();
+            ->getMock();
 
         /** @var ServiceRequestInterface $mockRequest */
         $result = $interpreter->interpret($mockRequest, '{"test":"data","does":"it work?"}');
@@ -36,7 +37,7 @@ class BasicJsonInterpreterTest extends TestCase
         $interpreter = new BasicJsonInterpreter(false);
 
         $mockRequest = $this->getMockBuilder(ServiceRequestInterface::class)
-                            ->getMock();
+            ->getMock();
 
         /** @var ServiceRequestInterface $mockRequest */
         $result = $interpreter->interpret($mockRequest, '{"test":"data","does":"it work?"}');
@@ -60,10 +61,9 @@ class BasicJsonInterpreterTest extends TestCase
         $interpreter = new BasicJsonInterpreter();
 
         $mockRequest = $this->getMockBuilder(ServiceRequestInterface::class)
-                            ->getMock();
+            ->getMock();
 
         /** @var ServiceRequestInterface $mockRequest */
         $interpreter->interpret($mockRequest, '{\'test\':"data","does":it work?}');
     }
-
 }

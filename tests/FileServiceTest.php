@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\DataObject\Test\Helpers\TestMockInterpreter;
@@ -9,17 +10,16 @@ use Illuminate\Filesystem\Filesystem;
 
 class FileServiceTest extends TestCase
 {
-
     /**
      * @test
      */
     function it_returns_mocked_data_as_service_response()
     {
         $filesMock = $this->getMockBuilder(Filesystem::class)
-                          ->getMock();
+            ->getMock();
 
         $filesMock->method('get')
-                  ->willReturn('some test content');
+            ->willReturn('some test content');
 
         $interpreter = new TestMockInterpreter();
         $service     = new FileService($filesMock, $interpreter);
@@ -64,5 +64,4 @@ class FileServiceTest extends TestCase
 
         $service->call('tests/data/test_this_does_not_exist.txt', $request);
     }
-
 }

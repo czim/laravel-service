@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\DataObject\Test\Helpers\TestMockInterpreter;
@@ -8,7 +9,6 @@ use Czim\Service\Responses\ServiceResponse;
 
 class FixXmlNamespacesDecoratorTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -19,7 +19,7 @@ class FixXmlNamespacesDecoratorTest extends TestCase
         $decorator = new FixXmlNamespacesDecorator($interpreter);
 
         $mockRequest = $this->getMockBuilder(ServiceRequestInterface::class)
-                            ->getMock();
+            ->getMock();
 
         /** @var ServiceRequestInterface $mockRequest */
         $result = $decorator->interpret($mockRequest, $this->xml->getXmlWithRelativeNamespaces());
@@ -31,5 +31,4 @@ class FixXmlNamespacesDecoratorTest extends TestCase
             "Incorrect raw XML fixed data"
         );
     }
-
 }

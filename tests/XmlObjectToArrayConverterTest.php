@@ -1,11 +1,11 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Interpreters\Xml\XmlObjectToArrayConverter;
 
 class XmlObjectToArrayConverterTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -13,7 +13,9 @@ class XmlObjectToArrayConverterTest extends TestCase
     {
         $converter = new XmlObjectToArrayConverter();
 
-        $result = $converter->convert( $this->xml->getSimpleXmlElement() );
+        $result = $converter->convert(
+            $this->xml->getSimpleXmlElement()
+        );
 
         $this->assertEquals(
             $this->xml->getMinimalXmlContentAsArray(),
@@ -21,5 +23,4 @@ class XmlObjectToArrayConverterTest extends TestCase
             "Incorrect converted array data"
         );
     }
-
 }

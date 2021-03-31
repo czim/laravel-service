@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\DataObject\Test\Helpers\TestMockInterpreter;
@@ -8,7 +9,6 @@ use Czim\Service\Responses\ServiceResponse;
 
 class RemoveXmlNamespacesDecoratorTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -19,7 +19,7 @@ class RemoveXmlNamespacesDecoratorTest extends TestCase
         $decorator = new RemoveXmlNamespacesDecorator($interpreter);
 
         $mockRequest = $this->getMockBuilder(ServiceRequestInterface::class)
-                            ->getMock();
+            ->getMock();
 
         /** @var ServiceRequestInterface $mockRequest */
         $result = $decorator->interpret($mockRequest, $this->xml->getXmlWithRelativeNamespacesFixed());
@@ -31,5 +31,4 @@ class RemoveXmlNamespacesDecoratorTest extends TestCase
             "Incorrect raw de-namespaced XML data"
         );
     }
-
 }

@@ -1,11 +1,11 @@
 <?php
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Interpreters\Xml\XmlObjectToArrayJsonConverter;
 
 class XmlObjectToArrayJsonConverterTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -13,7 +13,9 @@ class XmlObjectToArrayJsonConverterTest extends TestCase
     {
         $converter = new XmlObjectToArrayJsonConverter();
 
-        $result = $converter->convert( $this->xml->getSimpleXmlElement() );
+        $result = $converter->convert(
+            $this->xml->getSimpleXmlElement()
+        );
 
         $this->assertEquals(
             $this->xml->getMinimalXmlContentAsArray(),
@@ -21,5 +23,4 @@ class XmlObjectToArrayJsonConverterTest extends TestCase
             "Incorrect converted array data"
         );
     }
-
 }
