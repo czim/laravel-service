@@ -18,10 +18,11 @@ Via Composer
 $ composer require czim/laravel-service
 ```
 
-Add this line of code to the providers array located in your `config/app.php` file:
+Unless you're using auto-discovery, add this line of code to the providers array
+located in your `config/app.php` file:
 
 ```php
-    Czim\Service\ServiceServiceProvider::class,
+    \Czim\Service\Providers\ServiceServiceProvider::class,
 ```
 
 
