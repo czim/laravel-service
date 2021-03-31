@@ -56,11 +56,7 @@ class FileServiceTest extends TestCase
     function it_throws_an_exception_if_the_file_was_not_found()
     {
         $this->expectException(\Czim\Service\Exceptions\CouldNotConnectException::class);
-<<<<<<< Updated upstream
-        $this->expectExceptionMessageRegExp('#test_this_does_not_exist\.txt#i');
-=======
         $this->expectErrorMessageMatches('#test_this_does_not_exist\.txt#i');
->>>>>>> Stashed changes
 
         $interpreter = new TestMockInterpreter();
         $service     = new FileService(null, $interpreter);

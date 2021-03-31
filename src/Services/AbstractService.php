@@ -14,10 +14,7 @@ use Czim\Service\Requests\ServiceRequestDefaults;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Responses\ServiceResponseInformation;
 use Illuminate\Support\Arr;
-<<<<<<< Updated upstream
-=======
 use InvalidArgumentException;
->>>>>>> Stashed changes
 use Validator;
 
 abstract class AbstractService implements ServiceInterface

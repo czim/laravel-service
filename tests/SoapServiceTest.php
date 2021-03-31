@@ -95,33 +95,6 @@ class SoapServiceTest extends TestCase
     }
 
     /**
-<<<<<<< Updated upstream
-     * Disabled this test to prevent unstoppable binding resolution fatal error
-     *
-     * @test
-     */
-    //function it_throws_a_normalized_exception_if_soap_connect_fails()
-    //{
-    //    $this->expectException(\Czim\Service\Exceptions\CouldNotConnectException::class);
-    //
-    //    app()->bind(SoapClient::class, function($app, $parameters) {
-    //
-    //        return @new SoapClient($parameters[0], $parameters[1]);
-    //    });
-    //
-    //    $interpreter = new TestMockInterpreter();
-    //    $service     = new SoapService(null, $interpreter);
-    //    $request     = new ServiceSoapRequest();
-    //
-    //    $request->setLocation('http://does_not_exist_anywhere.org/?WSDL');
-    //    $request->setOptions(['trace' => false]);
-    //
-    //    $service->call('nothing_here', $request);
-    //}
-
-    /**
-=======
->>>>>>> Stashed changes
      * @param $client
      * @return \PHPUnit_Framework_MockObject_MockObject|SoapFactoryInterface
      */
