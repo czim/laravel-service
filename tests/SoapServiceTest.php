@@ -95,6 +95,7 @@ class SoapServiceTest extends TestCase
     }
 
     /**
+<<<<<<< Updated upstream
      * Disabled this test to prevent unstoppable binding resolution fatal error
      *
      * @test
@@ -119,6 +120,8 @@ class SoapServiceTest extends TestCase
     //}
 
     /**
+=======
+>>>>>>> Stashed changes
      * @param $client
      * @return \PHPUnit_Framework_MockObject_MockObject|SoapFactoryInterface
      */

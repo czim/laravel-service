@@ -7,7 +7,6 @@ use Czim\Service\Responses\ServiceResponse;
 
 class BasicJsonInterpreterTest extends TestCase
 {
-
     /**
      * @test
      */
@@ -44,7 +43,11 @@ class BasicJsonInterpreterTest extends TestCase
 
         $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
         $this->assertIsObject($result->getData(), "Incorrect json-decoded data: should be an object");
+<<<<<<< Updated upstream
         $this->assertEquals(
+=======
+        $this->assertArraySubset(
+>>>>>>> Stashed changes
             ['test' => 'data', 'does' => 'it work?' ],
             (array) $result->getData(),
             "Incorrect json-decoded data"
@@ -57,6 +60,10 @@ class BasicJsonInterpreterTest extends TestCase
     function it_throws_an_exception_if_response_is_invalid_json()
     {
         $this->expectException(\Czim\Service\Exceptions\CouldNotInterpretJsonResponseException::class);
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
         $interpreter = new BasicJsonInterpreter();
 
         $mockRequest = $this->getMockBuilder(ServiceRequestInterface::class)

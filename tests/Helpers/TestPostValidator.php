@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Test\Helpers;
 
 use Czim\Service\Contracts\ServiceResponseInterface;
@@ -6,14 +7,13 @@ use Czim\Service\Interpreters\Decorators\AbstractValidationPostDecorator;
 
 class TestPostValidator extends AbstractValidationPostDecorator
 {
-
     /**
-     * Validates the ServiceResponse
+     * Validates the ServiceResponse.
      *
      * @param ServiceResponseInterface $response
      * @return bool
      */
-    protected function validateResponse(ServiceResponseInterface $response)
+    protected function validateResponse(ServiceResponseInterface $response): bool
     {
         if ($response->getData() == 'wrong') {
 
@@ -23,5 +23,4 @@ class TestPostValidator extends AbstractValidationPostDecorator
 
         return true;
     }
-
 }

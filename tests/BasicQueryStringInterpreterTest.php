@@ -44,7 +44,11 @@ class BasicQueryStringInterpreterTest extends TestCase
 
         $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
         $this->assertIsObject($result->getData(), "Incorrect json-decoded data: should be an object");
+<<<<<<< Updated upstream
         $this->assertEquals(
+=======
+        $this->assertArraySubset(
+>>>>>>> Stashed changes
             [ 'test' => '1', 'tosti' => [ 'piet', 'paaltjens' ], 'taster' => [ 'test' => 'tosti' ] ],
             (array) $result->getData(),
             "Incorrect parsed data"

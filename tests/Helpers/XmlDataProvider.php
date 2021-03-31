@@ -1,22 +1,17 @@
 <?php
+
 namespace Czim\Service\Test\Helpers;
 
 use SimpleXMLElement;
 
 class XmlDataProvider
 {
-    /**
-     * @return SimpleXmlElement
-     */
-    public function getSimpleXmlElement()
+    public function getSimpleXmlElement(): SimpleXmlElement
     {
         return new SimpleXmlElement($this->getMinimalValidXmlContent());
     }
 
-    /**
-     * @return string
-     */
-    public function getMinimalValidXmlContent()
+    public function getMinimalValidXmlContent(): string
     {
         return <<<MINIMALXML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -35,9 +30,9 @@ MINIMALXML;
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
-    public function getMinimalXmlContentAsArray()
+    public function getMinimalXmlContentAsArray(): array
     {
         return [
             "@attributes" => [
@@ -52,11 +47,7 @@ MINIMALXML;
         ];
     }
 
-
-    /**
-     * @return string
-     */
-    public function getInvalidXmlContent()
+    public function getInvalidXmlContent(): string
     {
         return <<<INVALIDXML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -70,11 +61,7 @@ MINIMALXML;
 INVALIDXML;
     }
 
-
-    /**
-     * @return string
-     */
-    public function getXmlWithRelativeNamespaces()
+    public function getXmlWithRelativeNamespaces(): string
     {
         return <<<BROKENNAMESPACEXML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -91,10 +78,7 @@ BROKENNAMESPACEXML;
 
     }
 
-    /**
-     * @return string
-     */
-    public function getXmlWithRelativeNamespacesFixed()
+    public function getXmlWithRelativeNamespacesFixed(): string
     {
         return <<<FIXEDNAMESPACEXML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -118,7 +102,7 @@ FIXEDNAMESPACEXML;
      *
      * @return string
      */
-    public function getXmlWithNamespacesRemoved()
+    public function getXmlWithNamespacesRemoved(): string
     {
         return <<<FIXEDNAMESPACEXML
 <?xml version="1.0" encoding="UTF-8"?>
