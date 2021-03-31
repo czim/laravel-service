@@ -14,6 +14,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception as GuzzleException;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
@@ -404,7 +405,7 @@ class RestService extends AbstractService
                 continue;
             }
 
-            foreach (array_dot($value) as $dotKey => $leafValue) {
+            foreach (Arr::dot($value) as $dotKey => $leafValue) {
                 $partKey = $key
                     . implode(
                         array_map(
