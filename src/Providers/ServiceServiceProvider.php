@@ -1,5 +1,6 @@
 <?php
-namespace Czim\Service;
+
+namespace Czim\Service\Providers;
 
 use Czim\Service\Collections\ServiceCollection;
 use Czim\Service\Contracts\GuzzleFactoryInterface;
@@ -19,12 +20,7 @@ use Illuminate\Support\ServiceProvider;
 
 class ServiceServiceProvider extends ServiceProvider
 {
-
-    public function boot()
-    {
-    }
-
-    public function register()
+    public function register(): void
     {
         $this->app->bind(ServiceCollectionInterface::class, ServiceCollection::class);
         $this->app->bind(ResponseMergerInterface::class, ResponseMerger::class);
@@ -34,5 +30,4 @@ class ServiceServiceProvider extends ServiceProvider
         $this->app->bind(SoapFactoryInterface::class, SoapFactory::class);
         $this->app->bind(Ssh2SftpConnectionFactoryInterface::class, Ssh2SftpConnectionFactory::class);
     }
-
 }

@@ -1,42 +1,41 @@
 <?php
+
 namespace Czim\Service\Contracts;
 
 use Czim\Service\Exceptions\Ssh2ConnectionException;
 
 interface Ssh2ConnectionInterface
 {
-
     /**
-     * Connects to SSH2 server
+     * Connects to SSH2 server.
      *
-     * @param  string $url
-     * @param  string $user
-     * @param  string $password
+     * @param string $url
+     * @param string $user
+     * @param string $password
      * @throws Ssh2ConnectionException  if cannot connect
      */
-    public function __construct($url, $user, $password);
+    public function __construct(string $url, string $user, string $password);
 
     /**
-     * Reconnects if not already connected
+     * Reconnects if not already connected.
      *
-     * @return boolean
+     * @return bool
      * @throws Ssh2ConnectionException  if cannot connect
      */
-    public function reconnect();
+    public function reconnect(): bool;
 
     /**
      * Disconnects open connection.
      *
-     * @return boolean
+     * @return bool
      */
-    public function disconnect();
+    public function disconnect(): bool;
 
     /**
-     * Executes command over connection
+     * Executes command over connection.
      *
-     * @param  string $command
+     * @param string $command
      * @return mixed
      */
-    public function exec($command);
-
+    public function exec(string $command);
 }

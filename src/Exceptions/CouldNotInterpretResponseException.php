@@ -1,21 +1,24 @@
 <?php
+
 namespace Czim\Service\Exceptions;
 
-class CouldNotInterpretResponseException extends \Exception
-{
+use RuntimeException;
+use Throwable;
 
+class CouldNotInterpretResponseException extends RuntimeException
+{
     /**
-     * @var array
+     * @var string[]
      */
     protected $errors = [];
 
     /**
-     * @param null       $message
-     * @param array      $errors    list of errors encountered while parsing, validating or attempting to interpret
-     * @param int        $code
-     * @param \Exception $previous
+     * @param string|null    $message
+     * @param string[]       $errors list of errors encountered while parsing, validating or attempting to interpret
+     * @param int            $code
+     * @param Throwable|null $previous
      */
-    public function __construct($message = null, $errors = [], $code = 0, $previous = null)
+    public function __construct(?string $message = null, array $errors = [], int $code = 0, Throwable $previous = null)
     {
         $this->errors = $errors;
 
@@ -23,11 +26,10 @@ class CouldNotInterpretResponseException extends \Exception
     }
 
     /**
-     * @return array
+     * @return string[]
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
-
 }

@@ -1,77 +1,71 @@
 <?php
+
 namespace Czim\Service\Contracts;
 
 use Czim\DataObject\Contracts\DataObjectInterface;
 
 interface ServiceResponseInterface extends DataObjectInterface
 {
-
     /**
-     * Sets the response data
+     * Sets the response data.
      *
      * @param mixed $data
-     * @return $this
      */
-    public function setData($data);
+    public function setData($data): void;
 
     /**
-     * Returns the response data
+     * Returns the response data.
      *
      * @return mixed
      */
     public function getData();
 
     /**
-     * Sets the HTTP or other service status code
+     * Sets the HTTP or other service status code.
      *
      * @param int $code
-     * @return $this
      */
-    public function setStatusCode($code);
+    public function setStatusCode(int $code): void;
 
     /**
-     * Returns the HTTP or other service status code
+     * Returns the HTTP or other service status code.
      *
      * @return int
      */
-    public function getStatusCode();
+    public function getStatusCode(): int;
 
     /**
-     * Returns all errors listed
+     * Returns all errors listed.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function getErrors();
+    public function getErrors(): array;
 
     /**
-     * Sets all errors at once
+     * Sets all errors at once.
      *
-     * @param array $errors
-     * @return $this
+     * @param string[] $errors
      */
-    public function setErrors(array $errors);
+    public function setErrors(array $errors): void;
 
     /**
-     * Adds a single error to the error list
+     * Adds a single error to the error list.
      *
      * @param string $error
-     * @return $this
      */
-    public function addError($error);
+    public function addError(string $error): void;
 
     /**
-     * Returns succesfulness state of request
+     * Returns succesfulness state of request.
      *
      * @return bool
      */
-    public function getSuccess();
+    public function getSuccess(): bool;
 
     /**
-     * Sets succesfulness state
+     * Sets succesfulness state.
      *
      * @param bool $success
-     * @return $this
      */
-    public function setSuccess($success);
-
+    public function setSuccess(bool $success): void;
 }

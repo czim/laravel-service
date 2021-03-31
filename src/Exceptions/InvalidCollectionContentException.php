@@ -1,8 +1,9 @@
 <?php
+
 namespace Czim\Service\Exceptions;
 
-use Exception;
+use RuntimeException;
 
-class InvalidCollectionContentException extends Exception
+class InvalidCollectionContentException extends RuntimeException
 {
 }

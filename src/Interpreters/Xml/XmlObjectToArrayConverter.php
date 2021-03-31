@@ -1,20 +1,20 @@
 <?php
+
 namespace Czim\Service\Interpreters\Xml;
 
 use Czim\Service\Contracts\XmlObjectConverterInterface;
 use SimpleXMLElement;
 
 /**
- * For converting SimpleXml objects to array
+ * For converting SimpleXml objects to array.
  */
 class XmlObjectToArrayConverter implements XmlObjectConverterInterface
 {
-
     /**
-     * @param mixed $object
-     * @return array
+     * @param object $object
+     * @return mixed[]
      */
-    public function convert($object)
+    public function convert(object $object): array
     {
         return $this->convertXmlObjectToArray($object);
     }
@@ -25,32 +25,23 @@ class XmlObjectToArrayConverter implements XmlObjectConverterInterface
      * @param SimpleXmlElement|array|object $xml
      * @return array
      */
-    protected function convertXmlObjectToArray($xml)
+    protected function convertXmlObjectToArray($xml): array
     {
         $array = (array) $xml;
 
         if (count($array) == 0 && ! is_array($xml)) {
-
             $array = [ (string) $xml ];
         }
 
         if (is_array($array)) {
-
             foreach ($array as $key => $value) {
-
                 if (is_object($value)) {
-
                     if (strpos(get_class($value), "SimpleXML") !== false) {
-
                         $array[ $key ] = $this->convertXmlObjectToArray($value);
-
                     } else {
-
                         $array[ $key ] = $this->convertXmlObjectToArray( (array) $value );
                     }
-
                 } elseif (is_array($value)) {
-
                     $array[ $key ] = $this->convertXmlObjectToArray($value);
                 }
             }
@@ -58,5 +49,4 @@ class XmlObjectToArrayConverter implements XmlObjectConverterInterface
 
         return $array;
     }
-
 }

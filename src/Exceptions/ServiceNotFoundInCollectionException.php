@@ -1,8 +1,9 @@
 <?php
+
 namespace Czim\Service\Exceptions;
 
-use Exception;
+use RuntimeException;
 
-class ServiceNotFoundInCollectionException extends Exception
+class ServiceNotFoundInCollectionException extends RuntimeException
 {
 }

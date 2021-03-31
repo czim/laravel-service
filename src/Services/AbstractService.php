@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\ServiceInterface;
@@ -8,26 +9,32 @@ use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Contracts\ServiceResponseInformationInterface;
 use Czim\Service\Contracts\ServiceResponseInterface;
 use Czim\Service\Exceptions\ServiceConfigurationException;
+use Czim\Service\Interpreters\BasicDefaultInterpreter;
+use Czim\Service\Requests\ServiceRequestDefaults;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Responses\ServiceResponseInformation;
 use Illuminate\Support\Arr;
+<<<<<<< Updated upstream
+=======
+use InvalidArgumentException;
+>>>>>>> Stashed changes
 use Validator;
 
 abstract class AbstractService implements ServiceInterface
 {
-
     /**
-     * The classname of the defaults object to instantiate if none is injected
-     * @var string
-     */
-    protected $requestDefaultsClass = \Czim\Service\Requests\ServiceRequestDefaults::class;
-
-    /**
-     * The classname of the interpreter to instantiate if none is injected
+     * The classname of the defaults object to instantiate if none is injected.
      *
      * @var string
      */
-    protected $interpreterClass = \Czim\Service\Interpreters\BasicDefaultInterpreter::class;
+    protected $requestDefaultsClass = ServiceRequestDefaults::class;
+
+    /**
+     * The classname of the interpreter to instantiate if none is injected.
+     *
+     * @var string
+     */
+    protected $interpreterClass = BasicDefaultInterpreter::class;
 
 
     /**
@@ -36,7 +43,7 @@ abstract class AbstractService implements ServiceInterface
     protected $defaults;
 
     /**
-     * The request object to base the call on
+     * The request object to base the call on.
      *
      * @var ServiceRequestInterface
      */
@@ -44,7 +51,7 @@ abstract class AbstractService implements ServiceInterface
 
     /**
      * Last response without any interpretation or parsing applied
-     * (as far as that is possible)
+     * (as far as that is possible).
      *
      * @var mixed
      */
@@ -59,21 +66,21 @@ abstract class AbstractService implements ServiceInterface
     protected $responseInformation;
 
     /**
-     * The last succesfully interpreted response
+     * The last succesfully interpreted response.
      *
      * @var ServiceResponseInterface
      */
     protected $response;
 
     /**
-     * The interpreter that normalizes the raw reponse to a ServiceReponse
+     * The interpreter that normalizes the raw reponse to a ServiceReponse.
      *
      * @var ServiceInterpreterInterface
      */
     protected $interpreter;
 
     /**
-     * Wether any calls have been made since construction
+     * Wether any calls have been made since construction.
      *
      * @var bool
      */
@@ -89,17 +96,15 @@ abstract class AbstractService implements ServiceInterface
     protected $sendResponseToEvent = false;
 
 
-    /**
-     * @param ServiceRequestDefaultsInterface $defaults
-     * @param ServiceInterpreterInterface     $interpreter
-     */
-    public function __construct(ServiceRequestDefaultsInterface $defaults = null, ServiceInterpreterInterface $interpreter = null)
-    {
-        if (is_null($defaults)) {
+    public function __construct(
+        ServiceRequestDefaultsInterface $defaults = null,
+        ServiceInterpreterInterface $interpreter = null
+    ) {
+        if ($defaults === null) {
             $defaults = $this->buildRequestDefaults();
         }
 
-        if (is_null($interpreter)) {
+        if ($interpreter === null) {
             $interpreter = $this->buildInterpreter();
         }
 
@@ -110,48 +115,11 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Returns a fresh instance of the default service request defaults object
+     * Applies mass configuration to default request.
      *
-     * @return ServiceRequestDefaultsInterface
+     * @param array<string, mixed> $config
      */
-    protected function buildRequestDefaults()
-    {
-        return app($this->requestDefaultsClass);
-    }
-
-    /**
-     * Returns a fresh instance of the default service interpreter
-     *
-     * @return ServiceInterpreterInterface
-     */
-    protected function buildInterpreter()
-    {
-        return app($this->interpreterClass);
-    }
-
-    /**
-     * Checks whether we have the correct request class type for this service
-     *
-     * @param mixed $request
-     */
-    protected function checkRequestClassType($request)
-    {
-        if ( ! is_a($request, ServiceRequestInterface::class)) {
-
-            throw new \InvalidArgumentException(
-                "Default requests is not a valid ServiceRequestInterface class ({$this->requestDefaultsClass})"
-            );
-        }
-    }
-
-
-    /**
-     * Applies mass configuration to default request
-     *
-     * @param array $config
-     * @return $this
-     */
-    public function config(array $config)
+    public function config(array $config): void
     {
         $this->validateConfig($config);
 
@@ -191,71 +159,30 @@ abstract class AbstractService implements ServiceInterface
         if (array_key_exists('options', $config)) {
             $this->defaults->setOptions($config['options']);
         }
-
-        return $this;
     }
 
     /**
-     * Checks config against validation rules
+     * Performs a call on the service, returning an interpreted response.
      *
-     * @param array $config
-     * @throws ServiceConfigurationException
-     */
-    protected function validateConfig(array $config)
-    {
-        $validator = Validator::make($config, $this->getConfigValidationRules());
-
-        if ($validator->fails()) {
-
-            throw new ServiceConfigurationException(
-                'Invalid configuration: ' . print_r($validator->messages()->toArray(), true),
-                $validator->messages()->toArray()
-            );
-        }
-    }
-
-    /**
-     * Returns the rules to validate the config against
-     *
-     * @return array
-     */
-    protected function getConfigValidationRules()
-    {
-        return [
-            'location'             => 'string',
-            'port'                 => 'integer',
-            'method'               => 'string',
-            'headers'              => 'array',
-            'parameters'           => 'array',
-            'credentials'          => 'array',
-            'credentials.name'     => 'string',
-            'credentials.password' => 'string',
-            'credentials.domain'   => 'string',
-            'options'              => 'array',
-        ];
-    }
-
-
-    /**
-     * Performs a call on the service, returning an interpreted response
-     *
-     * @param string $method     name of the method to call through the service
-     * @param mixed  $request    either: request object, or the request body
-     * @param mixed  $parameters extra parameters to send along (optional)
-     * @param mixed  $headers    extra headers to send along (optional)
-     * @param array  $options    extra options to set on f.i. the soap client used
+     * @param string|null               $method     name of the method to call through the service
+     * @param mixed                     $request    either: request object, or the request body
+     * @param mixed                     $parameters extra parameters to send along (optional)
+     * @param array<string, mixed>|null $headers    extra headers to send along (optional)
+     * @param array<string, mixed>      $options    extra options to set on f.i. the soap client used
      * @return ServiceResponse fallback to mixed if no interpreter available; make sure there is one
      */
-    public function call($method, $request = null, $parameters = null, $headers = null, $options = [])
-    {
-        // build up ServiceRequest
-        if (is_a($request, ServiceRequestInterface::class)) {
-            /** @var ServiceRequestInterface $request */
-            $this->request = $request->setMethod($method);
-
+    public function call(
+        ?string $method,
+        $request = null,
+        $parameters = null,
+        array $headers = null,
+        array $options = []
+    ): ServiceResponseInterface {
+        // Build up ServiceRequest
+        if ($request instanceof ServiceRequestInterface) {
+            $this->request = $request;
+            $this->request->setMethod($method);
         } else {
-            // $request is the request body
-
             $class = $this->requestDefaultsClass;
 
             $this->request = new $class($request, $parameters, $headers, $method, null, $options);
@@ -270,7 +197,7 @@ abstract class AbstractService implements ServiceInterface
         $this->resetResponseInformation();
 
 
-        if ( ! $this->firstCallIsMade) {
+        if (! $this->firstCallIsMade) {
             $this->firstCallIsMade = true;
             $this->beforeFirstCall();
         }
@@ -289,13 +216,168 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
+     * Returns the raw response data for the most recent call made
+     *
+     * @return mixed
+     */
+    public function getLastRawResponse()
+    {
+        return $this->rawResponse;
+    }
+
+    /**
+     * Returns best available response: interpreted if an interpreter.
+     * is available, falls back to raw response.
+     *
+     * @return ServiceResponseInterface
+     */
+    public function getLastInterpretedResponse(): ServiceResponseInterface
+    {
+        return $this->response;
+    }
+
+    /**
+     * Returns the extra information set during the execution of the last call.
+     *
+     * @return ServiceResponseInformation
+     */
+    public function getLastReponseInformation(): ServiceResponseInformationInterface
+    {
+        return $this->responseInformation;
+    }
+
+    /**
+     * Sets the default request data to supplement any requests with.
+     *
+     * @param ServiceRequestDefaultsInterface $defaults
+     */
+    public function setRequestDefaults(ServiceRequestDefaultsInterface $defaults): void
+    {
+        $this->defaults = $defaults;
+    }
+
+    /**
+     * Returns the default request data.
+     *
+     * @return ServiceRequestDefaultsInterface
+     */
+    public function getRequestDefaults(): ServiceRequestDefaultsInterface
+    {
+        return $this->defaults;
+    }
+
+    /**
+     * Sets the service response interpreter.
+     *
+     * @param ServiceInterpreterInterface $interpreter
+     */
+    public function setInterpreter(ServiceInterpreterInterface $interpreter): void
+    {
+        $this->interpreter = $interpreter;
+    }
+
+    /**
+     * Returns the service response interpreter instance.
+     *
+     * @return ServiceInterpreterInterface
+     */
+    public function getInterpreter(): ServiceInterpreterInterface
+    {
+        return $this->interpreter;
+    }
+
+    /**
+     * Frees up memory where possible.
+     */
+    public function free(): void
+    {
+        unset($this->rawResponse);
+        unset($this->response);
+        unset($this->responseInformation);
+    }
+
+
+    /**
+     * Returns a fresh instance of the default service request defaults object.
+     *
+     * @return ServiceRequestDefaultsInterface
+     */
+    protected function buildRequestDefaults(): ServiceRequestDefaultsInterface
+    {
+        return app($this->requestDefaultsClass);
+    }
+
+    /**
+     * Returns a fresh instance of the default service interpreter.
+     *
+     * @return ServiceInterpreterInterface
+     */
+    protected function buildInterpreter(): ServiceInterpreterInterface
+    {
+        return app($this->interpreterClass);
+    }
+
+    /**
+     * Checks whether we have the correct request class type for this service
+     *
+     * @param mixed $request
+     */
+    protected function checkRequestClassType($request)
+    {
+        if (! $request instanceof ServiceRequestInterface) {
+            throw new InvalidArgumentException(
+                "Default requests is not a valid ServiceRequestInterface class ({$this->requestDefaultsClass})"
+            );
+        }
+    }
+
+    /**
+     * Checks config against validation rules.
+     *
+     * @param array<string, mixed> $config
+     * @throws ServiceConfigurationException
+     */
+    protected function validateConfig(array $config): void
+    {
+        $validator = Validator::make($config, $this->getConfigValidationRules());
+
+        if (! $validator->fails()) {
+            return;
+        }
+
+        throw new ServiceConfigurationException(
+            'Invalid configuration: ' . print_r($validator->messages()->toArray(), true),
+            $validator->messages()->toArray()
+        );
+    }
+
+    /**
+     * Returns the rules to validate the config against.
+     *
+     * @return array<string, mixed>
+     */
+    protected function getConfigValidationRules(): array
+    {
+        return [
+            'location'             => 'string',
+            'port'                 => 'integer',
+            'method'               => 'string',
+            'headers'              => 'array',
+            'parameters'           => 'array',
+            'credentials'          => 'array',
+            'credentials.name'     => 'string',
+            'credentials.password' => 'string',
+            'credentials.domain'   => 'string',
+            'options'              => 'array',
+        ];
+    }
+
+    /**
      * Takes the current request and supplements it with the service's defaults
      * to merge them into a complete request.
      */
-    protected function supplementRequestWithDefaults()
+    protected function supplementRequestWithDefaults(): void
     {
-        // properties to set only if they are empty
-
         if (empty($this->request->getLocation())) {
             $this->request->setLocation( $this->defaults->getLocation() );
         }
@@ -312,8 +394,9 @@ abstract class AbstractService implements ServiceInterface
             $this->request->setBody( $this->defaults->getBody() );
         }
 
-        if (    $this->credentialsAreEmpty($this->request->getCredentials())
-            &&  ! $this->credentialsAreEmpty($this->defaults->getCredentials())
+        if (
+            $this->credentialsAreEmpty($this->request->getCredentials())
+            && ! $this->credentialsAreEmpty($this->defaults->getCredentials())
         ) {
             $this->request->setCredentials(
                 $this->defaults->getCredentials()['name'],
@@ -323,58 +406,40 @@ abstract class AbstractService implements ServiceInterface
         }
 
 
-        // properties to expand
-
-        if ( ! empty($this->defaults->getHeaders())) {
-
+        if (! empty($this->defaults->getHeaders())) {
             $this->request->setHeaders(array_merge(
                 $this->request->getHeaders(),
                 $this->defaults->getHeaders()
             ));
         }
-
     }
 
     /**
-     * Returns whether a credentials array should be considered empty
+     * Returns whether a credentials array should be considered empty.
      *
-     * @param array $credentials
+     * @param array<string, string> $credentials
      * @return bool
      */
-    protected function credentialsAreEmpty(array $credentials)
+    protected function credentialsAreEmpty(array $credentials): bool
     {
-        return (empty($credentials['name']) || empty($credentials['password']));
+        return empty($credentials['name'])
+            || empty($credentials['password']);
     }
 
     /**
-     * Resets the response information to an empty instance of the ServiceResponseInformationInterface
+     * Resets the response information to an empty instance of the ServiceResponseInformationInterface.
      */
-    protected function resetResponseInformation()
+    protected function resetResponseInformation(): void
     {
         $this->responseInformation = app(ServiceResponseInformation::class);
     }
 
     /**
-     * Interprets the raw response if an interpreter is available and stores it in the response property
+     * Interprets the raw response if an interpreter is available and stores it in the response property.
      */
-    protected function interpretResponse()
+    protected function interpretResponse(): void
     {
         $this->response = $this->interpreter->interpret($this->request, $this->rawResponse, $this->responseInformation);
-    }
-
-
-    /**
-     * Frees up memory where possible
-     *
-     * @return $this
-     */
-    public function free()
-    {
-        unset( $this->rawResponse );
-        unset( $this->response );
-        unset( $this->responseInformation );
-
-        return $this;
     }
 
 
@@ -400,138 +465,54 @@ abstract class AbstractService implements ServiceInterface
     // ------------------------------------------------------------------------------
 
     /**
-     * Runs directly after construction
-     * Extend this to customize your service
+     * Runs directly after construction.
+     * Extend this to customize your service.
      */
-    protected function initialize()
+    protected function initialize(): void
     {
     }
 
     /**
-     * Runs before the first call on the service is made, and before before() is called
-     * Extend this to customize your service
+     * Runs before the first call on the service is made, and before before() is called.
+     * Extend this to customize your service.
      */
-    protected function beforeFirstCall()
+    protected function beforeFirstCall(): void
     {
     }
 
     /**
-     * Runs before any call is made
-     * Extend this to customize your service
+     * Runs before any call is made.
+     * Extend this to customize your service.
      *
-     * Parameters sent to callRaw() can be modified through $this->parameters
+     * Parameters sent to callRaw() can be modified through $this->parameters.
      */
-    protected function before()
+    protected function before(): void
     {
     }
 
     /**
-     * Runs directly after any call is made and interpreted
-     * Extend this to customize your service
+     * Runs directly after any call is made and interpreted.
+     * Extend this to customize your service.
      */
-    protected function after()
+    protected function after(): void
     {
     }
 
     /**
-     * Runs directly after any raw call is made, before interpretation
-     * Extend this to customize your service
+     * Runs directly after any raw call is made, before interpretation.
+     * Extend this to customize your service.
      *
-     * The response may be modified before interpretation through $this->rawResponse
+     * The response may be modified before interpretation through $this->rawResponse.
      */
-    protected function afterRaw()
+    protected function afterRaw(): void
     {
     }
 
     /**
-     * Checks the request to be used in the next/upcoming call
-     * Extend this to throw exceptions if the request is invalid or incomplete
+     * Checks the request to be used in the next/upcoming call.
+     * Extend this to throw exceptions if the request is invalid or incomplete.
      */
-    protected function checkRequest()
+    protected function checkRequest(): void
     {
-
     }
-
-    
-    // ------------------------------------------------------------------------------
-    //      Getters and Setters
-    // ------------------------------------------------------------------------------
-    
-    /**
-     * Returns the raw response data for the most recent call made
-     *
-     * @return mixed
-     */
-    public function getLastRawResponse()
-    {
-        return $this->rawResponse;
-    }
-
-    /**
-     * Returns best available response: interpreted if an interpreter
-     * is available, falls back to raw response
-     *
-     * @return ServiceResponseInterface
-     */
-    public function getLastInterpretedResponse()
-    {
-        return $this->response;
-    }
-
-    /**
-     * Returns the extra information set during the execution of the last call
-     *
-     * @return ServiceResponseInformation
-     */
-    public function getLastReponseInformation()
-    {
-        return $this->responseInformation;
-    }
-
-    /**
-     * Sets the default request data to supplement any requests with
-     *
-     * @param ServiceRequestDefaultsInterface $defaults
-     * @return $this
-     */
-    public function setRequestDefaults(ServiceRequestDefaultsInterface $defaults)
-    {
-        $this->defaults = $defaults;
-
-        return $this;
-    }
-
-    /**
-     * Returns the default request data
-     *
-     * @return ServiceRequestDefaultsInterface
-     */
-    public function getRequestDefaults()
-    {
-        return $this->defaults;
-    }
-
-    /**
-     * Sets the service response interpreter
-     *
-     * @param ServiceInterpreterInterface $interpreter
-     * @return $this
-     */
-    public function setInterpreter(ServiceInterpreterInterface $interpreter)
-    {
-        $this->interpreter = $interpreter;
-
-        return $this;
-    }
-
-    /**
-     * Returns the service response interpreter instance
-     *
-     * @return ServiceInterpreterInterface
-     */
-    public function getInterpreter()
-    {
-        return $this->interpreter;
-    }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\ServiceRequestInterface;
@@ -14,19 +15,19 @@ use InvalidArgumentException;
 use SoapClient;
 use SoapFault;
 use SoapHeader;
+use Throwable;
 
 class SoapService extends AbstractService
 {
-
     /**
-     * The classname of the defaults object to instantiate if none is injected
-     * 
+     * The classname of the defaults object to instantiate if none is injected.
+     *
      * @var string
      */
     protected $requestDefaultsClass = ServiceSoapRequestDefaults::class;
 
     /**
-     * Classname/FQN of the SoapClient to use for calls
+     * Classname/FQN of the SoapClient to use for calls.
      *
      * @var string
      */
@@ -55,26 +56,32 @@ class SoapService extends AbstractService
     /**
      * The options to inject into the soap client
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $clientOptions = [];
 
     /**
      * Hash for checking whether client needs to be re-initialized
      *
-     * @var string
+     * @var string|null
      */
     protected $clientHash;
 
     /**
      * Default SoapClient options to set if not explicitly defined
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $soapOptionDefaults = [
         'exceptions' => true,
         'features'   => SOAP_SINGLE_ELEMENT_ARRAYS,
     ];
+
+
+    public function getClient(): SoapClient
+    {
+        return $this->client;
+    }
 
 
     /**
@@ -87,26 +94,18 @@ class SoapService extends AbstractService
         $this->applySoapHeaders();
 
         try {
-
-            if ( ! is_null($this->request->getBody())) {
-
+            if ($this->request->getBody() !== null) {
                 $response = $this->client->{$this->request->getMethod()}(
                     ($this->request->getBody() instanceof Arrayable)
                         ? $this->request->getBody()->toArray()
                         : $this->request->getBody()
                 );
-
             } else {
-
                 $response = $this->client->{$this->request->getMethod()}();
             }
-
         } catch (SoapFault $e) {
-
             throw $this->makeCouldNotRetrieveExceptionFromSoapFault($e);
-
         } catch (Exception $e) {
-
             throw $this->makeCouldNotRetrieveExceptionFromException($e);
         }
 
@@ -115,7 +114,7 @@ class SoapService extends AbstractService
                 $this->request->getLocation(),
                 $this->request->getMethod(),
                 $this->request->getParameters(),
-                ($this->sendResponseToEvent) ? $response : null
+                $this->sendResponseToEvent ? $response : null
             )
         );
 
@@ -131,11 +130,9 @@ class SoapService extends AbstractService
      * @param SoapFault $soapFault
      * @return CouldNotRetrieveException
      */
-    protected function makeCouldNotRetrieveExceptionFromSoapFault(SoapFault $soapFault)
+    protected function makeCouldNotRetrieveExceptionFromSoapFault(SoapFault $soapFault): Throwable
     {
-        $exception = new CouldNotRetrieveException($soapFault->getMessage(), $soapFault->getCode(), $soapFault);
-
-        return $exception;
+        return new CouldNotRetrieveException($soapFault->getMessage(), $soapFault->getCode(), $soapFault);
     }
 
     /**
@@ -145,24 +142,21 @@ class SoapService extends AbstractService
      * @param Exception $exception
      * @return CouldNotRetrieveException
      */
-    protected function makeCouldNotRetrieveExceptionFromException(Exception $exception)
+    protected function makeCouldNotRetrieveExceptionFromException(Exception $exception): Throwable
     {
         return new CouldNotRetrieveException($exception->getMessage(), $exception->getCode(), $exception);
     }
 
     /**
-     * Applies request's headers as soapheaders on the SoapClient
+     * Applies request's headers as soapheaders on the SoapClient.
      */
-    protected function applySoapHeaders()
+    protected function applySoapHeaders(): void
     {
         $headers = $this->request->getHeaders() ?: [];
 
         if ($headers instanceof SoapHeader) {
-
             $headers = [ $headers ];
-
         } else {
-
             foreach ($headers as &$header) {
                 if ($header instanceof SoapHeader) continue;
 
@@ -182,12 +176,12 @@ class SoapService extends AbstractService
     }
 
     /**
-     * Extracts information from SOAP client if tracing
+     * Extracts information from SOAP client if tracing.
      */
-    protected function parseTracedReponseInformation()
+    protected function parseTracedReponseInformation(): void
     {
         // nothing to set if we weren't tracing
-        if ( ! isset($this->clientOptions['trace']) || $this->clientOptions['trace'] !== true) {
+        if (! isset($this->clientOptions['trace']) || $this->clientOptions['trace'] !== true) {
             return;
         }
 
@@ -202,30 +196,33 @@ class SoapService extends AbstractService
         );
     }
 
-    protected function parseResponseHeaderForStatusCode($headers)
+    protected function parseResponseHeaderForStatusCode(string $headers): int
     {
-        if ( ! preg_match('#^\s*http/\d\.\d\s+(?<code>\d+)\s+#i', $headers, $matches)) {
+        if (! preg_match('#^\s*http/\d\.\d\s+(?<code>\d+)\s+#i', $headers, $matches)) {
             return 200;
         }
 
         return (int) $matches['code'];
     }
-    
+
     /**
-     * Parses a header string to an array
+     * Parses a header string to an array.
      *
      * @param null|string $headers
-     * @return array
+     * @return array<string, mixed>
      */
-    protected function parseResponseHeadersAsArray($headers)
+    protected function parseResponseHeadersAsArray(?string $headers): array
     {
-        if (empty($headers)) return [];
+        if (empty($headers)) {
+            return [];
+        }
 
         $headersArray = [];
 
         foreach (preg_split('#[\r\n]+#', $headers) as $headerString) {
-
-            if ( ! preg_match('#^\s*(?<name>.*?)\s*:\s*(?<value>.*)\s*$#', $headerString, $matches)) continue;
+            if (! preg_match('#^\s*(?<name>.*?)\s*:\s*(?<value>.*)\s*$#', $headerString, $matches)) {
+                continue;
+            }
 
             $headersArray[ $matches['name'] ] = $matches['value'];
         }
@@ -234,26 +231,27 @@ class SoapService extends AbstractService
     }
 
     /**
-     * Runs before any call is made
+     * Runs before any call is made.
      *
-     * Initializes SoapClient before first call is made or when changed settings require it
+     * Initializes SoapClient before first call is made or when changed settings require it.
      */
-    protected function before()
+    protected function before(): void
     {
-        if (    empty($this->client)
-            ||  empty($this->clientHash)
-            ||  $this->clientHash !== $this->makeSoapClientHash()
+        if (
+            empty($this->client)
+            || empty($this->clientHash)
+            || $this->clientHash !== $this->makeSoapClientHash()
         ) {
             $this->initializeClient();
         }
     }
 
     /**
-     * Initializes Soap Client with WSDL and an options array
+     * Initializes Soap Client with WSDL and an options array.
      *
      * @throws CouldNotConnectException
      */
-    protected function initializeClient()
+    protected function initializeClient(): void
     {
         // Store some specific soap-client related data locally
         // so it can be injected in the SoapClient and compared
@@ -268,32 +266,28 @@ class SoapService extends AbstractService
         $xdebugEnabled = extension_loaded('xdebug') && xdebug_is_enabled();
 
         try {
-
             // temporarily disable xdebug to prevent PHP Fatal error
             // while constructing SoapClient
 
-            if ($xdebugEnabled) xdebug_disable();
+            if ($xdebugEnabled) {
+                xdebug_disable();
+            }
 
             $class = $this->soapClientClass;
 
             $this->client = $this->getSoapClientFactory()->make($class, $this->wsdl, $this->clientOptions);
 
-            if ($xdebugEnabled) xdebug_enable();
-
+            if ($xdebugEnabled) {
+                xdebug_enable();
+            }
         } catch (SoapFault $e) {
-
             throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
-
-        } catch (Exception $e) {
-
+        } catch (Throwable $e) {
             throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    /**
-     * @return SoapFactoryInterface
-     */
-    protected function getSoapClientFactory()
+    protected function getSoapClientFactory(): SoapFactoryInterface
     {
         return app(SoapFactoryInterface::class);
     }
@@ -302,7 +296,7 @@ class SoapService extends AbstractService
      * Creates a hash from the combination of all settings that need to
      * be tracked to see whether a new soapclient should be instantiated
      */
-    protected function makeSoapClientHash()
+    protected function makeSoapClientHash(): string
     {
         return sha1(
             $this->request->getLocation()
@@ -311,11 +305,10 @@ class SoapService extends AbstractService
         );
     }
 
-
     /**
-     * Supplements request with soap options, in addition to the standard supplements
+     * Supplements request with soap options, in addition to the standard supplements.
      */
-    protected function supplementRequestWithDefaults()
+    protected function supplementRequestWithDefaults(): void
     {
         parent::supplementRequestWithDefaults();
 
@@ -329,27 +322,22 @@ class SoapService extends AbstractService
     /**
      * Checks the request to be used in the next/upcoming call
      */
-    protected function checkRequest()
+    protected function checkRequest(): void
     {
         parent::checkRequest();
 
-        if ( ! is_a($this->request, ServiceSoapRequest::class)) {
-
+        if (! $this->request instanceof ServiceSoapRequest) {
             throw new InvalidArgumentException("Request class is not a ServiceSoapRequest");
         }
     }
 
-    // ------------------------------------------------------------------------------
-    //      Getters, Setters and Configuration
-    // ------------------------------------------------------------------------------
-
     /**
-     * Runs directly after construction
-     * Extend this to customize your service
+     * Runs directly after construction.
+     * Extend this to customize your service.
      *
-     * Defaults to 'exceptions' option enabled
+     * Defaults to 'exceptions' option enabled.
      */
-    protected function initialize()
+    protected function initialize(): void
     {
         parent::initialize();
 
@@ -357,22 +345,11 @@ class SoapService extends AbstractService
         $options = $this->defaults->getOptions() ?: [];
 
         foreach ($this->soapOptionDefaults as $option => $value) {
-
-            if ( ! array_key_exists($option, $options)) {
-
+            if (! array_key_exists($option, $options)) {
                 $options[ $option ] = $value;
             }
         }
 
         $this->defaults->setOptions($options);
     }
-
-    /**
-     * @return SoapClient
-     */
-    public function getClient()
-    {
-        return $this->client;
-    }
-
 }

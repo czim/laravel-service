@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Responses;
 
 use Czim\DataObject\AbstractDataObject;
@@ -9,9 +10,14 @@ use Czim\Service\Contracts\ServiceResponseInterface;
  */
 class ServiceResponse extends AbstractDataObject implements ServiceResponseInterface
 {
-
+    /**
+     * @var bool
+     */
     protected $magicAssignment = false;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected $attributes = [
         'data'       => null,
         'statusCode' => 0,
@@ -21,13 +27,10 @@ class ServiceResponse extends AbstractDataObject implements ServiceResponseInter
 
     /**
      * @param mixed $data
-     * @return $this
      */
-    public function setData($data)
+    public function setData($data): void
     {
         $this->setAttribute('data', $data);
-
-        return $this;
     }
 
     /**
@@ -38,86 +41,48 @@ class ServiceResponse extends AbstractDataObject implements ServiceResponseInter
         return $this->getAttribute('data');
     }
 
-    /**
-     * @param int $code
-     * @return $this
-     */
-    public function setStatusCode($code)
+    public function setStatusCode(int $code): void
     {
         $this->setAttribute('statusCode', $code);
-
-        return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->getAttribute('statusCode') ?: 0;
     }
 
-
     /**
-     * Returns all errors listed
-     *
-     * @return array
+     * @return string[]
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->getAttribute('errors');
     }
 
     /**
-     * Sets all errors at once
-     *
-     * @param array $errors
-     * @return $this
+     * @param string[] $errors
      */
-    public function setErrors(array $errors)
+    public function setErrors(array $errors): void
     {
         $this->setAttribute('errors', $errors);
-
-        return $this;
     }
 
-    /**
-     * Adds a single error to the error list
-     *
-     * @param string $error
-     * @return $this
-     */
-    public function addError($error)
+    public function addError(string $error): void
     {
         $errors = $this->getAttribute('errors') ?: [];
 
         $errors[] = $error;
 
         $this->setAttribute('errors', $errors);
-
-        return $this;
     }
 
-    /**
-     * Returns succesfulness state of request
-     *
-     * @return bool
-     */
-    public function getSuccess()
+    public function getSuccess(): bool
     {
         return (bool) $this->getAttribute('success');
     }
 
-    /**
-     * Sets succesfulness state
-     *
-     * @param bool $success
-     * @return $this
-     */
-    public function setSuccess($success)
+    public function setSuccess(bool $success): void
     {
-        $this->setAttribute('success', (bool) $success);
-
-        return $this;
+        $this->setAttribute('success', $success);
     }
 }

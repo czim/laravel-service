@@ -1,11 +1,11 @@
 <?php
+
 namespace Czim\Service\Contracts;
 
 use Czim\Service\Exceptions\CouldNotInterpretXmlResponseException;
 
 interface XmlParserInterface
 {
-
     /**
      * Parses and/or cleans XML content into a (normalized) data format
      *
@@ -13,6 +13,5 @@ interface XmlParserInterface
      * @return mixed
      * @throws CouldNotInterpretXmlResponseException
      */
-    public function parse($xml);
-
+    public function parse(string $xml);
 }

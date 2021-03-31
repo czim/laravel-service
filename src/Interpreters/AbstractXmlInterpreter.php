@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Interpreters;
 
 use Czim\Service\Contracts\XmlObjectConverterInterface;
@@ -11,12 +12,9 @@ abstract class AbstractXmlInterpreter extends AbstractInterpreter
     protected $xmlConverter;
 
 
-    /**
-     * @param XmlObjectConverterInterface|null $xmlConverter
-     */
     public function __construct(XmlObjectConverterInterface $xmlConverter = null)
     {
-        if (is_null($xmlConverter)) {
+        if ($xmlConverter === null) {
             $xmlConverter = app(XmlObjectConverterInterface::class);
         }
 
@@ -24,5 +22,4 @@ abstract class AbstractXmlInterpreter extends AbstractInterpreter
 
         parent::__construct();
     }
-
 }

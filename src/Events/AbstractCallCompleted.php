@@ -1,26 +1,26 @@
 <?php
+
 namespace Czim\Service\Events;
 
 abstract class AbstractCallCompleted extends AbstractServiceEvent
 {
-
     /**
      * @var string
      */
     protected $type;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $address;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $method;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $parameters;
 
@@ -30,34 +30,25 @@ abstract class AbstractCallCompleted extends AbstractServiceEvent
     protected $response;
 
 
-    /**
-     * @return string
-     */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @return string
-     */
-    public function getAddress()
+    public function getAddress(): ?string
     {
         return $this->address;
     }
 
-    /**
-     * @return string
-     */
-    public function getMethod()
+    public function getMethod(): ?string
     {
         return $this->method;
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->parameters;
     }
@@ -69,5 +60,4 @@ abstract class AbstractCallCompleted extends AbstractServiceEvent
     {
         return $this->response;
     }
-
 }

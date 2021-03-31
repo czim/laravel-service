@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Interpreters;
 
 use Czim\Service\Exceptions\CouldNotInterpretJsonResponseException;
@@ -8,7 +9,6 @@ use Czim\Service\Exceptions\CouldNotInterpretJsonResponseException;
  */
 class BasicJsonInterpreter extends AbstractInterpreter
 {
-
     /**
      * Whether to decode as an associative array
      *
@@ -17,12 +17,9 @@ class BasicJsonInterpreter extends AbstractInterpreter
     protected $asArray = true;
 
 
-    /**
-     * @param bool|null $asArray
-     */
-    public function __construct($asArray = null)
+    public function __construct(?bool $asArray = null)
     {
-        if ( ! is_null($asArray)) {
+        if ($asArray !== null) {
             $this->asArray = $asArray;
         }
 
@@ -30,21 +27,19 @@ class BasicJsonInterpreter extends AbstractInterpreter
     }
 
 
-    protected function doInterpretation()
+    protected function doInterpretation(): void
     {
         $this->interpretedResponse->setSuccess(
-                $this->responseInformation->getStatusCode() > 199
-            &&  $this->responseInformation->getStatusCode() < 300
+            $this->responseInformation->getStatusCode() > 199
+            && $this->responseInformation->getStatusCode() < 300
         );
 
         $decoded = json_decode($this->response, $this->asArray);
 
-        if (is_null($decoded) && ! is_null($this->response)) {
-
+        if ($decoded === null && $this->response !== null) {
             throw new CouldNotInterpretJsonResponseException('Invalid JSON content in response');
         }
 
         $this->interpretedResponse->setData($decoded);
     }
-
 }

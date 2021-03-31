@@ -1,27 +1,31 @@
 <?php
+
 namespace Czim\Service\Contracts;
 
 interface ServiceInterface
 {
-
     /**
      * Performs a call on the service, returning an interpreted response
      *
-     * @param string $method        name of the method to call through the service
-     * @param mixed  $request       either: request object, or the request body
-     * @param mixed  $parameters    extra parameters to send along (optional)
-     * @param mixed  $headers       extra headers to send along (optional)
+     * @param string|null $method     name of the method to call through the service
+     * @param mixed|null  $request
+     * @param mixed|null  $parameters extra parameters to send along (optional)
+     * @param mixed|null  $headers    extra headers to send along (optional)
      * @return ServiceResponseInterface
      */
-    public function call($method, $request = null, $parameters = null, $headers = null);
+    public function call(
+        ?string $method,
+        $request = null,
+        $parameters = null,
+        array $headers = null
+    ): ServiceResponseInterface;
 
     /**
-     * Applies mass configuration to default request
+     * Applies mass configuration to default request.
      *
-     * @param array $config
-     * @return $this
+     * @param array<string, mixed> $config
      */
-    public function config(array $config);
+    public function config(array $config): void;
 
     /**
      * Returns the raw response data for the most recent call made
@@ -32,54 +36,49 @@ interface ServiceInterface
 
     /**
      * Returns best available response: interpreted if an interpreter
-     * is available, falls back to raw response
+     * is available, falls back to raw response.
      *
      * @return ServiceResponseInterface
      */
-    public function getLastInterpretedResponse();
+    public function getLastInterpretedResponse(): ServiceResponseInterface;
 
     /**
-     * Returns the extra information set during the execution of the last call
+     * Returns the extra information set during the execution of the last call.
      *
      * @return ServiceResponseInformationInterface
      */
-    public function getLastReponseInformation();
+    public function getLastReponseInformation(): ServiceResponseInformationInterface;
 
     /**
-     * Sets the default request data to supplement any requests with
+     * Sets the default request data to supplement any requests with.
      *
      * @param ServiceRequestDefaultsInterface $defaults
-     * @return $this
      */
-    public function setRequestDefaults(ServiceRequestDefaultsInterface $defaults);
+    public function setRequestDefaults(ServiceRequestDefaultsInterface $defaults): void;
 
     /**
-     * Returns the default request data
+     * Returns the default request data.
      *
      * @return ServiceRequestDefaultsInterface
      */
-    public function getRequestDefaults();
+    public function getRequestDefaults(): ServiceRequestDefaultsInterface;
 
     /**
-     * Sets the service response interpreter
+     * Sets the service response interpreter.
      *
      * @param ServiceInterpreterInterface $interpreter
-     * @return $this
      */
-    public function setInterpreter(ServiceInterpreterInterface $interpreter);
+    public function setInterpreter(ServiceInterpreterInterface $interpreter): void;
 
     /**
      * Returns the service response interpreter instance
      *
      * @return ServiceInterpreterInterface
      */
-    public function getInterpreter();
+    public function getInterpreter(): ServiceInterpreterInterface;
 
     /**
      * Frees up memory where possible
-     *
-     * @return $this
      */
-    public function free();
-
+    public function free(): void;
 }

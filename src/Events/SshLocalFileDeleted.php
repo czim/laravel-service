@@ -1,9 +1,9 @@
 <?php
+
 namespace Czim\Service\Events;
 
 class SshLocalFileDeleted extends AbstractServiceEvent
 {
-
     /**
      * @var string
      */
@@ -17,13 +17,7 @@ class SshLocalFileDeleted extends AbstractServiceEvent
     protected $localPath;
 
 
-    /**
-     * Create a new event instance.
-     *
-     * @param string $filename
-     * @param string $localPath
-     */
-    public function __construct($filename, $localPath)
+    public function __construct(string $filename, string $localPath)
     {
         $this->filename  = $filename;
         $this->localPath = $localPath;
@@ -32,28 +26,20 @@ class SshLocalFileDeleted extends AbstractServiceEvent
     /**
      * Get the channels the event should be broadcast on.
      *
-     * @return array
+     * @return string[]
      */
-    public function broadcastOn()
+    public function broadcastOn(): array
     {
         return [];
     }
 
-
-    /**
-     * @return string
-     */
-    public function getFilename()
+    public function getFilename(): string
     {
         return $this->filename;
     }
 
-    /**
-     * @return string
-     */
-    public function getLocalPath()
+    public function getLocalPath(): string
     {
         return $this->localPath;
     }
-
 }

@@ -1,18 +1,18 @@
 <?php
+
 namespace Czim\Service\Exceptions;
 
-use Exception;
+use RuntimeException;
 
-class CouldNotRetrieveException extends Exception
+class CouldNotRetrieveException extends RuntimeException
 {
     /**
-     * @var array
+     * @var string[]
      */
     protected $errors = [];
 
-
     /**
-     * @param array $errors
+     * @param string[] $errors
      */
     public function setErrors(array $errors)
     {
@@ -20,11 +20,10 @@ class CouldNotRetrieveException extends Exception
     }
 
     /**
-     * @return array
+     * @return string[]
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
-
 }

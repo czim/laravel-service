@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Responses;
 
 use Czim\Service\Contracts\ServiceResponseInformationInterface;
@@ -9,49 +10,28 @@ use Czim\Service\Contracts\ServiceResponseInformationInterface;
  */
 class ServiceResponseInformation extends ServiceResponse implements ServiceResponseInformationInterface
 {
-
     /**
-     * Sets response headers
-     *
-     * @param array $headers
-     * @return $this
+     * @param array<string, mixed> $headers
      */
-    public function setHeaders(array $headers)
+    public function setHeaders(array $headers): void
     {
         $this->setAttribute('headers', $headers);
-
-        return $this;
     }
 
     /**
-     * Returns response headers
-     *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->getAttribute('headers') ?: [];
     }
 
-    /**
-     * Sets the message or reason phrase
-     *
-     * @param $message
-     * @return $this
-     */
-    public function setMessage($message)
+    public function setMessage(?string $message): void
     {
-        if ( ! is_null($message)) $message = (string) $message;
-
         $this->setAttribute('message', $message);
-
-        return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getMessage()
+    public function getMessage(): ?string
     {
         return $this->getAttribute('message');
     }

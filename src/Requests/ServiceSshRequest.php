@@ -1,21 +1,25 @@
 <?php
+
 namespace Czim\Service\Requests;
 
 use Closure;
 use Czim\Service\Contracts\ServiceSshRequestInterface;
 
 /**
- * Request for SshFileService and MultiFileService
+ * Request for SshFileService and MultiFileService.
  *
- * @property string        $path
- * @property string        $local_path
- * @property string        $pattern
- * @property string        $fingerprint
- * @property null|\Closure $files_callback
- * @property boolean       $do_cleanup
+ * @property string|null  $path
+ * @property string|null  $local_path
+ * @property string|null  $pattern
+ * @property string|null  $fingerprint
+ * @property Closure|null $files_callback
+ * @property bool|null    $do_cleanup
  */
 class ServiceSshRequest extends ServiceRequest implements ServiceSshRequestInterface
 {
+    /**
+     * @var array<string, mixed>
+     */
     protected $attributes = [
         'location'       => null,
         'port'           => null,
@@ -39,145 +43,126 @@ class ServiceSshRequest extends ServiceRequest implements ServiceSshRequestInter
 
 
     /**
-     * Returns the path on the SSH server to use as a base
+     * Returns the path on the SSH server to use as a base.
      *
-     * @return string
+     * @return string|null
      */
-    public function getPath()
+    public function getPath(): ?string
     {
         return $this->getAttribute('path');
     }
 
     /**
-     * Sets the path on the SSH server
+     * Sets the path on the SSH server.
      *
-     * @param string $path
-     * @return $this
+     * @param string|null $path
      */
-    public function setPath($path)
+    public function setPath(?string $path): void
     {
-        $this->setAttribute('path', (string) $path);
-
-        return $this;
+        $this->setAttribute('path', $path);
     }
 
     /**
-     * Returns the path to locally store SSH-retrieved files (if any)
+     * Returns the path to locally store SSH-retrieved files (if any).
      *
-     * @return string
+     * @return string|null
      */
-    public function getLocalPath()
+    public function getLocalPath(): ?string
     {
         return $this->getAttribute('local_path');
     }
 
     /**
-     * Sets the localPath
+     * Sets the localPath.
      *
-     * @param string $localPath
-     * @return $this
+     * @param string|null $localPath
      */
-    public function setLocalPath($localPath)
+    public function setLocalPath(?string $localPath): void
     {
-        $this->setAttribute('local_path', (string) $localPath);
-
-        return $this;
+        $this->setAttribute('local_path', $localPath);
     }
 
     /**
-     * Returns the (glob) pattern to apply when picking files for download
+     * Returns the (glob) pattern to apply when picking files for download.
      *
-     * @return string
+     * @return string|null
      */
-    public function getPattern()
+    public function getPattern(): ?string
     {
         return $this->getAttribute('pattern');
     }
 
     /**
-     * Sets the pattern for selection of external files
+     * Sets the pattern for selection of external files.
      *
-     * @param string $pattern
-     * @return $this
+     * @param string|null $pattern
      */
-    public function setPattern($pattern)
+    public function setPattern(?string $pattern): void
     {
-        $this->setAttribute('pattern', (string) $pattern);
-
-        return $this;
+        $this->setAttribute('pattern', $pattern);
     }
 
     /**
-     * Returns the expected server fingerprint
+     * Returns the expected server fingerprint.
      *
-     * @return string
+     * @return string|null
      */
-    public function getFingerprint()
+    public function getFingerprint(): ?string
     {
         return $this->getAttribute('fingerprint');
     }
 
     /**
-     * Sets the fingerprint
-     * This is optional, and only used when set to perform a security check to verify the host
+     * Sets the fingerprint.
+     * This is optional, and only used when set to perform a security check to verify the host.
      *
-     * @param string $fingerprint
-     * @return $this
+     * @param string|null $fingerprint
      */
-    public function setFingerprint($fingerprint)
+    public function setFingerprint(?string $fingerprint): void
     {
         $this->setAttribute('fingerprint', (string) $fingerprint);
-
-        return $this;
     }
 
     /**
-     * Returns the closure to run over the files array to retrieve/parse
-     * This should be a function that takes an array of strings and returns an array of strings
+     * Returns the closure to run over the files array to retrieve/parse.
+     * This should be a function that takes an array of strings and returns an array of strings.
      *
-     * @return null|Closure
+     * @return Closure|null
      */
-    public function getFilesCallback()
+    public function getFilesCallback(): ?Closure
     {
         return $this->getAttribute('files_callback');
     }
 
     /**
-     * Sets the closure to run over the files array for retrieval and/or parsing (if local)
-     * This should be a function that takes an array of strings and returns an array of strings
+     * Sets the closure to run over the files array for retrieval and/or parsing (if local).
+     * This should be a function that takes an array of strings and returns an array of strings.
      *
-     * @param null|Closure $callback
-     * @return $this
+     * @param Closure|null $callback
      */
-    public function setFilesCallback(Closure $callback = null)
+    public function setFilesCallback(?Closure $callback = null): void
     {
         $this->setAttribute('files_callback', $callback);
-
-        return $this;
     }
 
     /**
-     * Returns whether old (local) files should be deleted after downloading new
-     * ones. Cleanup function, only used for ssh file service.
+     * Returns whether old (local) files should be deleted after downloading new ones.
+     * Cleanup function, only used for ssh file service.
      *
-     * @return boolean
+     * @return bool
      */
-    public function getDoCleanup()
+    public function getDoCleanup(): bool
     {
-        return $this->getAttribute('do_cleanup');
+        return (bool) $this->getAttribute('do_cleanup');
     }
 
     /**
-     * Sets whether old files cleanup should be done after retrieval
+     * Sets whether old files cleanup should be done after retrieval.
      *
-     * @param boolean $enable
-     * @return $this
+     * @param bool $enable
      */
-    public function setDoCleanup($enable)
+    public function setDoCleanup(bool $enable): void
     {
-        $this->setAttribute('do_cleanup', (boolean) $enable);
-
-        return $this;
+        $this->setAttribute('do_cleanup', $enable);
     }
-
 }

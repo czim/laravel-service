@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\ServiceInterpreterInterface;
@@ -10,22 +11,17 @@ use Illuminate\Filesystem\Filesystem;
 
 class FileService extends AbstractService
 {
-
     /**
      * @var Filesystem
      */
     protected $files;
 
 
-    /**
-     * @param Filesystem                  $files
-     * @param ServiceInterpreterInterface $interpreter
-     */
     public function __construct(
         Filesystem $files = null,
         ServiceInterpreterInterface $interpreter = null
     ) {
-        if (is_null($files)) {
+        if ($files === null) {
             $files = app(Filesystem::class);
         }
 
@@ -45,15 +41,10 @@ class FileService extends AbstractService
         $path = $this->makeFilePathFromRequest($request);
 
         try {
-
             $response = $this->files->get($path);
-
         } catch (FileNotFoundException $e) {
-
             throw new CouldNotConnectException("Local file could not be found: '{$path}'");
-
         } catch (Exception $e) {
-
             throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
         }
 
@@ -70,23 +61,25 @@ class FileService extends AbstractService
      * @return string
      * @throws CouldNotConnectException
      */
-    protected function makeFilePathFromRequest(ServiceRequestInterface $request)
+    protected function makeFilePathFromRequest(ServiceRequestInterface $request): string
     {
         $location = $request->getLocation();
         $method   = $request->getMethod();
 
-        if ( ! empty($location) && ! empty($method)) {
-
+        if (! empty($location) && ! empty($method)) {
             return rtrim($location(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $method();
         }
 
-        if ( ! empty($location)) return $location;
+        if (! empty($location)) {
+            return $location;
+        }
 
-        if ( ! empty($method)) return $method;
+        if (! empty($method)) {
+            return $method;
+        }
 
         throw new CouldNotConnectException(
             'No path given for FileService. Set a location and/or method to build a valid path.'
         );
     }
-
 }

@@ -1,36 +1,32 @@
 <?php
+
 namespace Czim\Service\Contracts;
 
 interface ServiceResponseInformationInterface extends ServiceResponseInterface
 {
+    /**
+     * Sets response headers.
+     *
+     * @param array<string, mixed> $headers
+     */
+    public function setHeaders(array $headers): void;
 
     /**
-     * Sets response headers
+     * Returns response headers.
      *
-     * @param array $headers
-     * @return $this
+     * @return array<string, mixed>
      */
-    public function setHeaders(array $headers);
-
-    /**
-     * Returns response headers
-     *
-     * @return array
-     */
-    public function getHeaders();
-
+    public function getHeaders(): array;
 
     /**
      * Sets the message or reason phrase
      *
-     * @param $message
-     * @return $this
+     * @param string|null $message
      */
-    public function setMessage($message);
+    public function setMessage(?string $message): void;
 
     /**
      * @return string|null
      */
-    public function getMessage();
-
+    public function getMessage(): ?string;
 }

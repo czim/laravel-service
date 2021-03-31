@@ -1,24 +1,30 @@
 <?php
+
 namespace Czim\Service\Requests;
 
 use Czim\DataObject\AbstractDataObject;
 use Czim\Service\Contracts\ServiceRequestInterface;
 
 /**
- * @property string   $location
- * @property int      $port
- * @property string   $method
- * @property mixed    $parameters
- * @property mixed[]  $headers
- * @property mixed    $body
- * @property string[] $credentials
- * @property array    $options      key-value pairs
+ * @property string               $location
+ * @property int                  $port
+ * @property string               $method
+ * @property mixed                $parameters
+ * @property array<string, mixed> $headers
+ * @property mixed                $body
+ * @property string[]             $credentials
+ * @property array<string, mixed> $options      key-value pairs
  */
 class ServiceRequest extends AbstractDataObject implements ServiceRequestInterface
 {
-
+    /**
+     * @var bool
+     */
     protected $magicAssignment = false;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected $attributes = [
         'location'    => null,
         'port'        => null,
@@ -36,24 +42,28 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
 
 
     /**
-     * @param mixed   $body
-     * @param mixed   $parameters
-     * @param mixed[] $headers
-     * @param string  $method
-     * @param string  $location
-     * @param array   $options
+     * @param mixed                     $body
+     * @param mixed                     $parameters
+     * @param array<string, mixed>|null $headers
+     * @param string|null               $method
+     * @param string|null               $location
+     * @param array<string, mixed>      $options
      */
     public function __construct(
         $body = null,
         $parameters = null,
         array $headers = null,
-        $method = null,
-        $location = null,
-        $options = []
+        ?string $method = null,
+        ?string $location = null,
+        array $options = []
     ) {
         $this->setBody($body);
         $this->setParameters($parameters);
-        if ( ! is_null($headers)) $this->setHeaders($headers);
+
+        if ($headers !== null) {
+            $this->setHeaders($headers);
+        }
+
         $this->setMethod($method);
         $this->setLocation($location);
         $this->setOptions($options);
@@ -64,9 +74,9 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     /**
      * Returns the base URL or WSDL for the service, if it is set in the request.
      *
-     * @return string
+     * @return string|null
      */
-    public function getLocation()
+    public function getLocation(): ?string
     {
         return $this->getAttribute('location');
     }
@@ -75,14 +85,11 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
      * Sets the base URL or WSDL location for the service, as an optional override
      * for the service configuration.
      *
-     * @param string $location
-     * @return $this
+     * @param string|null $location
      */
-    public function setLocation($location)
+    public function setLocation(?string $location): void
     {
-        $this->setAttribute('location', (string) $location);
-
-        return $this;
+        $this->setAttribute('location', $location);
     }
 
     /**
@@ -90,52 +97,46 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
      *
      * Note that this does NOT refer to the HTTP method.
      *
-     * @return string
+     * @return string|null
      */
-    public function getMethod()
+    public function getMethod(): ?string
     {
         return $this->getAttribute('method');
     }
 
     /**
-     * Sets the method name
+     * Sets the method name.
      *
      * If this is a HTTP-based call, this should be the path that will be appended to
      * the base URI of the service. For SOAP services, it should be the actual method name.
      *
      * Note that this does NOT refer to the HTTP method.
      *
-     * @param string $method
-     * @return $this
+     * @param string|null $method
      */
-    public function setMethod($method)
+    public function setMethod(?string $method): void
     {
-        $this->setAttribute('method', (string) $method);
-
-        return $this;
+        $this->setAttribute('method', $method);
     }
 
     /**
-     * Returns headers to be sent with the request
+     * Returns headers to be sent with the request.
      *
-     * @return mixed[]
+     * @return array<string, mixed>
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->getAttribute('headers') ?: [];
     }
 
     /**
-     * Sets request headers
+     * Sets request headers.
      *
-     * @param mixed[] $headers
-     * @return $this
+     * @param array<string, mixed> $headers
      */
-    public function setHeaders(array $headers)
+    public function setHeaders(array $headers): void
     {
         $this->setAttribute('headers', $headers);
-
-        return $this;
     }
 
     /**
@@ -150,20 +151,17 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     }
 
     /**
-     * Sets the request parameters
+     * Sets the request parameters.
      *
-     * @param array|object $parameters
-     * @return mixed
+     * @param mixed[]|object $parameters
      */
     public function setParameters($parameters)
     {
         $this->setAttribute('parameters', $parameters);
-
-        return $this;
     }
 
     /**
-     * Returns request body to be sent with the request
+     * Returns request body to be sent with the request.
      *
      * @return mixed
      */
@@ -173,24 +171,21 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     }
 
     /**
-     * Sets the request body
+     * Sets the request body.
      *
      * @param mixed $body
-     * @return $this
      */
-    public function setBody($body)
+    public function setBody($body): void
     {
         $this->setAttribute('body', $body);
-
-        return $this;
     }
 
     /**
-     * Returns the credentials for authorization
+     * Returns the credentials for authorization.
      *
-     * @return array    associative: 'name', 'password', 'domain'
+     * @return array<string, string> associative: 'name', 'password', 'domain'
      */
-    public function getCredentials()
+    public function getCredentials(): array
     {
         return $this->getAttribute('credentials') ?: [];
     }
@@ -198,12 +193,11 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     /**
      * Sets the credentials to be used for the request.
      *
-     * @param string $name
-     * @param string $password  optional
-     * @param string $domain    optional, for NTLM and similar
-     * @return $this
+     * @param string      $name
+     * @param string|null $password
+     * @param string|null $domain    NTLM and similar
      */
-    public function setCredentials($name, $password = null, $domain = null)
+    public function setCredentials(string $name, ?string $password = null, ?string $domain = null): void
     {
         $credentials = $this->getCredentials();
 
@@ -212,16 +206,14 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
         $credentials['domain']   = $domain;
 
         $this->setAttribute('credentials', $credentials);
-
-        return $this;
     }
 
     /**
-     * Returns client-specific options (such as for SOAP)
+     * Returns client-specific options (such as for SOAP).
      *
-     * @return mixed[]
+     * @return array<string, mixed>
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->getAttribute('options') ?: [];
     }
@@ -229,14 +221,11 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     /**
      * Sets request client-specific options
      *
-     * @param mixed[] $options
-     * @return $this
+     * @param array<string, mixed> $options
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): void
     {
         $this->setAttribute('options', $options);
-
-        return $this;
     }
 
     /**
@@ -245,7 +234,7 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
      *
      * @return int|null
      */
-    public function getPort()
+    public function getPort(): ?int
     {
         return $this->getAttribute('port');
     }
@@ -254,15 +243,9 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
      * Sets the port number
      *
      * @param int|null $port
-     * @return $this
      */
-    public function setPort($port)
+    public function setPort(?int $port): void
     {
-        if ( ! is_null($port)) $port = (int) $port;
-
         $this->setAttribute('port', $port);
-
-        return $this;
     }
-
 }

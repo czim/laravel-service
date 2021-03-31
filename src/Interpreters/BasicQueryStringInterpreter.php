@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Interpreters;
 
 /**
@@ -6,7 +7,6 @@ namespace Czim\Service\Interpreters;
  */
 class BasicQueryStringInterpreter extends AbstractInterpreter
 {
-
     /**
      * Whether to decode as an associative array
      *
@@ -15,12 +15,9 @@ class BasicQueryStringInterpreter extends AbstractInterpreter
     protected $asArray = true;
 
 
-    /**
-     * @param bool|null $asArray
-     */
     public function __construct($asArray = null)
     {
-        if ( ! is_null($asArray)) {
+        if ($asArray !== null) {
             $this->asArray = $asArray;
         }
 
@@ -28,32 +25,29 @@ class BasicQueryStringInterpreter extends AbstractInterpreter
     }
 
 
-    protected function doInterpretation()
+    protected function doInterpretation(): void
     {
         $this->interpretedResponse->setSuccess(
-                $this->responseInformation->getStatusCode() > 199
-            &&  $this->responseInformation->getStatusCode() < 300
+            $this->responseInformation->getStatusCode() > 199
+            && $this->responseInformation->getStatusCode() < 300
         );
 
         $decoded = $this->decodeQueryString($this->response);
 
-
-        if ( ! $this->asArray) {
-
+        if (! $this->asArray) {
             $decoded = (object) $decoded;
         }
-
 
         $this->interpretedResponse->setData($decoded);
     }
 
     /**
-     * Decodes a query string to an array
+     * Decodes a query string to an array.
      *
-     * @param $string
+     * @param string $string
      * @return array
      */
-    protected function decodeQueryString($string)
+    protected function decodeQueryString(string $string): array
     {
         $responseArray = [];
 
@@ -61,5 +55,4 @@ class BasicQueryStringInterpreter extends AbstractInterpreter
 
         return $responseArray;
     }
-
 }

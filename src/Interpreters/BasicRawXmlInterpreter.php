@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Interpreters;
 
 use Czim\Service\Contracts\XmlObjectConverterInterface;
@@ -9,7 +10,6 @@ use Czim\Service\Contracts\XmlParserInterface;
  */
 class BasicRawXmlInterpreter extends AbstractXmlInterpreter
 {
-
     /**
      * Whether to decode as an associative array
      *
@@ -24,20 +24,20 @@ class BasicRawXmlInterpreter extends AbstractXmlInterpreter
 
 
     /**
-     * @param bool|null                   $asArray
-     * @param XmlParserInterface          $xmlParser
-     * @param XmlObjectConverterInterface $xmlConverter
+     * @param bool|null                        $asArray
+     * @param XmlParserInterface|null          $xmlParser
+     * @param XmlObjectConverterInterface|null $xmlConverter
      */
     public function __construct(
-        $asArray = null,
+        ?bool $asArray = null,
         XmlParserInterface $xmlParser = null,
         XmlObjectConverterInterface $xmlConverter = null
     ) {
-        if ( ! is_null($asArray)) {
+        if ($asArray !== null) {
             $this->asArray = $asArray;
         }
 
-        if (is_null($xmlParser)) {
+        if ($xmlParser === null) {
             $xmlParser = app(XmlParserInterface::class);
         }
 
@@ -47,11 +47,11 @@ class BasicRawXmlInterpreter extends AbstractXmlInterpreter
     }
 
 
-    protected function doInterpretation()
+    protected function doInterpretation(): void
     {
         $this->interpretedResponse->setSuccess(
-                $this->responseInformation->getStatusCode() > 199
-            &&  $this->responseInformation->getStatusCode() < 300
+            $this->responseInformation->getStatusCode() > 199
+            && $this->responseInformation->getStatusCode() < 300
         );
 
         $this->response = $this->xmlParser->parse($this->response);
@@ -64,5 +64,4 @@ class BasicRawXmlInterpreter extends AbstractXmlInterpreter
             $this->response
         );
     }
-
 }

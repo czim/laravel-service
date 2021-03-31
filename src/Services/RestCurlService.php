@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\ServiceRequestInterface;
@@ -12,7 +13,6 @@ use Czim\Service\Exceptions\CouldNotConnectException;
 class RestCurlService extends AbstractService
 {
     const USER_AGENT = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)";
-
 
     /**
      * The method to use for the HTTP call
@@ -31,9 +31,36 @@ class RestCurlService extends AbstractService
     /**
      * HTTP headers
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $headers = [];
+
+
+    public function setMethod(string $method): void
+    {
+        $this->method = $method;
+    }
+
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    /**
+     * Disables basic authentication, even if credentials are provided.
+     */
+    public function disableBasicAuth(): void
+    {
+        $this->basicAuth = false;
+    }
+
+    /**
+     * Enables basic authentication, uses the request's credentials.
+     */
+    public function enableBasicAuth(): void
+    {
+        $this->basicAuth = true;
+    }
 
 
     /**
@@ -56,9 +83,10 @@ class RestCurlService extends AbstractService
 
         $credentials = $request->getCredentials();
 
-        if (    $this->basicAuth
-            &&  ! empty($credentials['name'])
-            &&  ! empty($credentials['password'])
+        if (
+            $this->basicAuth
+            && ! empty($credentials['name'])
+            && ! empty($credentials['password'])
         ) {
             curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($curl, CURLOPT_USERPWD, $credentials['name'] . ":" . $credentials['password']);
@@ -68,23 +96,20 @@ class RestCurlService extends AbstractService
 
 
         switch ($this->method) {
-
             case RestService::METHOD_PATCH:
             case RestService::METHOD_POST:
             case RestService::METHOD_PUT:
-
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($request->getBody() ?: []));
 
                 $parameters = $request->getParameters();
 
-                if ( ! empty($parameters)) {
+                if (! empty($parameters)) {
                     $url .= '?' . http_build_query($request->getParameters());
                 }
                 break;
 
             case RestService::METHOD_GET:
-
                 $parameters = $request->getbody();
 
                 $url .= '?' . http_build_query($parameters ?: []);
@@ -95,7 +120,6 @@ class RestCurlService extends AbstractService
 
 
         if (count($headers)) {
-
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         }
 
@@ -119,51 +143,10 @@ class RestCurlService extends AbstractService
             new RestCallCompleted(
                 $url,
                 isset($parameters) ? $parameters : [],
-                ($this->sendResponseToEvent) ? $response : null
+                $this->sendResponseToEvent ? $response : null
             )
         );
 
         return $response;
     }
-
-
-    // ------------------------------------------------------------------------------
-    //      Getters, Setters and Configuration
-    // ------------------------------------------------------------------------------
-
-    /**
-     * @param string $method GET, POST, etc
-     * @return $this
-     */
-    public function setMethod($method)
-    {
-        $this->method = (string) $method;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMethod()
-    {
-        return $this->method;
-    }
-
-    /**
-     * Disables basic authentication, even if credentials are provided
-     */
-    public function disableBasicAuth()
-    {
-        $this->basicAuth = false;
-    }
-
-    /**
-     * Enables basic authentication, uses the request's credentials
-     */
-    public function enableBasicAuth()
-    {
-        $this->basicAuth = true;
-    }
-    
 }

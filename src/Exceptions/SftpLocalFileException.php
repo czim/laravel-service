@@ -1,8 +1,9 @@
 <?php
+
 namespace Czim\Service\Exceptions;
 
-use Exception;
+use RuntimeException;
 
-class SftpLocalFileException extends Exception
+class SftpLocalFileException extends RuntimeException
 {
 }

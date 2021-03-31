@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Interpreters;
 
 use Czim\Service\Contracts\ServiceInterpreterInterface;
@@ -10,7 +11,6 @@ use Czim\Service\Responses\ServiceResponseInformation;
 
 abstract class AbstractInterpreter implements ServiceInterpreterInterface
 {
-
     /**
      * The request that was sent to get the raw response
      *
@@ -48,19 +48,19 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
     }
 
     /**
-     * @param ServiceRequestInterface             $request
-     * @param mixed                               $response
-     * @param ServiceResponseInformationInterface $responseInformation  optional
+     * @param ServiceRequestInterface                  $request
+     * @param mixed                                    $response
+     * @param ServiceResponseInformationInterface|null $responseInformation optional
      * @return ServiceResponseInterface
      */
     public function interpret(
         ServiceRequestInterface $request,
         $response,
         ServiceResponseInformationInterface $responseInformation = null
-    ) {
+    ): ServiceResponseInterface {
         $this->resetInterpretedResponse();
 
-        if (is_null($responseInformation)) {
+        if ($responseInformation === null) {
             $responseInformation = app(ServiceResponseInformation::class);
         } else {
             $this->interpretedResponse->setStatusCode( $responseInformation->getStatusCode() );
@@ -82,10 +82,9 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
     }
 
     /**
-     * Resets/initializes the interpreted response to a fresh instance
-     * with default values
+     * Resets/initializes the interpreted response to a fresh instance with default values
      */
-    protected function resetInterpretedResponse()
+    protected function resetInterpretedResponse(): void
     {
         $this->interpretedResponse = app(ServiceResponse::class);
 
@@ -96,9 +95,9 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
 
 
     /**
-     * Cleans up the interpreter instance after interpretation process has completed
+     * Cleans up the interpreter instance after interpretation process has completed.
      */
-    protected function cleanUp()
+    protected function cleanUp(): void
     {
         unset($this->request);
         unset($this->response);
@@ -110,10 +109,10 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
     // ------------------------------------------------------------------------------
 
     /**
-     * Handles the interpretation
-     * This should update/modify the interpretedResponse property
+     * Handles the interpretation.
+     * This should update/modify the interpretedResponse property.
      */
-    abstract protected function doInterpretation();
+    abstract protected function doInterpretation(): void;
 
 
     // ------------------------------------------------------------------------------
@@ -121,27 +120,26 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
     // ------------------------------------------------------------------------------
 
     /**
-     * Called right after construction
-     * Extend this to customize your response interpreter
+     * Called right after construction.
+     * Extend this to customize your response interpreter.
      */
-    protected function initialize()
+    protected function initialize(): void
     {
     }
 
     /**
-     * Called before doInterpretation()
-     * Extend this to customize your response interpreter
+     * Called before doInterpretation().
+     * Extend this to customize your response interpreter.
      */
-    protected function before()
+    protected function before(): void
     {
     }
 
     /**
-     * Called after doInterpretation(), before returning the result for the interpret() method
-     * Extend this to customize your response interpreter
+     * Called after doInterpretation(), before returning the result for the interpret() method.
+     * Extend this to customize your response interpreter.
      */
-    protected function after()
+    protected function after(): void
     {
     }
-
 }

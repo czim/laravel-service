@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Interpreters;
 
 /**
@@ -7,5 +8,4 @@ namespace Czim\Service\Interpreters;
 class BasicSoapXmlAsArrayInterpreter extends BasicSoapXmlInterpreter
 {
     protected $asArray = true;
-
 }

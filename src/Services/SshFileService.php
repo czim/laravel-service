@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Services;
 
 use Closure;
@@ -11,6 +12,7 @@ use Czim\Service\Exceptions\CouldNotConnectException;
 use Czim\Service\Exceptions\EmptyRetrievedDataException;
 use Czim\Service\Exceptions\Ssh2ConnectionException;
 use Illuminate\Filesystem\Filesystem;
+use RuntimeException;
 
 /**
  * For retrieving content from (combined) files served on an SSH2 server.
@@ -22,7 +24,6 @@ use Illuminate\Filesystem\Filesystem;
  */
 class SshFileService extends MultiFileService
 {
-
     /**
      * @var Ssh2SftpConnectionInterface
      */
@@ -30,10 +31,10 @@ class SshFileService extends MultiFileService
 
 
     /**
-     * @param Filesystem                  $files
-     * @param ServiceInterpreterInterface $interpreter
-     * @param ResponseMergerInterface     $responseMerger
-     * @param Ssh2SftpConnectionInterface $sshConnection        optional
+     * @param Filesystem|null                  $files
+     * @param ServiceInterpreterInterface|null $interpreter
+     * @param ResponseMergerInterface|null     $responseMerger
+     * @param Ssh2SftpConnectionInterface|null $sshConnection
      */
     public function __construct(
         Filesystem $files = null,
@@ -41,7 +42,7 @@ class SshFileService extends MultiFileService
         ResponseMergerInterface $responseMerger = null,
         Ssh2SftpConnectionInterface $sshConnection = null
     ) {
-        if ( ! is_null($sshConnection)) {
+        if ($sshConnection !== null) {
             $this->ssh = $sshConnection;
         }
 
@@ -51,20 +52,20 @@ class SshFileService extends MultiFileService
 
     /**
      * Retrieves files from external (or local) source and returns the
-     * paths to all of the files as an array
+     * paths to all of the files as an array.
      *
      * The pattern will be used if non-empty; the fallback value will be the method,
      * which might be used to indicate an exact file match.
      *
-     * @return array assoc filename => full path
+     * @return array<string, string> filename => full path
      * @throws CouldNotConnectException
      * @throws EmptyRetrievedDataException
      */
-    protected function retrieveFiles()
+    protected function retrieveFiles(): array
     {
         $localFiles = [];
 
-        // connect
+        // Connect
         if (empty($this->ssh)) {
             $this->initializeSsh();
         }
@@ -74,18 +75,19 @@ class SshFileService extends MultiFileService
         $localPath = rtrim($this->request->getLocalPath(), DIRECTORY_SEPARATOR);
         $callback  = $this->request->getFilesCallback();
 
-        // list all files in path
+        // List all files in path
         $files = $this->ssh->listFiles($path);
 
         if ($callback instanceof Closure) {
             $files = $callback($files);
         }
 
-        // retrieve files that match the pattern (or all if no pattern given)
+        // Retrieve files that match the pattern (or all if no pattern given)
         foreach ($files as $file) {
-
             // skip files not matching pattern, IF pattern is set
-            if ( ! empty($pattern) && ! fnmatch($pattern, $file)) continue;
+            if (! empty($pattern) && ! fnmatch($pattern, $file)) {
+                continue;
+            }
 
             $this->ssh->downloadFile($path . DIRECTORY_SEPARATOR . $file, $localPath . DIRECTORY_SEPARATOR . $file);
 
@@ -93,8 +95,7 @@ class SshFileService extends MultiFileService
         }
 
 
-        if ( ! count($localFiles)) {
-
+        if (! count($localFiles)) {
             throw new EmptyRetrievedDataException(
                 "No files retrieved for pattern '{$pattern}' in local path: '{$localPath}', "
                 . "retrieved from remote path: '{$path}'."
@@ -102,9 +103,8 @@ class SshFileService extends MultiFileService
         }
 
 
-        // do cleanup by deleting any files in the local directory that were not downloaded
+        // Do cleanup by deleting any files in the local directory that were not downloaded
         if ($this->request->getDoCleanup()) {
-
             $this->cleanupLocalFiles($localFiles);
         }
 
@@ -112,11 +112,11 @@ class SshFileService extends MultiFileService
     }
 
     /**
-     * Removes locally files that are not newly downloaded
+     * Removes locally files that are not newly downloaded.
      *
      * @param string[] $newFiles
      */
-    protected function cleanupLocalFiles(array $newFiles)
+    protected function cleanupLocalFiles(array $newFiles): void
     {
         $localPath = rtrim($this->request->getLocalPath(), DIRECTORY_SEPARATOR);
 
@@ -124,24 +124,24 @@ class SshFileService extends MultiFileService
         $deleteFiles = array_diff($this->files->files($localPath), $newFiles);
 
         foreach ($deleteFiles as $file) {
-
-            if ( ! $this->files->delete($file)) {
-                throw new \RuntimeException("Failed to delete local file for cleanup: {$file}");
+            if (! $this->files->delete($file)) {
+                throw new RuntimeException("Failed to delete local file for cleanup: {$file}");
             }
 
-            event( new SshLocalFileDeleted($file, $localPath) );
+            event(
+                new SshLocalFileDeleted($file, $localPath)
+            );
         }
     }
 
     /**
-     * Initializes the SSH connection
+     * Initializes the SSH connection.
      *
      * @throws CouldNotConnectException
      */
-    protected function initializeSsh()
+    protected function initializeSsh(): void
     {
         try {
-
             $this->ssh = $this->getSsh2SftpConnectionFactory()
                 ->make(
                     Ssh2SftpConnectionInterface::class,
@@ -151,19 +151,13 @@ class SshFileService extends MultiFileService
                     $this->request->getPort() ?: 22,
                     $this->request->getFingerprint()
                 );
-
         } catch (Ssh2ConnectionException $e) {
-
             throw new CouldNotConnectException($e->getMessage(), 0, $e);
         }
     }
 
-    /**
-     * @return Ssh2SftpConnectionFactoryInterface
-     */
-    protected function getSsh2SftpConnectionFactory()
+    protected function getSsh2SftpConnectionFactory(): Ssh2SftpConnectionFactoryInterface
     {
         return app(Ssh2SftpConnectionFactoryInterface::class);
     }
-
 }

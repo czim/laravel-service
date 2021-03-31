@@ -1,8 +1,9 @@
 <?php
+
 namespace Czim\Service\Exceptions;
 
-use Exception;
+use RuntimeException;
 
-class CouldNotConnectException extends Exception
+class CouldNotConnectException extends RuntimeException
 {
 }

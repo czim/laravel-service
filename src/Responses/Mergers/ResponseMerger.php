@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Responses\Mergers;
 
 use Czim\Service\Contracts\ResponseMergerInterface;
@@ -12,27 +13,33 @@ use Czim\Service\Responses\ServiceResponse;
  */
 class ResponseMerger implements ResponseMergerInterface
 {
-
     /**
-     * Merges parts of a response (or parsed file contents) into a single body
+     * Merges parts of a response (or parsed file contents) into a single body.
      *
      * @param ServiceResponseInterface[] $parts
      * @return ServiceResponseInterface
      */
-    public function merge(array $parts)
+    public function merge(array $parts): ServiceResponseInterface
     {
-        if ( ! count($parts)) return $this->makeNullResponse();
+        if (! count($parts)) {
+            return $this->makeNullResponse();
+        }
 
         $response = $parts[0];
 
         // if there was only one part, just return that
-        if (count($parts) == 1) return $response;
+        if (count($parts) == 1) {
+            return $response;
+        }
 
         // if there were more parts, combine their data as an array
         $response->setData(
             $this->rebuildArray($parts, function($index, ServiceResponseInterface $part) {
                 /** @var ServiceResponse $part */
-                return [ $index, $part->getData() ];
+                return [
+                    $index,
+                    $part->getData(),
+                ];
             })
         );
 
@@ -40,11 +47,11 @@ class ResponseMerger implements ResponseMergerInterface
     }
 
     /**
-     * @param array    $array
-     * @param callable $callback
-     * @return array
+     * @param array<string, mixed> $array
+     * @param callable             $callback
+     * @return array<string, mixed>
      */
-    protected function rebuildArray(array $array, callable $callback)
+    protected function rebuildArray(array $array, callable $callback): array
     {
         $results = [];
 
@@ -57,8 +64,7 @@ class ResponseMerger implements ResponseMergerInterface
         return $results;
     }
 
-
-    public function makeNullResponse()
+    protected function makeNullResponse(): ServiceResponseInterface
     {
         return new ServiceResponse();
     }

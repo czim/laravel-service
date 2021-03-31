@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Interpreters\Xml;
 
 use Czim\Service\Contracts\XmlObjectConverterInterface;
@@ -11,14 +12,12 @@ use Czim\Service\Contracts\XmlObjectConverterInterface;
  */
 class XmlObjectToArrayJsonConverter implements XmlObjectConverterInterface
 {
-
     /**
-     * @param mixed $object
-     * @return array
+     * @param object $object
+     * @return mixed[]
      */
-    public function convert($object)
+    public function convert(object $object): array
     {
         return json_decode(json_encode($object), true);
     }
-
 }

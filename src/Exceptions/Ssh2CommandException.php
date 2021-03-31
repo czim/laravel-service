@@ -1,8 +1,9 @@
 <?php
+
 namespace Czim\Service\Exceptions;
 
-use Exception;
+use RuntimeException;
 
-class Ssh2CommandException extends Exception
+class Ssh2CommandException extends RuntimeException
 {
 }

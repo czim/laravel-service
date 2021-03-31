@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Interpreters;
 
 /**
@@ -6,7 +7,6 @@ namespace Czim\Service\Interpreters;
  */
 class BasicSoapXmlInterpreter extends AbstractXmlInterpreter
 {
-
     /**
      * Whether to decode as an associative array
      *
@@ -15,11 +15,11 @@ class BasicSoapXmlInterpreter extends AbstractXmlInterpreter
     protected $asArray = false;
 
 
-    protected function doInterpretation()
+    protected function doInterpretation(): void
     {
         $this->interpretedResponse->setSuccess(
-                $this->responseInformation->getStatusCode() > 199
-            &&  $this->responseInformation->getStatusCode() < 300
+            $this->responseInformation->getStatusCode() > 199
+            && $this->responseInformation->getStatusCode() < 300
         );
 
         // no need to call on a parser, since the data from SoapClient calls
@@ -33,5 +33,4 @@ class BasicSoapXmlInterpreter extends AbstractXmlInterpreter
             $this->response
         );
     }
-
 }

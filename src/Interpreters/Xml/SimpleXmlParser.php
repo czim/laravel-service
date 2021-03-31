@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Interpreters\Xml;
 
 use Czim\Service\Contracts\XmlParserInterface;
@@ -15,19 +16,18 @@ class SimpleXmlParser implements XmlParserInterface
      * @return mixed
      * @throws CouldNotInterpretXmlResponseException
      */
-    public function parse($xml)
+    public function parse(string $xml)
     {
         // note that this resets the PHP error handler -- if anything goes wrong,
         // look here first
         libxml_use_internal_errors(true);
 
         try {
-
             $parsed = (self::STRIP_CDATA_TAGS)
                     ?   simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)
                     :   $parsed = simplexml_load_string($xml);
 
-            if ( ! $parsed) {
+            if (! $parsed) {
 
                 throw new CouldNotInterpretXmlResponseException( $this->getLibXmlErrorMessage(), $this->getLibXmlErrors() );
             }
@@ -35,9 +35,7 @@ class SimpleXmlParser implements XmlParserInterface
             libxml_clear_errors();
 
             return $parsed;
-
         } catch (\ErrorException $e) {
-
             $message = $e->getMessage();
 
             if (preg_match('#^\s*simplexml_load_string\(\):\s*(.*)$#i', $message, $matches)) {
@@ -48,28 +46,27 @@ class SimpleXmlParser implements XmlParserInterface
         }
     }
 
+
     /**
-     * Returns combined error message to pass to exception
+     * Returns combined error message to pass to exception.
      *
      * @return string
      */
-    protected function getLibXmlErrorMessage()
+    protected function getLibXmlErrorMessage(): string
     {
         return implode('; ', $this->getLibXmlErrors());
     }
 
     /**
-     * Returns errors encountered by libxml
+     * Returns errors encountered by libxml.
      *
-     * @return array
+     * @return string[]
      */
-    protected function getLibXmlErrors()
+    protected function getLibXmlErrors(): array
     {
         $errors = [];
 
-        /** @var \LibXMLError $libError */
         foreach (libxml_get_errors() as $libError) {
-
             $errors[] = $libError->message
                 . "(lev: {$libError->level}, line/col: {$libError->line} / {$libError->column})";
         }
@@ -77,18 +74,16 @@ class SimpleXmlParser implements XmlParserInterface
         return $errors;
     }
 
-
     /**
-     * In special cases where XML is malformed, attempt to salvage the
-     * last element anyway.
+     * In special cases where XML is malformed, attempt to salvage the last element anyway.
      *
      * Not used at the moment..
      *
      * @param string $xml
-     * @return array
+     * @return mixed[]
      * @throws CouldNotInterpretXmlResponseException
      */
-    protected function getArrayForSpecialCase($xml)
+    protected function getArrayForSpecialCase(string $xml): array
     {
         $regEx            = '#\s*(&lt;\?xml.*interface&gt;)\s*#is';
         $regExReplace     = '#\s*>\s*(&lt;\?xml.*interface&gt;)\s*<[^>]+>\s*#is';
@@ -96,12 +91,11 @@ class SimpleXmlParser implements XmlParserInterface
 
         // what can happen is that the valid XML element suddenly has,
         // as its element content, a full version of url-encoded XML.
-        if ( ! preg_match($regEx, $xml)) {
+        if (! preg_match($regEx, $xml)) {
             return [0 => $xml];
         }
         $xml = preg_replace($regExReplace, $regExReplaceWith, $xml);
 
         return $this->parse($xml);
     }
-
 }

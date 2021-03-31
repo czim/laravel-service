@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Interpreters\Decorators;
 
 use Czim\Service\Contracts\ServiceInterpreterInterface;
@@ -11,16 +12,12 @@ use Czim\Service\Contracts\ServiceResponseInterface;
  */
 class RemoveXmlNamespacesDecorator implements ServiceInterpreterInterface
 {
-
     /**
      * @var ServiceInterpreterInterface
      */
     protected $interpreter;
 
 
-    /**
-     * @param ServiceInterpreterInterface $interpreter
-     */
     public function __construct(ServiceInterpreterInterface $interpreter)
     {
         $this->interpreter = $interpreter;
@@ -28,16 +25,16 @@ class RemoveXmlNamespacesDecorator implements ServiceInterpreterInterface
 
 
     /**
-     * @param ServiceRequestInterface             $request the request sent in order to retrieve the response
-     * @param mixed                               $response
-     * @param ServiceResponseInformationInterface $responseInformation
+     * @param ServiceRequestInterface                  $request the request sent in order to retrieve the response
+     * @param mixed                                    $response
+     * @param ServiceResponseInformationInterface|null $responseInformation
      * @return ServiceResponseInterface
      */
     public function interpret(
         ServiceRequestInterface $request,
         $response,
         ServiceResponseInformationInterface $responseInformation = null
-    ) {
+    ): ServiceResponseInterface {
         return $this->interpreter->interpret(
             $request,
             $this->removeNamespaces($response),
@@ -46,12 +43,12 @@ class RemoveXmlNamespacesDecorator implements ServiceInterpreterInterface
     }
 
     /**
-     * Removes XML namespaces entirely
+     * Removes XML namespaces entirely.
      *
-     * @param  string $xml
+     * @param string $xml
      * @return string
      */
-    protected function removeNamespaces($xml)
+    protected function removeNamespaces(string $xml): string
     {
         return preg_replace(
             '#((xmlns(:[a-z]+)?)="([^"]+)")#i',

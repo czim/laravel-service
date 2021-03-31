@@ -1,18 +1,18 @@
 <?php
+
 namespace Czim\Service\Events;
 
 class SshConnectionWasMade
 {
-
     /**
-     * Full address: user@hostname:port
+     * Full address: user@hostname:port.
      *
      * @var string
      */
     protected $address;
 
     /**
-     * Last known server fingerprint
+     * Last known server fingerprint.
      *
      * @var string
      */
@@ -24,7 +24,7 @@ class SshConnectionWasMade
      * @param string $address
      * @param string $fingerprint
      */
-    public function __construct($address, $fingerprint)
+    public function __construct(string $address, string $fingerprint)
     {
         $this->address     = $address;
         $this->fingerprint = $fingerprint;
@@ -33,28 +33,20 @@ class SshConnectionWasMade
     /**
      * Get the channels the event should be broadcast on.
      *
-     * @return array
+     * @return string[]
      */
-    public function broadcastOn()
+    public function broadcastOn(): array
     {
         return [];
     }
 
-
-    /**
-     * @return string
-     */
-    public function getAddress()
+    public function getAddress(): string
     {
         return $this->address;
     }
 
-    /**
-     * @return string
-     */
-    public function getFingerprint()
+    public function getFingerprint(): string
     {
         return $this->fingerprint;
     }
-
 }

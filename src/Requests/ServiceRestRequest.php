@@ -1,11 +1,11 @@
 <?php
+
 namespace Czim\Service\Requests;
 
 use InvalidArgumentException;
 
 class ServiceRestRequest extends ServiceRequest
 {
-
     const METHOD_DELETE  = 'DELETE';
     const METHOD_GET     = 'GET';
     const METHOD_OPTIONS = 'OPTIONS';
@@ -14,9 +14,9 @@ class ServiceRestRequest extends ServiceRequest
     const METHOD_PUT     = 'PUT';
 
     /**
-     * List of HTTP methods that are accepted for SetHttpMethod
+     * List of HTTP methods that are accepted for SetHttpMethod.
      *
-     * @var array
+     * @var string[]
      */
     protected $allowedHttpMethods = [
         self::METHOD_DELETE,
@@ -29,33 +29,33 @@ class ServiceRestRequest extends ServiceRequest
 
 
     /**
-     * Returns the HTTP method to send the request as
+     * Returns the HTTP method to send the request as.
      *
-     * @return string
+     * @return string|null
      */
-    public function getHttpMethod()
+    public function getHttpMethod(): ?string
     {
         return $this->getAttribute('http_method');
     }
 
     /**
-     * Sets the HTTP method name
+     * Sets the HTTP method name.
      *
      * @param string $method
-     * @return $this
      */
-    public function setHttpMethod($method)
+    public function setHttpMethod(string $method): void
     {
-        $method = strtoupper( (string) $method);
+        $method = strtoupper($method);
 
-        if ( ! in_array($method, $this->allowedHttpMethods)) {
-
+        if (! $this->isAllowedMethodName($method)) {
             throw new InvalidArgumentException("Invalid HTTP method: '{$method}'");
         }
 
         $this->setAttribute('http_method', $method);
-
-        return $this;
     }
 
+    protected function isAllowedMethodName(string $method): bool
+    {
+        return in_array($method, $this->allowedHttpMethods);
+    }
 }

@@ -1,50 +1,49 @@
 <?php
+
 namespace Czim\Service\Contracts;
 
 interface SftpConnectionInterface
 {
-
     /**
-     * Lists files in the given path
+     * Lists files in the given path.
      *
-     * @param  string $path
-     * @return array
+     * @param string $path
+     * @return string[]
      */
-    public function listFiles($path = '/./');
+    public function listFiles(string $path = '/./'): array;
 
     /**
-     * Downloads files via SFTP
+     * Downloads files via SFTP.
      *
-     * @param  string $pathFrom path for download
-     * @param  string $pathTo   where to store the files
-     * @return int  bytes written
+     * @param string $pathFrom path for download
+     * @param string $pathTo   where to store the files
+     * @return int bytes written
      */
-    public function downloadFile($pathFrom, $pathTo);
+    public function downloadFile(string $pathFrom, string $pathTo): int;
 
     /**
-     * Uploads files over SFTP
+     * Uploads files over SFTP.
      *
-     * @param  string $pathFrom path for file to upload
-     * @param  string $pathTo   where to store the files
-     * @return boolean
+     * @param string $pathFrom path for file to upload
+     * @param string $pathTo   where to store the files
+     * @return bool
      */
-    public function uploadFile($pathFrom, $pathTo);
+    public function uploadFile(string $pathFrom, string $pathTo): bool;
 
     /**
-     * Renames a file over SFTP
+     * Renames a file over SFTP.
      *
      * @param string $pathFrom
      * @param string $pathTo
-     * @return boolean
+     * @return bool
      */
-    public function renameFile($pathFrom, $pathTo);
+    public function renameFile(string $pathFrom, string $pathTo): bool;
 
     /**
-     * Deletes file over SFTP
+     * Deletes file over SFTP.
      *
      * @param string $path
-     * @return boolean
+     * @return bool
      */
-    public function deleteFile($path);
-
+    public function deleteFile(string $path): bool;
 }

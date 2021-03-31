@@ -1,9 +1,9 @@
 <?php
+
 namespace Czim\Service\Events;
 
 class SshFileUploaded extends AbstractServiceEvent
 {
-
     /**
      * @var string
      */
@@ -22,14 +22,7 @@ class SshFileUploaded extends AbstractServiceEvent
     protected $filesize;
 
 
-    /**
-     * Create a new event instance.
-     *
-     * @param string $filename
-     * @param string $remotePath
-     * @param int    $filesize
-     */
-    public function __construct($filename, $remotePath, $filesize)
+    public function __construct(string $filename, string $remotePath, int $filesize)
     {
         $this->filename   = $filename;
         $this->remotePath = $remotePath;
@@ -39,36 +32,25 @@ class SshFileUploaded extends AbstractServiceEvent
     /**
      * Get the channels the event should be broadcast on.
      *
-     * @return array
+     * @return string[]
      */
-    public function broadcastOn()
+    public function broadcastOn(): array
     {
         return [];
     }
 
-
-    /**
-     * @return string
-     */
-    public function getFilename()
+    public function getFilename(): string
     {
         return $this->filename;
     }
 
-    /**
-     * @return string
-     */
-    public function getRemotePath()
+    public function getRemotePath(): string
     {
         return $this->remotePath;
     }
 
-    /**
-     * @return int
-     */
-    public function getFilesize()
+    public function getFilesize(): int
     {
         return $this->filesize;
     }
-
 }

@@ -1,28 +1,29 @@
 <?php
+
 namespace Czim\Service\Services\Ssh;
 
 use Czim\Service\Contracts\Ssh2ConnectionInterface;
 use Czim\Service\Events\SshConnectionWasMade;
 use Czim\Service\Exceptions\Ssh2CommandException;
 use Czim\Service\Exceptions\Ssh2ConnectionException;
+use Throwable;
 
 /**
- * Note that this requires libssh2
+ * Note that this requires libssh2.
  */
 class Ssh2Connection implements Ssh2ConnectionInterface
 {
-
     /**
-     * Whether currently connected
+     * Whether currently connected.
      *
-     * @var boolean
+     * @var bool
      */
     protected $connected = false;
 
     /**
-     * ssh2_connect connection
+     * ssh2_connect connection.
      *
-     * @var resource
+     * @var resource|null
      */
     protected $connection;
 
@@ -37,7 +38,7 @@ class Ssh2Connection implements Ssh2ConnectionInterface
     protected $port;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $fingerprint;
 
@@ -52,17 +53,20 @@ class Ssh2Connection implements Ssh2ConnectionInterface
     protected $password;
 
     /**
-     * Connects to SSH2 server
-     *
-     * @param string  $hostname
-     * @param  string $user
-     * @param  string $password
-     * @param int     $port
-     * @param null    $fingerprint
+     * @param string      $hostname
+     * @param string      $user
+     * @param string      $password
+     * @param int         $port
+     * @param string|null $fingerprint
      * @throws Ssh2ConnectionException
      */
-    public function __construct($hostname, $user, $password, $port = 22, $fingerprint = null)
-    {
+    public function __construct(
+        string $hostname,
+        string $user,
+        string $password,
+        int $port = 22,
+        ?string $fingerprint = null
+    ) {
         $this->hostname    = $hostname;
         $this->port        = $port;
         $this->user        = $user;
@@ -72,23 +76,22 @@ class Ssh2Connection implements Ssh2ConnectionInterface
         $this->connect();
     }
 
-    /**
-     * Disconnects on destruction
-     */
     public function __destruct()
     {
         $this->disconnect();
     }
 
     /**
-     * Reconnects if not already connected
+     * Reconnects if not already connected.
      *
-     * @return boolean
+     * @return bool
      * @throws Ssh2ConnectionException  if cannot connect
      */
-    public function reconnect()
+    public function reconnect(): bool
     {
-        if ($this->connected) return false;
+        if ($this->connected) {
+            return false;
+        }
 
         $this->connect();
 
@@ -98,11 +101,13 @@ class Ssh2Connection implements Ssh2ConnectionInterface
     /**
      * Disconnects open connection.
      *
-     * @return boolean
+     * @return bool
      */
-    public function disconnect()
+    public function disconnect(): bool
     {
-        if ($this->connected) return false;
+        if ($this->connected) {
+            return false;
+        }
 
         $this->exec('exit;');
 
@@ -113,42 +118,36 @@ class Ssh2Connection implements Ssh2ConnectionInterface
     }
 
     /**
-     * Attempt connection
+     * Attempt connection.
      *
-     * @return boolean
-     * @throws Ssh2ConnectionException  if cannot connect
+     * @return bool
+     * @throws Ssh2ConnectionException
      */
-    protected function connect()
+    protected function connect(): bool
     {
         $this->connected  = false;
         $this->connection = ssh2_connect($this->hostname, $this->port);
 
-        if ( ! $this->connection) {
-
+        if (! $this->connection) {
             throw new Ssh2ConnectionException("Could not connect to {$this->hostname}:{$this->port}.");
         }
 
         // always ask for fingerprint for passing to event
         $fingerprint = ssh2_fingerprint($this->connection, SSH2_FINGERPRINT_MD5 | SSH2_FINGERPRINT_HEX);
 
-        if ( ! empty($this->fingerprint) && $this->fingerprint !== $fingerprint) {
-
+        if (! empty($this->fingerprint) && $this->fingerprint !== $fingerprint) {
             throw new Ssh2ConnectionException(
                 "Fingerprint mismatch for {$this->hostname}:{$this->port} (server: '{$fingerprint}')"
             );
         }
 
         try {
-
-            if ( ! ssh2_auth_password($this->connection, $this->user, $this->password)) {
-
+            if (! ssh2_auth_password($this->connection, $this->user, $this->password)) {
                 throw new Ssh2ConnectionException(
                     "Could not authorize as {$this->user} on {$this->hostname}:{$this->port}."
                 );
             }
-
-        } catch (\Exception $e) {
-
+        } catch (Throwable $e) {
             throw new Ssh2ConnectionException(
                 "Could not authorize as {$this->user} on {$this->hostname}:{$this->port}."
             );
@@ -156,23 +155,25 @@ class Ssh2Connection implements Ssh2ConnectionInterface
 
         $this->connected = true;
 
-        event( new SshConnectionWasMade($this->user . '@' . $this->hostname . ':' . $this->port, $fingerprint) );
+        event(
+            new SshConnectionWasMade($this->user . '@' . $this->hostname . ':' . $this->port, $fingerprint)
+        );
 
         return $this->connected;
     }
 
-
     /**
-     * Executes command over connection
+     * Executes command over connection.
      *
      * @param  string $command
      * @return mixed
      * @throws Ssh2CommandException
      */
-    public function exec($command)
+    public function exec(string $command)
     {
-        if ( ! ($stream = ssh2_exec($this->connection, $command))) {
+        $stream = ssh2_exec($this->connection, $command);
 
+        if (! $stream) {
             throw new Ssh2CommandException("Exec failed: '{$command}'.");
         }
 
@@ -181,7 +182,6 @@ class Ssh2Connection implements Ssh2ConnectionInterface
         $data = '';
 
         while ($buf = fread($stream, 4096)) {
-
             $data .= $buf;
         }
 
@@ -189,5 +189,4 @@ class Ssh2Connection implements Ssh2ConnectionInterface
 
         return $data;
     }
-
 }

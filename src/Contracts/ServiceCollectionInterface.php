@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Contracts;
 
 use ArrayAccess;
@@ -10,13 +11,9 @@ use JsonSerializable;
 
 interface ServiceCollectionInterface extends ArrayAccess, Arrayable, Countable, IteratorAggregate, Jsonable, JsonSerializable
 {
-
     /**
-     * Synonym for get
-     *
      * @param string $name
      * @return ServiceInterface
      */
-    public function service($name);
-
+    public function service(string $name): ServiceInterface;
 }

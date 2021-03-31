@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Factories;
 
 use Czim\Service\Contracts\SoapFactoryInterface;
@@ -7,16 +8,13 @@ use SoapClient;
 
 class SoapFactory implements SoapFactoryInterface
 {
-
     /**
-     * Makes a SoapClient instance.
-     *
-     * @param string $class     the soapclient class to use
-     * @param string $wsdl
-     * @param array  $config
+     * @param string               $class The soapclient class to use
+     * @param string|null          $wsdl
+     * @param array<string, mixed> $config
      * @return SoapClient
      */
-    public function make($class, $wsdl, array $config = [])
+    public function make(string $class, ?string $wsdl, array $config = []): SoapClient
     {
         $reflectionClass = new ReflectionClass($class);
 
@@ -25,5 +23,4 @@ class SoapFactory implements SoapFactoryInterface
 
         return $client;
     }
-
 }

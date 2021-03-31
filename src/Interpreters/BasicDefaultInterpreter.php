@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Interpreters;
 
 /**
@@ -7,17 +8,15 @@ namespace Czim\Service\Interpreters;
  */
 class BasicDefaultInterpreter extends AbstractInterpreter
 {
-
-    protected function doInterpretation()
+    protected function doInterpretation(): void
     {
         $this->interpretedResponse->setSuccess(
-                $this->responseInformation->getStatusCode() > 199
-            &&  $this->responseInformation->getStatusCode() < 300
+            $this->responseInformation->getStatusCode() > 199
+            && $this->responseInformation->getStatusCode() < 300
         );
 
         $this->interpretedResponse->setData(
             $this->response
         );
     }
-
 }

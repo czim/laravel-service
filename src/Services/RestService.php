@@ -1,4 +1,5 @@
 <?php
+
 namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\GuzzleFactoryInterface;
@@ -9,12 +10,13 @@ use Czim\Service\Events\RestCallCompleted;
 use Czim\Service\Exceptions\CouldNotConnectException;
 use Czim\Service\Requests\ServiceRestRequest;
 use Czim\Service\Requests\ServiceRestRequestDefaults;
-use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception as GuzzleException;
 use Illuminate\Contracts\Support\Arrayable;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 class RestService extends AbstractService
 {
@@ -60,7 +62,7 @@ class RestService extends AbstractService
     /**
      * HTTP headers
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $headers = [];
 
@@ -85,9 +87,9 @@ class RestService extends AbstractService
 
 
     /**
-     * @param ServiceRequestDefaultsInterface $defaults
-     * @param ServiceInterpreterInterface     $interpreter
-     * @param array                           $guzzleConfig     default config to pass into the guzzle client
+     * @param ServiceRequestDefaultsInterface|null $defaults
+     * @param ServiceInterpreterInterface|null     $interpreter
+     * @param array<string, mixed>                 $guzzleConfig default config to pass into the guzzle client
      */
     public function __construct(
         ServiceRequestDefaultsInterface $defaults = null,
@@ -101,28 +103,85 @@ class RestService extends AbstractService
 
 
     /**
-     * Applies mass configuration to default request
+     * Applies mass configuration to default request.
      *
-     * @param array $config
-     * @return $this
+     * @param array<string, mixed> $config
      */
-    public function config(array $config)
+    public function config(array $config): void
     {
         parent::config($config);
 
         if (array_key_exists('http_method', $config)) {
             $this->defaults->setHttpMethod($config['http_method']);
         }
-
-        return $this;
     }
+
+
+    public function setHttpMethod(string $method): void
+    {
+        $this->httpMethod = $method;
+    }
+
+    public function getHttpMethod(): string
+    {
+        return $this->httpMethod;
+    }
+
+    /**
+     * Disables basic authentication, even if credentials are provided.
+     */
+    public function disableBasicAuth(): void
+    {
+        $this->basicAuth = false;
+    }
+
+    /**
+     * Enables basic authentication, uses the request's credentials.
+     */
+    public function enableBasicAuth(): void
+    {
+        $this->basicAuth = true;
+    }
+
+    /**
+     * Enables sending form parameters as multipart data.
+     */
+    public function enableMultipart(): void
+    {
+        $this->multipart = true;
+    }
+
+    /**
+     * Disables sending form parameters as multipart data.
+     */
+    public function disableMultipart(): void
+    {
+        $this->multipart = false;
+    }
+
+    /**
+     * Enables sending PUT/POST/PATCH as JSON.
+     */
+    public function enableSendJson(): void
+    {
+        $this->sendJson = true;
+    }
+
+    /**
+     * Disables sending PUT/POST/PATCH as JSON.
+     */
+    public function disableSendJson(): void
+    {
+        $this->sendJson = false;
+    }
+
 
     /**
      * Returns the rules to validate the config against
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    protected function getConfigValidationRules()
+    protected function getConfigValidationRules(): array
     {
         return array_merge(
             parent::getConfigValidationRules(),
@@ -133,12 +192,11 @@ class RestService extends AbstractService
     }
 
     /**
-     * Performs raw REST call
+     * Performs raw REST call.
      *
      * @param ServiceRequestInterface $request
      * @return mixed
      * @throws CouldNotConnectException
-     * @throws Exception
      */
     protected function callRaw(ServiceRequestInterface $request)
     {
@@ -151,16 +209,10 @@ class RestService extends AbstractService
         $this->beforeGuzzleCall($options);
 
         try {
-
             $response = $this->client->request($httpMethod, $url, $options);
-
-        } catch (Exception $e) {
-
-            // throw as CouldNotConnect if it is a guzzle error
-            // or rethrow if unexpected
-
+        } catch (Throwable $e) {
+            // Throw as CouldNotConnect if it is a guzzle error or rethrow if unexpected
             if ($this->isGuzzleException($e)) {
-
                 throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
             }
 
@@ -194,12 +246,12 @@ class RestService extends AbstractService
      * Prepares and returns guzzle options array for next call
      *
      * @param ServiceRequestInterface $request
-     * @param null|string             $httpMethod
+     * @param string|null             $httpMethod
      * @return array
      */
-    protected function prepareGuzzleOptions(ServiceRequestInterface $request, $httpMethod = null)
+    protected function prepareGuzzleOptions(ServiceRequestInterface $request, ?string $httpMethod = null): array
     {
-        if ( ! $httpMethod) {
+        if (! $httpMethod) {
             $httpMethod = $this->determineHttpMethod($request);
         }
 
@@ -208,22 +260,20 @@ class RestService extends AbstractService
         ];
 
 
-        // handle authentication
-
+        // Handle authentication
         $credentials = $request->getCredentials();
 
-        if (    $this->basicAuth
-            &&  ! empty($credentials['name'])
-            &&  ! empty($credentials['password'])
+        if (
+            $this->basicAuth
+            && ! empty($credentials['name'])
+            && ! empty($credentials['password'])
         ) {
             $options['auth'] = [ $credentials['name'], $credentials['password'] ];
         }
 
 
-        // handle parameters and body
-
+        // Handle parameters and body
         switch ($httpMethod) {
-
             case static::METHOD_PATCH:
             case static::METHOD_POST:
             case static::METHOD_PUT:
@@ -250,8 +300,7 @@ class RestService extends AbstractService
             // default omitted on purpose
         }
 
-        // headers
-
+        // Hheaders
         $headers = $request->getHeaders();
 
         if (count($headers)) {
@@ -263,88 +312,81 @@ class RestService extends AbstractService
 
     /**
      * Called before any guzzle-based call.
-     * Use this to make custom changes to the options array
+     * Use this to make custom changes to the options array.
      *
-     * @param array $options
+     * @param array<string, mixed> $options
      */
-    protected function beforeGuzzleCall(array &$options)
+    protected function beforeGuzzleCall(array &$options): void
     {
     }
 
     /**
-     * Called directly after a succesful guzzle call
+     * Called directly after a succesful guzzle call.
      *
      * @param ResponseInterface $response
      */
-    protected function afterGuzzleCall(ResponseInterface $response)
+    protected function afterGuzzleCall(ResponseInterface $response): void
     {
     }
 
     /**
-     * Returns HTTP method to use based on request & default
+     * Returns HTTP method to use based on request & default.
      *
      * @param ServiceRequestInterface|ServiceRestRequest $request
      * @return string
      */
-    protected function determineHttpMethod(ServiceRequestInterface $request)
+    protected function determineHttpMethod(ServiceRequestInterface $request): string
     {
         // use method set in request, or fall back to default
         return $request->getHttpMethod() ?: $this->httpMethod;
     }
 
-    /**
-     * Returns whether the given is a standard Guzzle exception
-     *
-     * @param Exception $e
-     * @return bool
-     */
-    protected function isGuzzleException(Exception $e)
+    protected function isGuzzleException(Throwable $e): bool
     {
-        return (    is_a($e, GuzzleException\BadResponseException::class)
-                ||  is_a($e, GuzzleException\ClientException::class)
-                ||  is_a($e, GuzzleException\ConnectException::class)
-                ||  is_a($e, GuzzleException\RequestException::class)
-                ||  is_a($e, GuzzleException\SeekException::class)
-                ||  is_a($e, GuzzleException\ServerException::class)
-                ||  is_a($e, GuzzleException\TooManyRedirectsException::class)
-                ||  is_a($e, GuzzleException\TransferException::class)
+        return (
+            $e instanceof GuzzleException\BadResponseException
+            || $e instanceof GuzzleException\ClientException
+            || $e instanceof GuzzleException\ConnectException
+            || $e instanceof GuzzleException\RequestException
+            || $e instanceof GuzzleException\SeekException
+            || $e instanceof GuzzleException\ServerException
+            || $e instanceof GuzzleException\TooManyRedirectsException
+            || $e instanceof GuzzleException\TransferException
         );
     }
 
-    /**
-     * Checks the request to be used in the next/upcoming call
-     */
-    protected function checkRequest()
+    protected function checkRequest(): void
     {
         parent::checkRequest();
 
-        if ( ! is_a($this->request, ServiceRestRequest::class)) {
-
+        if (! $this->request instanceof ServiceRestRequest) {
             throw new InvalidArgumentException("Request class is not a ServiceRestRequest");
         }
     }
 
     /**
-     * Supplements request with soap options, in addition to the standard supplements
+     * Supplements request with soap options, in addition to the standard supplements.
      */
-    protected function supplementRequestWithDefaults()
+    protected function supplementRequestWithDefaults(): void
     {
         parent::supplementRequestWithDefaults();
 
         // set the HTTP Method if it is set in the defaults
-        if (empty($this->request->getHttpMethod()) && ! empty($this->defaults['http_method'])) {
-
+        if (
+            empty($this->request->getHttpMethod())
+            && ! empty($this->defaults['http_method'])
+        ) {
             $this->request->setHttpMethod( $this->defaults['http_method'] );
         }
     }
 
     /**
-     * Converts a given array with parameters to the multipart array format
+     * Converts a given array with parameters to the multipart array format.
      *
      * @param array|Arrayable $params
      * @return array
      */
-    protected function prepareMultipartData($params)
+    protected function prepareMultipartData($params): array
     {
         $multipart = [];
 
@@ -353,9 +395,7 @@ class RestService extends AbstractService
         }
 
         foreach ($params as $key => $value) {
-
-            if ( ! is_array($value)) {
-
+            if (! is_array($value)) {
                 $multipart[] = [
                     'name'     => $key,
                     'contents' => $value,
@@ -365,7 +405,6 @@ class RestService extends AbstractService
             }
 
             foreach (array_dot($value) as $dotKey => $leafValue) {
-
                 $partKey = $key
                     . implode(
                         array_map(
@@ -380,116 +419,19 @@ class RestService extends AbstractService
                 ];
             }
         }
-        
+
         return $multipart;
     }
 
     /**
-     * @param array $config
-     * @return \GuzzleHttp\ClientInterface
+     * @param array<string, mixed> $config
+     * @return ClientInterface
      */
-    protected function createGuzzleClient(array $config)
+    protected function createGuzzleClient(array $config): ClientInterface
     {
         /** @var GuzzleFactoryInterface $factory */
         $factory = app(GuzzleFactoryInterface::class);
 
         return $factory->make($config);
     }
-
-
-    // ------------------------------------------------------------------------------
-    //      Getters, Setters and Configuration
-    // ------------------------------------------------------------------------------
-
-    /**
-     * Sets the default HTTP method
-     *
-     * @param string $method GET, POST, etc
-     * @return $this
-     */
-    public function setHttpMethod($method)
-    {
-        $this->httpMethod = (string) $method;
-
-        return $this;
-    }
-
-    /**
-     * Returns the default HTTP method
-     *
-     * @return string
-     */
-    public function getHttpMethod()
-    {
-        return $this->httpMethod;
-    }
-
-    /**
-     * Disables basic authentication, even if credentials are provided
-     */
-    public function disableBasicAuth()
-    {
-        $this->basicAuth = false;
-
-        return $this;
-    }
-
-    /**
-     * Enables basic authentication, uses the request's credentials
-     */
-    public function enableBasicAuth()
-    {
-        $this->basicAuth = true;
-
-        return $this;
-    }
-
-    /**
-     * Enables sending form parameters as multipart data
-     *
-     * @return $this
-     */
-    public function enableMultipart()
-    {
-        $this->multipart = true;
-
-        return $this;
-    }
-
-    /**
-     * Disables sending form parameters as multipart data
-     *
-     * @return $this
-     */
-    public function disableMultipart()
-    {
-        $this->multipart = false;
-
-        return $this;
-    }
-
-    /**
-     * Enables sending PUT/POST/PATCH as json
-     *
-     * @return $this
-     */
-    public function enableSendJson()
-    {
-        $this->sendJson = true;
-
-        return $this;
-    }
-
-    /**
-     * Disables sending PUT/POST/PATCH as json
-     *
-     * @return $this
-     */
-    public function disableSendJson()
-    {
-        $this->sendJson = false;
-
-        return $this;
-    }
-
 }

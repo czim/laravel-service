@@ -1,15 +1,15 @@
 <?php
+
 namespace Czim\Service\Events;
 
 class RestCallCompleted extends AbstractCallCompleted
 {
-
     /**
-     * @param string $address
-     * @param array  $parameters
-     * @param string $response
+     * @param string               $address
+     * @param array<string, mixed> $parameters
+     * @param string|null          $response
      */
-    public function __construct($address, array $parameters, $response = null)
+    public function __construct(string $address, array $parameters, string $response = null)
     {
         $this->type       = 'rest';
         $this->address    = $address;
@@ -17,5 +17,4 @@ class RestCallCompleted extends AbstractCallCompleted
         $this->parameters = $parameters;
         $this->response   = $response;
     }
-
 }
