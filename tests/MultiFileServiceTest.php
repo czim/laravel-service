@@ -97,7 +97,7 @@ class MultiFileServiceTest extends TestCase
         $response = $service->call(null, $request);
 
         $this->assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '#\s*testing content in here\s*#',
             $response->getData(),
             "File service should return data from test.txt"

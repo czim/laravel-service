@@ -263,14 +263,14 @@ class SoapService extends AbstractService
         // store hash to make it possible to detect changes to the client
         $this->clientHash = $this->makeSoapClientHash();
 
-        $xdebugEnabled = extension_loaded('xdebug') && xdebug_is_enabled();
+        $xdebugEnabled = extension_loaded('xdebug') && function_exists('xdebug_is_enabled') && \xdebug_is_enabled();
 
         try {
             // temporarily disable xdebug to prevent PHP Fatal error
             // while constructing SoapClient
 
             if ($xdebugEnabled) {
-                xdebug_disable();
+                \xdebug_disable();
             }
 
             $class = $this->soapClientClass;
@@ -278,7 +278,7 @@ class SoapService extends AbstractService
             $this->client = $this->getSoapClientFactory()->make($class, $this->wsdl, $this->clientOptions);
 
             if ($xdebugEnabled) {
-                xdebug_enable();
+                \xdebug_enable();
             }
         } catch (SoapFault $e) {
             throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);
