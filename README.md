@@ -12,11 +12,11 @@ Basic framework for making standardized but flexible webservice classes.
 
 ## Version Compatibility
 
-Laravel   | PHP     | Package
-:---------|:--------|:--------
-5 - 8     | 5 - 7   | 0.9
-?         | 7.2+    | 1.0
-
+| Laravel | PHP   | Package |
+|:--------|:------|:--------|
+| 5 - 8   | 5 - 7 | 0.9     |
+| 7 - 8   | 7.2+  | 1.0     |
+| 9       | 7.2+  | 1.1     |
 
 ## Install
 
