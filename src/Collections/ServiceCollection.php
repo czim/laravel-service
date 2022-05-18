@@ -21,7 +21,7 @@ class ServiceCollection extends Collection implements ServiceCollectionInterface
     {
         $items = is_array($items) ? $items : $this->getArrayableItems($items);
 
-        foreach ($items as $index => $item) {
+        foreach ($items as $item) {
             $this->checkValidService($item);
         }
 
