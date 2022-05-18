@@ -10,15 +10,12 @@ use Czim\Service\Contracts\ServiceResponseInterface;
  */
 class ServiceResponse extends AbstractDataObject implements ServiceResponseInterface
 {
-    /**
-     * @var bool
-     */
-    protected $magicAssignment = false;
+    protected bool $magicAssignment = false;
 
     /**
      * @var array<string, mixed>
      */
-    protected $attributes = [
+    protected array $attributes = [
         'data'       => null,
         'statusCode' => 0,
         'errors'     => [],

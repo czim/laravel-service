@@ -17,15 +17,12 @@ use Czim\Service\Contracts\ServiceRequestInterface;
  */
 class ServiceRequest extends AbstractDataObject implements ServiceRequestInterface
 {
-    /**
-     * @var bool
-     */
-    protected $magicAssignment = false;
+    protected bool $magicAssignment = false;
 
     /**
      * @var array<string, mixed>
      */
-    protected $attributes = [
+    protected array $attributes = [
         'location'    => null,
         'port'        => null,
         'method'      => null,

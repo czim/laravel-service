@@ -18,7 +18,7 @@ class ServiceRestRequest extends ServiceRequest
      *
      * @var string[]
      */
-    protected $allowedHttpMethods = [
+    protected array $allowedHttpMethods = [
         self::METHOD_DELETE,
         self::METHOD_GET,
         self::METHOD_OPTIONS,

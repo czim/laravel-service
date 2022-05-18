@@ -20,7 +20,7 @@ class ServiceSshRequest extends ServiceRequest implements ServiceSshRequestInter
     /**
      * @var array<string, mixed>
      */
-    protected $attributes = [
+    protected array $attributes = [
         'location'       => null,
         'port'           => null,
         'method'         => null,
