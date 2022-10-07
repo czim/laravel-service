@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Interpreters\Xml\SimpleXmlParser;
@@ -17,8 +19,8 @@ class SimpleXmlParserTest extends TestCase
             $this->xml->getMinimalValidXmlContent()
         );
 
-        $this->assertInstanceOf('SimpleXmlElement', $result, "Parsed data should be SimpleXmlElement");
-        $this->assertEquals(
+        static::assertInstanceOf('SimpleXmlElement', $result, "Parsed data should be SimpleXmlElement");
+        static::assertEquals(
             $this->xml->getMinimalXmlContentAsArray(),
             json_decode(json_encode($result), true),
             "Incorrect xml-decoded data (encode/decode test)"

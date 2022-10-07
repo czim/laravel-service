@@ -1,6 +1,8 @@
 <?php
+declare(strict_types=1);
 
-namespace Czim\DataObject\Test\Helpers;
+
+namespace Czim\Service\Test\Helpers;
 
 use Czim\Service\Interpreters\AbstractInterpreter;
 

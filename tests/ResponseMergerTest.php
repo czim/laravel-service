@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Contracts\ServiceResponseInterface;
@@ -29,8 +31,8 @@ class ResponseMergerTest extends TestCase
 
         $result = $merger->merge([ $responseA, $mockResponseB ]);
 
-        $this->assertInstanceOf(ServiceResponseInterface::class, $result, "Incorrect type for response");
-        $this->assertEquals(
+        static::assertInstanceOf(ServiceResponseInterface::class, $result, "Incorrect type for response");
+        static::assertEquals(
             [ 'first response', 'second response' ],
             $result->getData(),
             "Response data not correctly merged"
@@ -48,6 +50,6 @@ class ResponseMergerTest extends TestCase
 
         $result = $merger->merge([ $responseA ]);
 
-        $this->assertSame($responseA, $result, "Response should use the same object reference");
+        static::assertSame($responseA, $result, "Response should use the same object reference");
     }
 }

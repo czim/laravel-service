@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Test;
 
-use Czim\DataObject\Test\Helpers\TestMockInterpreter;
 use Czim\Service\Contracts\SoapFactoryInterface;
 use Czim\Service\Requests\ServiceRequest;
 use Czim\Service\Requests\ServiceSoapRequest;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Services\SoapService;
+use Czim\Service\Test\Helpers\TestMockInterpreter;
 use InvalidArgumentException;
+use PHPUnit\Framework\MockObject\MockObject;
 use SoapClient;
 
 class SoapServiceTest extends TestCase
@@ -29,8 +32,8 @@ class SoapServiceTest extends TestCase
 
         $response = $service->call('testMethod', $request);
 
-        $this->assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
-        $this->assertEquals('some test content', $response->getData(), "Mocked service should return fixed data");
+        static::assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
+        static::assertEquals('some test content', $response->getData(), "Mocked service should return fixed data");
     }
 
     /**
@@ -51,7 +54,7 @@ class SoapServiceTest extends TestCase
 
         $response = $service->call('testMethod', $request);
 
-        $this->assertEquals('first call', $response->getData(), "First call has incorrect response");
+        static::assertEquals('first call', $response->getData(), "First call has incorrect response");
 
 
         // set up for second call
@@ -66,7 +69,7 @@ class SoapServiceTest extends TestCase
 
         $response = $service->call('testMethod', $request);
 
-        $this->assertEquals('second call', $response->getData(), "Second call has incorrect response");
+        static::assertEquals('second call', $response->getData(), "Second call has incorrect response");
 
 
         // do third call that should NOT change even though the client is rebound again
@@ -79,7 +82,7 @@ class SoapServiceTest extends TestCase
 
         $response = $service->call('testMethod', $request);
 
-        $this->assertEquals('second call', $response->getData(), "Third call should have same response as second");
+        static::assertEquals('second call', $response->getData(), "Third call should have same response as second");
     }
 
     /**
@@ -96,10 +99,10 @@ class SoapServiceTest extends TestCase
     }
 
     /**
-     * @param $client
-     * @return \PHPUnit_Framework_MockObject_MockObject|SoapFactoryInterface
+     * @param SoapClient $client
+     * @return SoapFactoryInterface&MockObject
      */
-    protected function createMockSoapFactory($client)
+    protected function createMockSoapFactory(SoapClient $client): MockObject
     {
         $factoryMock = $this->getMockBuilder(SoapFactoryInterface::class)
             ->getMock();
@@ -111,9 +114,9 @@ class SoapServiceTest extends TestCase
 
     /**
      * @param string $return
-     * @return \PHPUnit_Framework_MockObject_MockObject|SoapClient
+     * @return SoapClient&MockObject
      */
-    protected function createSimpleSoapMock($return = 'some test content')
+    protected function createSimpleSoapMock(string $return = 'some test content'): MockObject
     {
         $soapMock = $this->getMockBuilder(SoapClient::class)
             ->disableOriginalConstructor()
@@ -122,7 +125,7 @@ class SoapServiceTest extends TestCase
         $soapMock->expects($this->any())
             ->method('__call')
             ->with($this->logicalOr('testMethod', []))
-            ->will($this->returnCallback(fn () => $return));
+            ->will($this->returnCallback(fn (): string => $return));
 
         return $soapMock;
     }

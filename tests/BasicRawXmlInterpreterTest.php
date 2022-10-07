@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Contracts\ServiceRequestInterface;
@@ -23,8 +25,8 @@ class BasicRawXmlInterpreterTest extends TestCase
         /** @var ServiceRequestInterface $mockRequest */
         $result = $interpreter->interpret($mockRequest, $this->xml->getMinimalValidXmlContent());
 
-        $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
-        $this->assertEquals(
+        static::assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
+        static::assertEquals(
             $this->xml->getMinimalXmlContentAsArray(),
             $result->getData(),
             "Incorrect xml-decoded data"
@@ -44,8 +46,8 @@ class BasicRawXmlInterpreterTest extends TestCase
         /** @var ServiceRequestInterface $mockRequest */
         $result = $interpreter->interpret($mockRequest, $this->xml->getMinimalValidXmlContent());
 
-        $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
-        $this->assertEquals(
+        static::assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
+        static::assertEquals(
             $this->xml->getMinimalXmlContentAsArray(),
             $result->getData(),
             "Incorrect xml-decoded data"
@@ -65,9 +67,9 @@ class BasicRawXmlInterpreterTest extends TestCase
         /** @var ServiceRequestInterface $mockRequest */
         $result = $interpreter->interpret($mockRequest, $this->xml->getMinimalValidXmlContent());
 
-        $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
-        $this->assertInstanceOf('SimpleXmlElement', $result->getData(), "Data should be SimpleXmlElement");
-        $this->assertEquals(
+        static::assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
+        static::assertInstanceOf('SimpleXmlElement', $result->getData(), "Data should be SimpleXmlElement");
+        static::assertEquals(
             $this->xml->getMinimalXmlContentAsArray(),
             json_decode(json_encode($result->getData()), true),
             "Incorrect xml-decoded data (encode/decode test)"

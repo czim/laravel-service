@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Test;
 
-use Czim\DataObject\Test\Helpers\TestMockInterpreter;
 use Czim\Service\Exceptions\EmptyRetrievedDataException;
 use Czim\Service\Exceptions\ServiceConfigurationException;
 use Czim\Service\Requests\ServiceRequest;
 use Czim\Service\Requests\ServiceSshRequest;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Services\MultiFileService;
+use Czim\Service\Test\Helpers\TestMockInterpreter;
 use Illuminate\Filesystem\Filesystem;
 use InvalidArgumentException;
 
@@ -42,8 +44,8 @@ class MultiFileServiceTest extends TestCase
 
         $response = $service->call(null, $request);
 
-        $this->assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
-        $this->assertEquals(
+        static::assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
+        static::assertEquals(
             ['some test content', 'some more test content'],
             $response->getData(),
             "Mocked service should return fixed data"
@@ -78,8 +80,8 @@ class MultiFileServiceTest extends TestCase
 
         $response = $service->call('test2.txt', $request);
 
-        $this->assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
-        $this->assertEquals(
+        static::assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
+        static::assertEquals(
             'some more test content',
             $response->getData(),
             "Mocked service should return fixed data for just one file"
@@ -100,8 +102,8 @@ class MultiFileServiceTest extends TestCase
 
         $response = $service->call(null, $request);
 
-        $this->assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
-        $this->assertMatchesRegularExpression(
+        static::assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
+        static::assertMatchesRegularExpression(
             '#\s*testing content in here\s*#',
             $response->getData(),
             "File service should return data from test.txt"
@@ -162,10 +164,10 @@ class MultiFileServiceTest extends TestCase
 
         $defaults = $service->getRequestDefaults();
 
-        $this->assertEquals('089370823740237480239', $defaults->getFingerprint());
-        $this->assertEquals('test/tmp', $defaults->getPath());
-        $this->assertEquals('local/test', $defaults->getLocalPath());
-        $this->assertEquals('*.txt', $defaults->getPattern());
+        static::assertEquals('089370823740237480239', $defaults->getFingerprint());
+        static::assertEquals('test/tmp', $defaults->getPath());
+        static::assertEquals('local/test', $defaults->getLocalPath());
+        static::assertEquals('*.txt', $defaults->getPattern());
     }
 
     /**
@@ -195,7 +197,7 @@ class MultiFileServiceTest extends TestCase
             ];
 
             foreach ($keys as $key) {
-                $this->assertArrayHasKey($key, $errors, 'Missing validation error for: ' . $key);
+                static::assertArrayHasKey($key, $errors, 'Missing validation error for: ' . $key);
             }
         }
     }

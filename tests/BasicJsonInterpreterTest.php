@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Contracts\ServiceRequestInterface;
@@ -21,8 +23,8 @@ class BasicJsonInterpreterTest extends TestCase
         /** @var ServiceRequestInterface $mockRequest */
         $result = $interpreter->interpret($mockRequest, '{"test":"data","does":"it work?"}');
 
-        $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
-        $this->assertEquals(
+        static::assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
+        static::assertEquals(
             ['test' => 'data', 'does' => 'it work?' ],
             $result->getData(),
             "Incorrect json-decoded data"
@@ -42,11 +44,12 @@ class BasicJsonInterpreterTest extends TestCase
         /** @var ServiceRequestInterface $mockRequest */
         $result = $interpreter->interpret($mockRequest, '{"test":"data","does":"it work?"}');
 
-        $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
-        $this->assertIsObject($result->getData(), "Incorrect json-decoded data: should be an object");
-        $this->assertArraySubset(
+        static::assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
+        static::assertIsObject($result->getData(), "Incorrect json-decoded data: should be an object");
+        static::assertArraySubset(
             ['test' => 'data', 'does' => 'it work?' ],
             (array) $result->getData(),
+            false,
             "Incorrect json-decoded data"
         );
     }

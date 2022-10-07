@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Collections\ServiceCollection;
@@ -21,13 +23,13 @@ class ServiceCollectionTest extends TestCase
 
         $collection = new ServiceCollection([ 'a' => $mockServiceA ]);
 
-        $this->assertTrue($collection->has('a'), "Collection should have constructor set service");
-        $this->assertSame($mockServiceA, $collection->get('a'));
+        static::assertTrue($collection->has('a'), "Collection should have constructor set service");
+        static::assertSame($mockServiceA, $collection->get('a'));
 
         $collection->put('b', $mockServiceB);
 
-        $this->assertTrue($collection->has('b'), "Collection should have added service");
-        $this->assertSame($mockServiceB, $collection->get('b'));
+        static::assertTrue($collection->has('b'), "Collection should have added service");
+        static::assertSame($mockServiceB, $collection->get('b'));
     }
 
 

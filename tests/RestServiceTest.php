@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Test;
 
-use Czim\DataObject\Test\Helpers\TestMockInterpreter;
 use Czim\Service\Contracts\GuzzleFactoryInterface;
 use Czim\Service\Exceptions\ServiceConfigurationException;
 use Czim\Service\Requests\ServiceRequest;
 use Czim\Service\Requests\ServiceRestRequest;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Services\RestService;
+use Czim\Service\Test\Helpers\TestMockInterpreter;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\StreamInterface;
@@ -53,8 +55,8 @@ class RestServiceTest extends TestCase
 
         $response = $service->call('testing', $request);
 
-        $this->assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
-        $this->assertEquals('some test content', $response->getData(), "Mocked service should return fixed data");
+        static::assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
+        static::assertEquals('some test content', $response->getData(), "Mocked service should return fixed data");
     }
 
     /**
@@ -111,21 +113,21 @@ class RestServiceTest extends TestCase
 
         $defaults = $service->getRequestDefaults();
 
-        $this->assertEquals('http://test.com', $defaults->getLocation());
-        $this->assertEquals(1234, $defaults->getPort());
-        $this->assertEquals('comment/11', $defaults->getMethod());
-        $this->assertEquals('test', $defaults->getBody());
+        static::assertEquals('http://test.com', $defaults->getLocation());
+        static::assertEquals(1234, $defaults->getPort());
+        static::assertEquals('comment/11', $defaults->getMethod());
+        static::assertEquals('test', $defaults->getBody());
 
-        $this->assertEquals(['some' => 'header'], $defaults->getHeaders());
-        $this->assertEquals(['some' => 'parameter'], $defaults->getParameters());
-        $this->assertEquals(['some' => 'option'], $defaults->getOptions());
-        $this->assertEquals([
+        static::assertEquals(['some' => 'header'], $defaults->getHeaders());
+        static::assertEquals(['some' => 'parameter'], $defaults->getParameters());
+        static::assertEquals(['some' => 'option'], $defaults->getOptions());
+        static::assertEquals([
             'name'     => 'piet',
             'password' => 'paaltjens',
             'domain'   => null,
         ], $defaults->getCredentials());
 
-        $this->assertEquals('DELETE', $defaults['http_method']);
+        static::assertEquals('DELETE', $defaults['http_method']);
     }
 
     /**
@@ -168,7 +170,7 @@ class RestServiceTest extends TestCase
             ];
 
             foreach ($keys as $key) {
-                $this->assertArrayHasKey($key, $errors, 'Missing validation error for: ' . $key);
+                static::assertArrayHasKey($key, $errors, 'Missing validation error for: ' . $key);
             }
         }
     }

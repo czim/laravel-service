@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Test;
 
 use Czim\Service\Interpreters\Xml\DomDocumentBasedXmlParser;
@@ -22,7 +24,7 @@ class DomDocumentBasedXmlParserTest extends TestCase
             $this->xml->getMinimalValidXmlContent()
         );
 
-        $this->assertInstanceOf('DOMElement', $result, "Parsed data should be DOMElement");
+        static::assertInstanceOf('DOMElement', $result, "Parsed data should be DOMElement");
     }
 
     /**
@@ -39,8 +41,8 @@ class DomDocumentBasedXmlParserTest extends TestCase
         );
         $result = $converter->convert($result);
 
-        $this->assertEquals('en', Arr::get($result, '@attributes.lang'));
-        $this->assertEquals('Minimal XHTML 1.0 Document', Arr::get($result, 'head.title'));
-        $this->assertEquals('This is a minimal document.', Arr::get($result, 'body.p'));
+        static::assertEquals('en', Arr::get($result, '@attributes.lang'));
+        static::assertEquals('Minimal XHTML 1.0 Document', Arr::get($result, 'head.title'));
+        static::assertEquals('This is a minimal document.', Arr::get($result, 'body.p'));
     }
 }

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Test;
 
-use Czim\DataObject\Test\Helpers\TestMockInterpreter;
 use Czim\Service\Requests\ServiceRequest;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Services\FileService;
+use Czim\Service\Test\Helpers\TestMockInterpreter;
 use Illuminate\Filesystem\Filesystem;
 
 class FileServiceTest extends TestCase
@@ -27,8 +29,8 @@ class FileServiceTest extends TestCase
 
         $response = $service->call('does not matter', $request);
 
-        $this->assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
-        $this->assertEquals('some test content', $response->getData(), "Mocked service should return fixed data");
+        static::assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
+        static::assertEquals('some test content', $response->getData(), "Mocked service should return fixed data");
     }
 
     /**
@@ -42,8 +44,8 @@ class FileServiceTest extends TestCase
 
         $response = $service->call('tests/data/test.txt', $request);
 
-        $this->assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
-        $this->assertMatchesRegularExpression(
+        static::assertInstanceOf(ServiceResponse::class, $response, "Service should return ServiceResponse object");
+        static::assertMatchesRegularExpression(
             '#\s*testing content in here\s*#',
             $response->getData(),
             "File service should return data from test.txt"

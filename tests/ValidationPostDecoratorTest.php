@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Test;
 
-use Czim\DataObject\Test\Helpers\TestMockInterpreter;
+use Czim\Service\Test\Helpers\TestMockInterpreter;
 use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Exceptions\CouldNotValidateResponseException;
 use Czim\Service\Responses\ServiceResponse;
@@ -25,8 +27,8 @@ class ValidationPostDecoratorTest extends TestCase
         /** @var ServiceRequestInterface $mockRequest */
         $result = $decorator->interpret($mockRequest, 'correct data');
 
-        $this->assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
-        $this->assertEquals('correct data', $result->getData(), "Incorrect returned data");
+        static::assertInstanceOf(ServiceResponse::class, $result, "Interpreter should return ServiceResponse object");
+        static::assertEquals('correct data', $result->getData(), "Incorrect returned data");
     }
 
     /**
@@ -48,7 +50,7 @@ class ValidationPostDecoratorTest extends TestCase
             $this->fail('Expecting CouldNotValidateResponseException');
         } catch (CouldNotValidateResponseException $e) {
             // check if errors are present
-            $this->assertEquals([ 'wrong response' ], $e->getErrors(), "Errors not present in exception instance");
+            static::assertEquals([ 'wrong response' ], $e->getErrors(), "Errors not present in exception instance");
         }
     }
 }
