@@ -65,7 +65,9 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
         if ($responseInformation === null) {
             $responseInformation = app(ServiceResponseInformation::class);
         } else {
-            $this->interpretedResponse->setStatusCode( $responseInformation->getStatusCode() );
+            $this->interpretedResponse->setStatusCode(
+                $responseInformation->getStatusCode()
+            );
         }
 
         $this->request             = $request;

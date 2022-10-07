@@ -14,7 +14,7 @@ use Czim\Service\Exceptions\CouldNotConnectException;
  */
 class RestCurlService extends AbstractService
 {
-    protected const USER_AGENT = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)";
+    protected const USER_AGENT = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)';
 
     /**
      * The method to use for the HTTP call.
@@ -85,7 +85,7 @@ class RestCurlService extends AbstractService
             && ! empty($credentials['password'])
         ) {
             curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($curl, CURLOPT_USERPWD, $credentials['name'] . ":" . $credentials['password']);
+            curl_setopt($curl, CURLOPT_USERPWD, $credentials['name'] . ':' . $credentials['password']);
         }
 
         $headers = $request->getHeaders();
@@ -130,7 +130,9 @@ class RestCurlService extends AbstractService
             throw new CouldNotConnectException(curl_error($curl), curl_errno($curl));
         }
 
-        $this->responseInformation->setStatusCode( curl_getinfo($curl, CURLINFO_HTTP_CODE) );
+        $this->responseInformation->setStatusCode(
+            curl_getinfo($curl, CURLINFO_HTTP_CODE)
+        );
 
         curl_close($curl);
 

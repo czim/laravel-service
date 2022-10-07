@@ -355,19 +355,27 @@ abstract class AbstractService implements ServiceInterface
     protected function supplementRequestWithDefaults(): void
     {
         if (empty($this->request->getLocation())) {
-            $this->request->setLocation( $this->defaults->getLocation() );
+            $this->request->setLocation(
+                $this->defaults->getLocation()
+            );
         }
 
         if (empty($this->request->getMethod())) {
-            $this->request->setMethod( $this->defaults->getMethod() );
+            $this->request->setMethod(
+                $this->defaults->getMethod()
+            );
         }
 
         if (empty($this->request->getParameters())) {
-            $this->request->setParameters( $this->defaults->getParameters() );
+            $this->request->setParameters(
+                $this->defaults->getParameters()
+            );
         }
 
         if (empty($this->request->getBody())) {
-            $this->request->setBody( $this->defaults->getBody() );
+            $this->request->setBody(
+                $this->defaults->getBody()
+            );
         }
 
         if (

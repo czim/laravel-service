@@ -38,10 +38,10 @@ class XmlObjectToArrayConverter implements XmlObjectConverterInterface
 
         foreach ($array as $key => $value) {
             if (is_object($value)) {
-                if (str_contains(get_class($value), "SimpleXML")) {
+                if (str_contains(get_class($value), 'SimpleXML')) {
                     $array[ $key ] = $this->convertXmlObjectToArray($value);
                 } else {
-                    $array[ $key ] = $this->convertXmlObjectToArray( (array) $value );
+                    $array[ $key ] = $this->convertXmlObjectToArray((array) $value);
                 }
             } elseif (is_array($value)) {
                 $array[ $key ] = $this->convertXmlObjectToArray($value);

@@ -150,7 +150,9 @@ class SoapService extends AbstractService
 
 
         foreach ($headers as &$header) {
-            if ($header instanceof SoapHeader) continue;
+            if ($header instanceof SoapHeader) {
+                continue;
+            }
 
             $namespace      = $header['namespace'] ?? null;
             $name           = $header['name'] ?? null;
@@ -318,7 +320,7 @@ class SoapService extends AbstractService
         parent::checkRequest();
 
         if (! $this->request instanceof ServiceSoapRequest) {
-            throw new InvalidArgumentException("Request class is not a ServiceSoapRequest");
+            throw new InvalidArgumentException('Request class is not a ServiceSoapRequest');
         }
     }
 

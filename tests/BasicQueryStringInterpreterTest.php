@@ -8,7 +8,6 @@ use Czim\Service\Responses\ServiceResponse;
 
 class BasicQueryStringInterpreterTest extends TestCase
 {
-
     /**
      * @test
      */

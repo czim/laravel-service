@@ -75,7 +75,6 @@ INVALIDXML;
     </s:Body>
 </s:Envelope>
 BROKENNAMESPACEXML;
-
     }
 
     public function getXmlWithRelativeNamespacesFixed(): string

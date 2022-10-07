@@ -8,6 +8,7 @@ use Czim\Service\Requests\ServiceRequest;
 use Czim\Service\Requests\ServiceSoapRequest;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Services\SoapService;
+use InvalidArgumentException;
 use SoapClient;
 
 class SoapServiceTest extends TestCase
@@ -86,7 +87,7 @@ class SoapServiceTest extends TestCase
      */
     function it_throws_an_exception_if_an_incorrect_service_request_is_used()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $service = new SoapService();
         $request = new ServiceRequest();
@@ -121,11 +122,7 @@ class SoapServiceTest extends TestCase
         $soapMock->expects($this->any())
             ->method('__call')
             ->with($this->logicalOr('testMethod', []))
-            ->will($this->returnCallback(
-                function() use ($return) {
-                    return $return;
-                }
-            ));
+            ->will($this->returnCallback(fn () => $return));
 
         return $soapMock;
     }

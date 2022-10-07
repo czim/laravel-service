@@ -23,14 +23,14 @@ use Throwable;
 
 class RestService extends AbstractService
 {
-    protected const USER_AGENT = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)";
-
     public const METHOD_DELETE  = 'PUT';
     public const METHOD_GET     = 'GET';
     public const METHOD_OPTIONS = 'OPTIONS';
     public const METHOD_PATCH   = 'PATCH';
     public const METHOD_POST    = 'POST';
     public const METHOD_PUT     = 'PUT';
+
+    protected const USER_AGENT = 'Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)';
 
 
     /**
@@ -218,9 +218,9 @@ class RestService extends AbstractService
 
         $this->afterGuzzleCall($response);
 
-        $this->responseInformation->setStatusCode( $response->getStatusCode() );
-        $this->responseInformation->setMessage( $response->getReasonPhrase() );
-        $this->responseInformation->setHeaders( $response->getHeaders() );
+        $this->responseInformation->setStatusCode($response->getStatusCode());
+        $this->responseInformation->setMessage($response->getReasonPhrase());
+        $this->responseInformation->setHeaders($response->getHeaders());
 
         $responseBody = $response->getBody()->getContents();
 
@@ -280,7 +280,7 @@ class RestService extends AbstractService
 
                 $parameters = $request->getParameters();
 
-                if ( ! empty($parameters)) {
+                if (! empty($parameters)) {
                     $options['query'] = $parameters;
                 }
                 break;
@@ -344,7 +344,7 @@ class RestService extends AbstractService
         parent::checkRequest();
 
         if (! $this->request instanceof ServiceRestRequest) {
-            throw new InvalidArgumentException("Request class is not a ServiceRestRequest");
+            throw new InvalidArgumentException('Request class is not a ServiceRestRequest');
         }
     }
 
@@ -360,7 +360,9 @@ class RestService extends AbstractService
             empty($this->request->getHttpMethod())
             && ! empty($this->defaults['http_method'])
         ) {
-            $this->request->setHttpMethod( $this->defaults['http_method'] );
+            $this->request->setHttpMethod(
+                $this->defaults['http_method']
+            );
         }
     }
 
@@ -392,7 +394,7 @@ class RestService extends AbstractService
                 $partKey = $key
                     . implode(
                         array_map(
-                            function($partKey) { return "[{$partKey}]"; },
+                            fn (string $partKey): string => "[{$partKey}]",
                             explode('.', $dotKey)
                         )
                     );

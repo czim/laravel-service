@@ -3,12 +3,14 @@
 namespace Czim\Service\Test;
 
 use Czim\DataObject\Test\Helpers\TestMockInterpreter;
+use Czim\Service\Exceptions\EmptyRetrievedDataException;
 use Czim\Service\Exceptions\ServiceConfigurationException;
 use Czim\Service\Requests\ServiceRequest;
 use Czim\Service\Requests\ServiceSshRequest;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Services\MultiFileService;
 use Illuminate\Filesystem\Filesystem;
+use InvalidArgumentException;
 
 class MultiFileServiceTest extends TestCase
 {
@@ -18,20 +20,21 @@ class MultiFileServiceTest extends TestCase
     function it_returns_mocked_data_as_service_response()
     {
         $filesMock = $this->getMockBuilder(Filesystem::class)
-                          ->getMock();
+            ->getMock();
 
         $filesMock->method('get')
-                  ->will($this->returnCallback(function($file) {
-                      if ($file == 'test1.txt') return 'some test content';
-                      return 'some more test content';
-                  }));
+            ->will(
+                $this->returnCallback(
+                    fn ($file) => $file == 'test1.txt' ? 'some test content' : 'some more test content'
+                )
+            );
 
         $filesMock->method('files')
-                  ->willReturn(['test1.txt', 'test2.txt']);
+            ->willReturn(['test1.txt', 'test2.txt']);
 
         // mocking through service container because passing it to the
         // constructor makes it 'null' for some glitchy reason
-        app()->bind(Filesystem::class, function() use ($filesMock) { return $filesMock; });
+        app()->bind(Filesystem::class, fn () => $filesMock);
 
         $interpreter = new TestMockInterpreter();
         $service     = new MultiFileService(null, $interpreter);
@@ -53,20 +56,21 @@ class MultiFileServiceTest extends TestCase
     function it_returns_data_for_a_specific_file_if_method_is_set()
     {
         $filesMock = $this->getMockBuilder(Filesystem::class)
-                          ->getMock();
+            ->getMock();
 
         $filesMock->method('get')
-                  ->will($this->returnCallback(function($file) {
-                      if ($file == 'test1.txt') return 'some test content';
-                      return 'some more test content';
-                  }));
+            ->will(
+                $this->returnCallback(
+                    fn ($file) => $file == 'test1.txt' ? 'some test content' : 'some more test content'
+                )
+            );
 
         $filesMock->method('files')
-                  ->willReturn(['test1.txt', 'test2.txt']);
+            ->willReturn(['test1.txt', 'test2.txt']);
 
         // mocking through service container because passing it to the
         // constructor makes it 'null' for some glitchy reason
-        app()->bind(Filesystem::class, function() use ($filesMock) { return $filesMock; });
+        app()->bind(Filesystem::class, fn () => $filesMock);
 
         $interpreter = new TestMockInterpreter();
         $service     = new MultiFileService(null, $interpreter);
@@ -109,7 +113,7 @@ class MultiFileServiceTest extends TestCase
      */
     function it_throws_an_exception_if_an_incorrect_service_request_is_used()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $service = new MultiFileService();
         $request = new ServiceRequest();
@@ -122,7 +126,7 @@ class MultiFileServiceTest extends TestCase
      */
     function it_throws_an_exception_if_no_files_are_matched()
     {
-        $this->expectException(\Czim\Service\Exceptions\EmptyRetrievedDataException::class);
+        $this->expectException(EmptyRetrievedDataException::class);
 
         $filesMock = $this->getMockBuilder(Filesystem::class)
             ->getMock();
@@ -173,10 +177,10 @@ class MultiFileServiceTest extends TestCase
 
         try {
             $service->config([
-                'fingerprint' => [ 'not a string' ],
+                'fingerprint' => ['not a string'],
                 'path'        => false,
                 'local_path'  => true,
-                'pattern'     => [ 'not a string' ],
+                'pattern'     => ['not a string'],
             ]);
 
             $this->fail('Expecting ServiceConfigurationException');

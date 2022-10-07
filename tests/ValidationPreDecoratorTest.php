@@ -34,7 +34,7 @@ class ValidationPreDecoratorTest extends TestCase
      */
     function it_throws_an_exception_on_invalid_data_before_interpreting()
     {
-        $decorator = new TestPreValidator( new TestMockInterpreter() );
+        $decorator = new TestPreValidator(new TestMockInterpreter());
 
         $mockRequest = $this->getMockBuilder(ServiceRequestInterface::class)
             ->getMock();

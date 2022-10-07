@@ -18,7 +18,9 @@ class DomDocumentBasedXmlParserTest extends TestCase
     {
         $parser = new DomDocumentBasedXmlParser();
 
-        $result = $parser->parse( $this->xml->getMinimalValidXmlContent() );
+        $result = $parser->parse(
+            $this->xml->getMinimalValidXmlContent()
+        );
 
         $this->assertInstanceOf('DOMElement', $result, "Parsed data should be DOMElement");
     }
@@ -32,7 +34,9 @@ class DomDocumentBasedXmlParserTest extends TestCase
         $parser = new DomDocumentBasedXmlParser();
         $converter = new DomObjectToArrayConverter();
 
-        $result = $parser->parse( $this->xml->getMinimalValidXmlContent() );
+        $result = $parser->parse(
+            $this->xml->getMinimalValidXmlContent()
+        );
         $result = $converter->convert($result);
 
         $this->assertEquals('en', Arr::get($result, '@attributes.lang'));

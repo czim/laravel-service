@@ -16,7 +16,6 @@ class TestPostValidator extends AbstractValidationPostDecorator
     protected function validateResponse(ServiceResponseInterface $response): bool
     {
         if ($response->getData() == 'wrong') {
-
             $this->errors[] = 'wrong response';
             return false;
         }

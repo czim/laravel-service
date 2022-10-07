@@ -129,27 +129,39 @@ class MultiFileService extends AbstractService
         parent::supplementRequestWithDefaults();
 
         if (empty($this->request->getFingerprint())) {
-            $this->request->setFingerprint( $this->defaults->getFingerprint() );
+            $this->request->setFingerprint(
+                $this->defaults->getFingerprint()
+            );
         }
 
         if (empty($this->request->getPath())) {
-            $this->request->setPath( $this->defaults->getPath() );
+            $this->request->setPath(
+                $this->defaults->getPath()
+            );
         }
 
         if (empty($this->request->getLocalPath())) {
-            $this->request->setLocalPath( $this->defaults->getLocalPath() );
+            $this->request->setLocalPath(
+                $this->defaults->getLocalPath()
+            );
         }
 
         if (empty($this->request->getPattern())) {
-            $this->request->setPattern( $this->defaults->getPattern() );
+            $this->request->setPattern(
+                $this->defaults->getPattern()
+            );
         }
 
         if (empty($this->request->getFilesCallback())) {
-            $this->request->setFilesCallback( $this->defaults->getFilesCallback() );
+            $this->request->setFilesCallback(
+                $this->defaults->getFilesCallback()
+            );
         }
 
         if (empty($this->request->getDoCleanup())) {
-            $this->request->setDoCleanup( $this->defaults->getDoCleanup() );
+            $this->request->setDoCleanup(
+                $this->defaults->getDoCleanup()
+            );
         }
     }
 

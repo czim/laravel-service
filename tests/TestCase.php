@@ -13,17 +13,14 @@ use PHPUnit\Framework\InvalidArgumentException;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
-    /**
-     * @var XmlDataProvider|null
-     */
-    protected $xml;
+    protected ?XmlDataProvider $xml = null;
 
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->xml = new XmlDataProvider;
+        $this->xml = new XmlDataProvider();
     }
 
     /**
@@ -45,10 +42,10 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
      * @throws InvalidArgumentException
      */
     public static function assertArraySubset(
-        $subset,
-        $array,
+        mixed $subset,
+        mixed $array,
         bool $checkForObjectIdentity = false,
-        string $message = ''
+        string $message = '',
     ): void {
         if (! (is_array($subset) || $subset instanceof ArrayAccess)) {
             throw InvalidArgumentException::create(

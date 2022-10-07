@@ -51,5 +51,4 @@ class RemoveXmlNamespacesDecorator implements ServiceInterpreterInterface
             preg_replace('#(<\/?)([a-z0-9_-]+:)#i', "\\1", $xml)
         );
     }
-
 }
