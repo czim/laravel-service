@@ -20,7 +20,7 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     protected bool $magicAssignment = false;
 
     /**
-     * @var array<string, mixed>
+     * {@inheritDoc}
      */
     protected array $attributes = [
         'location'    => null,
@@ -69,9 +69,7 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     }
 
     /**
-     * Returns the base URL or WSDL for the service, if it is set in the request.
-     *
-     * @return string|null
+     * {@inheritDoc}
      */
     public function getLocation(): ?string
     {
@@ -79,10 +77,7 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     }
 
     /**
-     * Sets the base URL or WSDL location for the service, as an optional override
-     * for the service configuration.
-     *
-     * @param string|null $location
+     * {@inheritDoc}
      */
     public function setLocation(?string $location): void
     {
@@ -117,9 +112,7 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     }
 
     /**
-     * Returns headers to be sent with the request.
-     *
-     * @return array<string, mixed>
+     * {@inheritDoc}
      */
     public function getHeaders(): array
     {
@@ -127,9 +120,7 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     }
 
     /**
-     * Sets request headers.
-     *
-     * @param array<string, mixed> $headers
+     * {@inheritDoc}
      */
     public function setHeaders(array $headers): void
     {
@@ -137,10 +128,7 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     }
 
     /**
-     * Returns parameters to be sent alongside the request
-     * (For instance: GET parameters for HTTP calls)
-     *
-     * @return mixed
+     * {@inheritDoc}
      */
     public function getParameters()
     {
@@ -148,39 +136,25 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     }
 
     /**
-     * Sets the request parameters.
-     *
-     * @param mixed[]|object $parameters
+     * {@inheritDoc}
      */
     public function setParameters($parameters)
     {
         $this->setAttribute('parameters', $parameters);
     }
 
-    /**
-     * Returns request body to be sent with the request.
-     *
-     * @return mixed
-     */
     public function getBody()
     {
         return $this->getAttribute('body');
     }
 
-    /**
-     * Sets the request body.
-     *
-     * @param mixed $body
-     */
     public function setBody($body): void
     {
         $this->setAttribute('body', $body);
     }
 
     /**
-     * Returns the credentials for authorization.
-     *
-     * @return array<string, string> associative: 'name', 'password', 'domain'
+     * {@inheritDoc}
      */
     public function getCredentials(): array
     {
@@ -188,11 +162,7 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     }
 
     /**
-     * Sets the credentials to be used for the request.
-     *
-     * @param string      $name
-     * @param string|null $password
-     * @param string|null $domain    NTLM and similar
+     * {@inheritDoc}
      */
     public function setCredentials(string $name, ?string $password = null, ?string $domain = null): void
     {
@@ -206,9 +176,7 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     }
 
     /**
-     * Returns client-specific options (such as for SOAP).
-     *
-     * @return array<string, mixed>
+     * {@inheritDoc}
      */
     public function getOptions(): array
     {
@@ -216,9 +184,7 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     }
 
     /**
-     * Sets request client-specific options
-     *
-     * @param array<string, mixed> $options
+     * {@inheritDoc}
      */
     public function setOptions(array $options): void
     {
@@ -226,21 +192,13 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     }
 
     /**
-     * Returns the port number
-     * Note that this is optional, and may (for some services) be included in the location string
-     *
-     * @return int|null
+     * {@inheritDoc}
      */
     public function getPort(): ?int
     {
         return $this->getAttribute('port');
     }
 
-    /**
-     * Sets the port number
-     *
-     * @param int|null $port
-     */
     public function setPort(?int $port): void
     {
         $this->setAttribute('port', $port);

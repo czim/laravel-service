@@ -20,15 +20,10 @@ interface Ssh2ConnectionInterface
      * Reconnects if not already connected.
      *
      * @return bool
-     * @throws Ssh2ConnectionException  if cannot connect
+     * @throws Ssh2ConnectionException if connect fails
      */
     public function reconnect(): bool;
 
-    /**
-     * Disconnects open connection.
-     *
-     * @return bool
-     */
     public function disconnect(): bool;
 
     /**

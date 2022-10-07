@@ -5,7 +5,7 @@ namespace Czim\Service\Contracts;
 interface ServiceInterface
 {
     /**
-     * Performs a call on the service, returning an interpreted response
+     * Performs a call on the service, returning an interpreted response.
      *
      * @param string|null $method     name of the method to call through the service
      * @param mixed|null  $request
@@ -28,15 +28,14 @@ interface ServiceInterface
     public function config(array $config): void;
 
     /**
-     * Returns the raw response data for the most recent call made
+     * Returns the raw response data for the most recent call made.
      *
      * @return mixed
      */
     public function getLastRawResponse();
 
     /**
-     * Returns best available response: interpreted if an interpreter
-     * is available, falls back to raw response.
+     * Returns best available response: interpreted if an interpreter is available, falls back to raw response.
      *
      * @return ServiceResponseInterface
      */
@@ -71,14 +70,14 @@ interface ServiceInterface
     public function setInterpreter(ServiceInterpreterInterface $interpreter): void;
 
     /**
-     * Returns the service response interpreter instance
+     * Returns the service response interpreter instance.
      *
      * @return ServiceInterpreterInterface
      */
     public function getInterpreter(): ServiceInterpreterInterface;
 
     /**
-     * Frees up memory where possible
+     * Frees up memory where possible.
      */
     public function free(): void;
 }

@@ -11,7 +11,7 @@ use Czim\Service\Contracts\XmlParserInterface;
 class BasicRawXmlInterpreter extends AbstractXmlInterpreter
 {
     /**
-     * Whether to decode as an associative array
+     * Whether to decode as an associative array.
      *
      * @var bool
      */

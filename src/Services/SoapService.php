@@ -20,9 +20,7 @@ use Throwable;
 class SoapService extends AbstractService
 {
     /**
-     * The classname of the defaults object to instantiate if none is injected.
-     *
-     * @var string
+     * {@inheritDoc}
      */
     protected $requestDefaultsClass = ServiceSoapRequestDefaults::class;
 
@@ -54,14 +52,14 @@ class SoapService extends AbstractService
     protected $wsdl;
 
     /**
-     * The options to inject into the soap client
+     * The options to inject into the soap client.
      *
      * @var array<string, mixed>
      */
     protected $clientOptions = [];
 
     /**
-     * Hash for checking whether client needs to be re-initialized
+     * Hash for checking whether client needs to be re-initialized.
      *
      * @var string|null
      */

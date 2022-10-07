@@ -8,7 +8,7 @@ namespace Czim\Service\Interpreters;
 class BasicSoapXmlInterpreter extends AbstractXmlInterpreter
 {
     /**
-     * Whether to decode as an associative array
+     * Whether to decode as an associative array.
      *
      * @var bool
      */

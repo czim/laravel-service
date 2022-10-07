@@ -34,13 +34,13 @@ class ResponseMerger implements ResponseMergerInterface
 
         // if there were more parts, combine their data as an array
         $response->setData(
-            $this->rebuildArray($parts, function($index, ServiceResponseInterface $part) {
-                /** @var ServiceResponse $part */
-                return [
+            $this->rebuildArray(
+                $parts,
+                fn ($index, ServiceResponseInterface $part) => [
                     $index,
                     $part->getData(),
-                ];
-            })
+                ]
+            )
         );
 
         return $response;

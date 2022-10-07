@@ -9,8 +9,7 @@ use Czim\Service\Exceptions\ServiceNotFoundInCollectionException;
 use Illuminate\Support\Collection;
 
 /**
- * Simple extension of the Collection object that is set up to only allow
- * ServiceInterface entries.
+ * Simple extension of the Collection object that is set up to only allow ServiceInterface entries.
  */
 class ServiceCollection extends Collection implements ServiceCollectionInterface
 {
@@ -38,10 +37,6 @@ class ServiceCollection extends Collection implements ServiceCollectionInterface
         return $this->offsetGet($key);
     }
 
-    /**
-     * @param string $name
-     * @return ServiceInterface
-     */
     public function service(string $name): ServiceInterface
     {
         return $this->get($name);

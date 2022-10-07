@@ -10,10 +10,13 @@ use Czim\Service\Contracts\ServiceResponseInterface;
  */
 class ServiceResponse extends AbstractDataObject implements ServiceResponseInterface
 {
+    /**
+     * {@inheritDoc}
+     */
     protected bool $magicAssignment = false;
 
     /**
-     * @var array<string, mixed>
+     * {@inheritDoc}
      */
     protected array $attributes = [
         'data'       => null,

@@ -21,18 +21,18 @@ use Throwable;
 
 class RestService extends AbstractService
 {
-    const USER_AGENT = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)";
+    protected const USER_AGENT = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)";
 
-    const METHOD_DELETE  = 'PUT';
-    const METHOD_GET     = 'GET';
-    const METHOD_OPTIONS = 'OPTIONS';
-    const METHOD_PATCH   = 'PATCH';
-    const METHOD_POST    = 'POST';
-    const METHOD_PUT     = 'PUT';
+    public const METHOD_DELETE  = 'PUT';
+    public const METHOD_GET     = 'GET';
+    public const METHOD_OPTIONS = 'OPTIONS';
+    public const METHOD_PATCH   = 'PATCH';
+    public const METHOD_POST    = 'POST';
+    public const METHOD_PUT     = 'PUT';
 
 
     /**
-     * @var string
+     * {@inheritDoc}
      */
     protected $requestDefaultsClass = ServiceRestRequestDefaults::class;
 
@@ -47,22 +47,20 @@ class RestService extends AbstractService
     protected $request;
 
     /**
-     * The default method to use for the HTTP call
+     * The default method to use for the HTTP call.
      *
      * @var string
      */
     protected $httpMethod = self::METHOD_POST;
 
     /**
-     * Whether to use basic authentication
+     * Whether to use basic authentication.
      *
      * @var bool
      */
     protected $basicAuth = true;
 
     /**
-     * HTTP headers
-     *
      * @var array<string, mixed>
      */
     protected $headers = [];
@@ -73,14 +71,14 @@ class RestService extends AbstractService
     protected $client;
 
     /**
-     * Whether to send form parameters as multipart data
+     * Whether to send form parameters as multipart data.
      *
      * @var bool
      */
     protected $multipart = false;
 
     /**
-     * Whether to send POST/PUT/PATCH body data as json (multipart will override this)
+     * Whether to send POST/PUT/PATCH body data as json (multipart will override this).
      *
      * @var bool
      */
@@ -178,7 +176,7 @@ class RestService extends AbstractService
 
 
     /**
-     * Returns the rules to validate the config against
+     * Returns the rules to validate the config against.
      *
      * @return array<string, mixed>
      */
@@ -193,11 +191,7 @@ class RestService extends AbstractService
     }
 
     /**
-     * Performs raw REST call.
-     *
-     * @param ServiceRequestInterface $request
-     * @return mixed
-     * @throws CouldNotConnectException
+     * {@inheritDoc}
      */
     protected function callRaw(ServiceRequestInterface $request)
     {
@@ -231,12 +225,8 @@ class RestService extends AbstractService
         event(
             new RestCallCompleted(
                 $url,
-                isset($options['form_params'])
-                    ?   $options['form_params']
-                    :   (isset($options['query'])
-                            ?   $options['query']
-                            :   []),
-                ($this->sendResponseToEvent) ? $responseBody : null
+                $options['form_params'] ?? ($options['query'] ?? []),
+                $this->sendResponseToEvent ? $responseBody : null
             )
         );
 
@@ -244,7 +234,7 @@ class RestService extends AbstractService
     }
 
     /**
-     * Prepares and returns guzzle options array for next call
+     * Prepares and returns guzzle options array for next call.
      *
      * @param ServiceRequestInterface $request
      * @param string|null             $httpMethod
@@ -322,7 +312,7 @@ class RestService extends AbstractService
     }
 
     /**
-     * Called directly after a succesful guzzle call.
+     * Called directly after a successful guzzle call.
      *
      * @param ResponseInterface $response
      */

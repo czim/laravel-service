@@ -30,8 +30,6 @@ class SshFileUploaded extends AbstractServiceEvent
     }
 
     /**
-     * Get the channels the event should be broadcast on.
-     *
      * @return string[]
      */
     public function broadcastOn(): array

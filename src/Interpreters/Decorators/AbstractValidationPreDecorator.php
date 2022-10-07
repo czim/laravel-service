@@ -67,18 +67,13 @@ abstract class AbstractValidationPreDecorator implements ServiceInterpreterInter
         throw new CouldNotValidateResponseException($this->getErrorMessage(), $this->getErrors());
     }
 
-    /**
-     * Returns exception message for failed validation
-     *
-     * @return string
-     */
     protected function getErrorMessage(): string
     {
         return print_r($this->getErrors(), true);
     }
 
     /**
-     * Returns validation errors for previous attempt
+     * Returns validation errors for previous attempt.
      *
      * @return string[]
      */

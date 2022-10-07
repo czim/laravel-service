@@ -14,8 +14,8 @@ use Czim\Service\Requests\ServiceRequestDefaults;
 use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Responses\ServiceResponseInformation;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 use InvalidArgumentException;
-use Validator;
 
 abstract class AbstractService implements ServiceInterface
 {
@@ -47,23 +47,21 @@ abstract class AbstractService implements ServiceInterface
     protected $request;
 
     /**
-     * Last response without any interpretation or parsing applied
-     * (as far as that is possible).
+     * Last response without any interpretation or parsing applied (as far as that is possible).
      *
      * @var mixed
      */
     protected $rawResponse;
 
     /**
-     * Extra secondary information about the last response call made,
-     * such as headers, status code, etc.
+     * Extra secondary information about the last response call made, such as headers, status code, etc.
      *
      * @var ServiceResponseInformationInterface
      */
     protected $responseInformation;
 
     /**
-     * The last succesfully interpreted response.
+     * The last successfully interpreted response.
      *
      * @var ServiceResponseInterface
      */
@@ -213,9 +211,7 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Returns the raw response data for the most recent call made
-     *
-     * @return mixed
+     * {@inheritDoc}
      */
     public function getLastRawResponse()
     {
@@ -223,10 +219,7 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Returns best available response: interpreted if an interpreter.
-     * is available, falls back to raw response.
-     *
-     * @return ServiceResponseInterface
+     * {@inheritDoc}
      */
     public function getLastInterpretedResponse(): ServiceResponseInterface
     {
@@ -234,9 +227,7 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Returns the extra information set during the execution of the last call.
-     *
-     * @return ServiceResponseInformation
+     * {@inheritDoc}
      */
     public function getLastReponseInformation(): ServiceResponseInformationInterface
     {
@@ -244,9 +235,7 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Sets the default request data to supplement any requests with.
-     *
-     * @param ServiceRequestDefaultsInterface $defaults
+     * {@inheritDoc}
      */
     public function setRequestDefaults(ServiceRequestDefaultsInterface $defaults): void
     {
@@ -254,9 +243,7 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Returns the default request data.
-     *
-     * @return ServiceRequestDefaultsInterface
+     * {@inheritDoc}
      */
     public function getRequestDefaults(): ServiceRequestDefaultsInterface
     {
@@ -264,9 +251,7 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Sets the service response interpreter.
-     *
-     * @param ServiceInterpreterInterface $interpreter
+     * {@inheritDoc}
      */
     public function setInterpreter(ServiceInterpreterInterface $interpreter): void
     {
@@ -274,18 +259,13 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Returns the service response interpreter instance.
-     *
-     * @return ServiceInterpreterInterface
+     * {@inheritDoc}
      */
     public function getInterpreter(): ServiceInterpreterInterface
     {
         return $this->interpreter;
     }
 
-    /**
-     * Frees up memory where possible.
-     */
     public function free(): void
     {
         unset($this->rawResponse);
@@ -315,7 +295,7 @@ abstract class AbstractService implements ServiceInterface
     }
 
     /**
-     * Checks whether we have the correct request class type for this service
+     * Checks whether we have the correct request class type for this service.
      *
      * @param mixed $request
      */

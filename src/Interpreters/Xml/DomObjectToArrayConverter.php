@@ -65,7 +65,7 @@ class DomObjectToArrayConverter implements XmlObjectConverterInterface
                     $result[ $child->nodeName ] = $this->convertDomToArray($child);
                 } else {
                     if (! isset($groups[ $child->nodeName ])) {
-                        $result[ $child->nodeName ] = array($result[ $child->nodeName ]);
+                        $result[ $child->nodeName ] = [$result[ $child->nodeName ]];
                         $groups[ $child->nodeName ] = 1;
                     }
 

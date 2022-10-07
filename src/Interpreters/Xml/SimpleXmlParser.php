@@ -4,11 +4,12 @@ namespace Czim\Service\Interpreters\Xml;
 
 use Czim\Service\Contracts\XmlParserInterface;
 use Czim\Service\Exceptions\CouldNotInterpretXmlResponseException;
+use ErrorException;
 
 class SimpleXmlParser implements XmlParserInterface
 {
-    // whether to remove CDATA tags to get all content normally
-    const STRIP_CDATA_TAGS = true;
+    // Whether to remove CDATA tags to get all content normally.
+    protected const STRIP_CDATA_TAGS = true;
 
 
     /**
@@ -24,18 +25,20 @@ class SimpleXmlParser implements XmlParserInterface
 
         try {
             $parsed = (self::STRIP_CDATA_TAGS)
-                    ?   simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)
-                    :   $parsed = simplexml_load_string($xml);
+                ? simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)
+                : simplexml_load_string($xml);
 
             if (! $parsed) {
-
-                throw new CouldNotInterpretXmlResponseException( $this->getLibXmlErrorMessage(), $this->getLibXmlErrors() );
+                throw new CouldNotInterpretXmlResponseException(
+                    $this->getLibXmlErrorMessage(),
+                    $this->getLibXmlErrors()
+                );
             }
 
             libxml_clear_errors();
 
             return $parsed;
-        } catch (\ErrorException $e) {
+        } catch (ErrorException $e) {
             $message = $e->getMessage();
 
             if (preg_match('#^\s*simplexml_load_string\(\):\s*(.*)$#i', $message, $matches)) {

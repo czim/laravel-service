@@ -12,28 +12,28 @@ use Czim\Service\Responses\ServiceResponseInformation;
 abstract class AbstractInterpreter implements ServiceInterpreterInterface
 {
     /**
-     * The request that was sent to get the raw response
+     * The request that was sent to get the raw response.
      *
      * @var ServiceRequestInterface
      */
     protected $request;
 
     /**
-     * The raw response to be interpreted
+     * The raw response to be interpreted.
      *
      * @var mixed
      */
     protected $response;
 
     /**
-     * Extra information about the response
+     * Extra information about the response.
      *
      * @var ServiceResponseInformationInterface
      */
     protected $responseInformation;
 
     /**
-     * The interpreted response to return
+     * The interpreted response to return.
      *
      * @var ServiceResponseInterface
      */

@@ -27,23 +27,14 @@ interface ServiceResponseInterface extends DataObjectInterface
      */
     public function setStatusCode(int $code): void;
 
-    /**
-     * Returns the HTTP or other service status code.
-     *
-     * @return int
-     */
     public function getStatusCode(): int;
 
     /**
-     * Returns all errors listed.
-     *
      * @return array<string, mixed>
      */
     public function getErrors(): array;
 
     /**
-     * Sets all errors at once.
-     *
      * @param string[] $errors
      */
     public function setErrors(array $errors): void;
@@ -55,17 +46,6 @@ interface ServiceResponseInterface extends DataObjectInterface
      */
     public function addError(string $error): void;
 
-    /**
-     * Returns succesfulness state of request.
-     *
-     * @return bool
-     */
     public function getSuccess(): bool;
-
-    /**
-     * Sets succesfulness state.
-     *
-     * @param bool $success
-     */
     public function setSuccess(bool $success): void;
 }

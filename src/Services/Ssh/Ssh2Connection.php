@@ -82,10 +82,7 @@ class Ssh2Connection implements Ssh2ConnectionInterface
     }
 
     /**
-     * Reconnects if not already connected.
-     *
-     * @return bool
-     * @throws Ssh2ConnectionException  if cannot connect
+     * {@inheritDoc}
      */
     public function reconnect(): bool
     {
@@ -98,11 +95,7 @@ class Ssh2Connection implements Ssh2ConnectionInterface
         return true;
     }
 
-    /**
-     * Disconnects open connection.
-     *
-     * @return bool
-     */
+
     public function disconnect(): bool
     {
         if ($this->connected) {
@@ -117,12 +110,7 @@ class Ssh2Connection implements Ssh2ConnectionInterface
         return true;
     }
 
-    /**
-     * Attempt connection.
-     *
-     * @return bool
-     * @throws Ssh2ConnectionException
-     */
+
     protected function connect(): bool
     {
         $this->connected  = false;
@@ -163,11 +151,7 @@ class Ssh2Connection implements Ssh2ConnectionInterface
     }
 
     /**
-     * Executes command over connection.
-     *
-     * @param  string $command
-     * @return mixed
-     * @throws Ssh2CommandException
+     * {@inheritDoc}
      */
     public function exec(string $command)
     {

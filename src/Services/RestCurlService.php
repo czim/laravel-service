@@ -12,25 +12,23 @@ use Czim\Service\Exceptions\CouldNotConnectException;
  */
 class RestCurlService extends AbstractService
 {
-    const USER_AGENT = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)";
+    protected const USER_AGENT = "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)";
 
     /**
-     * The method to use for the HTTP call
+     * The method to use for the HTTP call.
      *
      * @var string
      */
     protected $method = RestService::METHOD_POST;
 
     /**
-     * Whether to use basic authentication
+     * Whether to use basic authentication.
      *
      * @var bool
      */
     protected $basicAuth = true;
 
     /**
-     * HTTP headers
-     *
      * @var array<string, mixed>
      */
     protected $headers = [];
@@ -64,11 +62,7 @@ class RestCurlService extends AbstractService
 
 
     /**
-     * Performs raw REST call
-     *
-     * @param ServiceRequestInterface $request
-     * @return mixed
-     * @throws CouldNotConnectException
+     * {@inheritDoc}
      */
     protected function callRaw(ServiceRequestInterface $request)
     {
@@ -142,7 +136,7 @@ class RestCurlService extends AbstractService
         event(
             new RestCallCompleted(
                 $url,
-                isset($parameters) ? $parameters : [],
+                $parameters ?? [],
                 $this->sendResponseToEvent ? $response : null
             )
         );

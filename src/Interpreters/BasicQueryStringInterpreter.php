@@ -8,7 +8,7 @@ namespace Czim\Service\Interpreters;
 class BasicQueryStringInterpreter extends AbstractInterpreter
 {
     /**
-     * Whether to decode as an associative array
+     * Whether to decode as an associative array.
      *
      * @var bool
      */

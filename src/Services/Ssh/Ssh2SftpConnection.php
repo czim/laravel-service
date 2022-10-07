@@ -68,10 +68,7 @@ class Ssh2SftpConnection extends Ssh2Connection implements Ssh2SftpConnectionInt
     }
 
     /**
-     * Lists files in the given path.
-     *
-     * @param string $path
-     * @return string[]
+     * {@inheritDoc}
      */
     public function listFiles(string $path = '/./'): array
     {
@@ -193,11 +190,7 @@ class Ssh2SftpConnection extends Ssh2Connection implements Ssh2SftpConnectionInt
     }
 
     /**
-     * Renames a file over SFTP.
-     *
-     * @param string $pathFrom
-     * @param string $pathTo
-     * @return bool
+     * {@inheritDoc}
      */
     public function renameFile(string $pathFrom, string $pathTo): bool
     {
@@ -205,10 +198,7 @@ class Ssh2SftpConnection extends Ssh2Connection implements Ssh2SftpConnectionInt
     }
 
     /**
-     * Deletes file over SFTP.
-     *
-     * @param string $path
-     * @return bool
+     * {@inheritDoc}
      */
     public function deleteFile(string $path): bool
     {

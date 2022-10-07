@@ -42,9 +42,5 @@ abstract class AbstractValidationPostDecorator extends AbstractValidationPreDeco
         return $this->validateResponse($response);
     }
 
-    /**
-     * @param ServiceResponseInterface $response
-     * @return bool
-     */
     abstract protected function validateResponse(ServiceResponseInterface $response): bool;
 }

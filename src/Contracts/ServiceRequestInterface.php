@@ -14,8 +14,7 @@ interface ServiceRequestInterface extends DataObjectInterface
     public function getLocation(): ?string;
 
     /**
-     * Sets the base URL or WSDL location for the service, as an optional override
-     * for the service configuration.
+     * Sets the base URL or WSDL location for the service, as an optional override  for the service configuration.
      *
      * @param string|null $location
      */
@@ -53,7 +52,7 @@ interface ServiceRequestInterface extends DataObjectInterface
     public function setHeaders(array $headers): void;
 
     /**
-     * Returns parameters to be sent alongside the request
+     * Returns parameters to be sent alongside the request.
      * (For instance: GET parameters for HTTP calls)
      *
      * @return mixed
@@ -120,10 +119,5 @@ interface ServiceRequestInterface extends DataObjectInterface
      */
     public function getPort(): ?int;
 
-    /**
-     * Sets the port number.
-     *
-     * @param int|null $port
-     */
     public function setPort(?int $port): void;
 }
