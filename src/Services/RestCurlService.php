@@ -68,7 +68,7 @@ class RestCurlService extends AbstractService
      */
     protected function callRaw(ServiceRequestInterface $request): mixed
     {
-        $url = rtrim($request->getLocation(), '/') . '/' . $request->getMethod();
+        $url = rtrim($request->getLocation() ?? '', '/') . '/' . $request->getMethod();
 
         $curl = curl_init();
 

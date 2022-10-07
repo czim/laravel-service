@@ -70,8 +70,8 @@ class SshFileService extends MultiFileService
         }
 
         $pattern   = $this->getFilePattern();
-        $path      = rtrim($this->request->getPath(), DIRECTORY_SEPARATOR);
-        $localPath = rtrim($this->request->getLocalPath(), DIRECTORY_SEPARATOR);
+        $path      = rtrim($this->request->getPath() ?? '', DIRECTORY_SEPARATOR);
+        $localPath = rtrim($this->request->getLocalPath() ?? '', DIRECTORY_SEPARATOR);
         $callback  = $this->request->getFilesCallback();
 
         // List all files in path
@@ -117,7 +117,7 @@ class SshFileService extends MultiFileService
      */
     protected function cleanupLocalFiles(array $newFiles): void
     {
-        $localPath = rtrim($this->request->getLocalPath(), DIRECTORY_SEPARATOR);
+        $localPath = rtrim($this->request->getLocalPath() ?? '', DIRECTORY_SEPARATOR);
 
         // get local files not in newly downloaded files
         $deleteFiles = array_diff(

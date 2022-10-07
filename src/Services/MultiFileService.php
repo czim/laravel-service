@@ -241,7 +241,7 @@ class MultiFileService extends AbstractService
         $localFiles = [];
 
         $pattern   = $this->getFilePattern();
-        $localPath = rtrim($this->request->getLocalPath(), DIRECTORY_SEPARATOR);
+        $localPath = rtrim($this->request->getLocalPath() ?? '', DIRECTORY_SEPARATOR);
         $callback  = $this->request->getFilesCallback();
 
         // get local files based on given path and pattern
@@ -253,13 +253,13 @@ class MultiFileService extends AbstractService
 
         foreach ($files as $file) {
             // File::files returns full pathname to file, so get basename
-            $filename = basename($file);
+            $filename = basename((string) $file);
 
             if (! empty($pattern) && ! fnmatch($pattern, $filename)) {
                 continue;
             }
 
-            $localFiles[ $filename ] = $file;
+            $localFiles[ $filename ] = (string) $file;
         }
 
 

@@ -46,7 +46,7 @@ class SoapService extends AbstractService
 
     protected SoapClient $client;
 
-    protected string $wsdl;
+    protected ?string $wsdl;
 
     /**
      * The options to inject into the soap client.
