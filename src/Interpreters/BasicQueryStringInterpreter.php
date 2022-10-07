@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Interpreters;
 
 /**
@@ -12,7 +14,7 @@ class BasicQueryStringInterpreter extends AbstractInterpreter
      *
      * @var bool
      */
-    protected $asArray = true;
+    protected bool $asArray = true;
 
 
     public function __construct($asArray = null)
@@ -45,7 +47,7 @@ class BasicQueryStringInterpreter extends AbstractInterpreter
      * Decodes a query string to an array.
      *
      * @param string $string
-     * @return array
+     * @return array<int|string, mixed>
      */
     protected function decodeQueryString(string $string): array
     {

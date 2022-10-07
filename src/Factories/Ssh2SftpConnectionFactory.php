@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Factories;
 
 use Czim\Service\Contracts\Ssh2SftpConnectionFactoryInterface;
@@ -25,7 +27,7 @@ class Ssh2SftpConnectionFactory implements Ssh2SftpConnectionFactoryInterface
         string $user,
         string $password,
         int $port = 22,
-        ?string $fingerprint = null
+        ?string $fingerprint = null,
     ): Ssh2SftpConnectionInterface {
         if ($class === Ssh2SftpConnectionInterface::class) {
             $class = $this->getDefaultConnectionClass();

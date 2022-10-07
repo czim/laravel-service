@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Interpreters\Xml;
 
 use Czim\Service\Contracts\XmlParserInterface;
 use Czim\Service\Exceptions\CouldNotInterpretXmlResponseException;
 use ErrorException;
+use SimpleXMLElement;
 
 class SimpleXmlParser implements XmlParserInterface
 {
@@ -14,10 +17,10 @@ class SimpleXmlParser implements XmlParserInterface
 
     /**
      * @param string $xml
-     * @return mixed
+     * @return SimpleXMLElement
      * @throws CouldNotInterpretXmlResponseException
      */
-    public function parse(string $xml)
+    public function parse(string $xml): SimpleXMLElement
     {
         // note that this resets the PHP error handler -- if anything goes wrong,
         // look here first

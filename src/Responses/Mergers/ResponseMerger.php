@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Responses\Mergers;
 
 use Czim\Service\Contracts\ResponseMergerInterface;
@@ -10,14 +12,16 @@ use Czim\Service\Responses\ServiceResponse;
  * Default merger that does not do any content-based selection;
  * this simply concatenates the interpreted data for each part as
  * elements in a single array.
+ *
+ * @template TResponse as \Czim\Service\Contracts\ServiceResponseInterface
  */
 class ResponseMerger implements ResponseMergerInterface
 {
     /**
      * Merges parts of a response (or parsed file contents) into a single body.
      *
-     * @param ServiceResponseInterface[] $parts
-     * @return ServiceResponseInterface
+     * @param TResponse[] $parts
+     * @return TResponse
      */
     public function merge(array $parts): ServiceResponseInterface
     {

@@ -6,19 +6,8 @@ use Czim\DataObject\Contracts\DataObjectInterface;
 
 interface ServiceResponseInterface extends DataObjectInterface
 {
-    /**
-     * Sets the response data.
-     *
-     * @param mixed $data
-     */
-    public function setData($data): void;
-
-    /**
-     * Returns the response data.
-     *
-     * @return mixed
-     */
-    public function getData();
+    public function setData(mixed $data): void;
+    public function getData(): mixed;
 
     /**
      * Sets the HTTP or other service status code.

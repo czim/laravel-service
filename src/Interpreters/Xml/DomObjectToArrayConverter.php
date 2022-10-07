@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Interpreters\Xml;
 
 use Czim\Service\Contracts\XmlObjectConverterInterface;
@@ -18,7 +20,7 @@ class DomObjectToArrayConverter implements XmlObjectConverterInterface
 {
     /**
      * @param mixed|DOMDocument|DOMElement|DOMNode $object
-     * @return array
+     * @return array<int|string, mixed>
      */
     public function convert(object $object): array
     {
@@ -28,10 +30,10 @@ class DomObjectToArrayConverter implements XmlObjectConverterInterface
     /**
      * Converts DomDocument to array with all attributes in it
      *
-     * @param DOMDocument|DOMElement|DomNode $root
-     * @return mixed[]|string
+     * @param DomNode $root
+     * @return array<int|string, mixed>|string
      */
-    protected function convertDomToArray(DOMNode $root)
+    protected function convertDomToArray(DOMNode $root): array|string
     {
         $result = [];
 

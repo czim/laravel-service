@@ -9,7 +9,7 @@ interface ServiceRequestInterface extends DataObjectInterface
     /**
      * Returns the base URL or WSDL for the service, if it is set in the request.
      *
-     * @return string
+     * @return string|null
      */
     public function getLocation(): ?string;
 
@@ -57,7 +57,7 @@ interface ServiceRequestInterface extends DataObjectInterface
      *
      * @return mixed
      */
-    public function getParameters();
+    public function getParameters(): mixed;
 
     /**
      * Sets the request parameters
@@ -67,19 +67,8 @@ interface ServiceRequestInterface extends DataObjectInterface
      */
     public function setParameters($parameters);
 
-    /**
-     * Returns request body to be sent with the request.
-     *
-     * @return mixed
-     */
-    public function getBody();
-
-    /**
-     * Sets the request body.
-     *
-     * @param mixed $body
-     */
-    public function setBody($body): void;
+    public function getBody(): mixed;
+    public function setBody(mixed $body): void;
 
     /**
      * Returns the credentials for authorization

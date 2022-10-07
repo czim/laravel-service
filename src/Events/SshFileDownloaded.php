@@ -1,32 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Events;
 
 class SshFileDownloaded extends AbstractServiceEvent
 {
     /**
-     * @var string
+     * @param string $filename
+     * @param string $localPath Full path including local file name.
+     * @param int    $filesize
      */
-    protected $filename;
-
-    /**
-     * Full path including local file name.
-     *
-     * @var string
-     */
-    protected $localPath;
-
-    /**
-     * @var int
-     */
-    protected $filesize;
-
-
-    public function __construct(string $filename, string $localPath, int $filesize)
-    {
-        $this->filename  = $filename;
-        $this->localPath = $localPath;
-        $this->filesize  = $filesize;
+    public function __construct(
+        protected readonly string $filename,
+        protected readonly string $localPath,
+        protected readonly int $filesize,
+    ) {
     }
 
     /**

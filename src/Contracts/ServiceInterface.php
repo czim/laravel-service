@@ -15,8 +15,8 @@ interface ServiceInterface
      */
     public function call(
         ?string $method,
-        $request = null,
-        $parameters = null,
+        mixed $request = null,
+        mixed $parameters = null,
         array $headers = null
     ): ServiceResponseInterface;
 
@@ -32,7 +32,7 @@ interface ServiceInterface
      *
      * @return mixed
      */
-    public function getLastRawResponse();
+    public function getLastRawResponse(): mixed;
 
     /**
      * Returns best available response: interpreted if an interpreter is available, falls back to raw response.

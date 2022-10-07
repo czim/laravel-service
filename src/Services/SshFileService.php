@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Services;
 
 use Closure;
@@ -24,10 +26,7 @@ use RuntimeException;
  */
 class SshFileService extends MultiFileService
 {
-    /**
-     * @var Ssh2SftpConnectionInterface
-     */
-    protected $ssh;
+    protected Ssh2SftpConnectionInterface $ssh;
 
 
     /**
@@ -66,7 +65,7 @@ class SshFileService extends MultiFileService
         $localFiles = [];
 
         // Connect
-        if (empty($this->ssh)) {
+        if (! isset($this->ssh)) {
             $this->initializeSsh();
         }
 
@@ -121,7 +120,13 @@ class SshFileService extends MultiFileService
         $localPath = rtrim($this->request->getLocalPath(), DIRECTORY_SEPARATOR);
 
         // get local files not in newly downloaded files
-        $deleteFiles = array_diff($this->files->files($localPath), $newFiles);
+        $deleteFiles = array_diff(
+            array_map(
+                fn (string|\Stringable $file): string => (string) $file,
+                $this->files->files($localPath)
+            ),
+            $newFiles
+        );
 
         foreach ($deleteFiles as $file) {
             if (! $this->files->delete($file)) {

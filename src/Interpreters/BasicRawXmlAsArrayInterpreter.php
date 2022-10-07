@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Interpreters;
 
 /**
@@ -7,5 +9,5 @@ namespace Czim\Service\Interpreters;
  */
 class BasicRawXmlAsArrayInterpreter extends BasicRawXmlInterpreter
 {
-    protected $asArray = true;
+    protected bool $asArray = true;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Requests;
 
 use Czim\DataObject\AbstractDataObject;
@@ -52,7 +54,7 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
         array $headers = null,
         ?string $method = null,
         ?string $location = null,
-        array $options = []
+        array $options = [],
     ) {
         $this->setBody($body);
         $this->setParameters($parameters);
@@ -130,7 +132,7 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
     /**
      * {@inheritDoc}
      */
-    public function getParameters()
+    public function getParameters(): mixed
     {
         return $this->getAttribute('parameters');
     }
@@ -143,12 +145,12 @@ class ServiceRequest extends AbstractDataObject implements ServiceRequestInterfa
         $this->setAttribute('parameters', $parameters);
     }
 
-    public function getBody()
+    public function getBody(): mixed
     {
         return $this->getAttribute('body');
     }
 
-    public function setBody($body): void
+    public function setBody(mixed $body): void
     {
         $this->setAttribute('body', $body);
     }

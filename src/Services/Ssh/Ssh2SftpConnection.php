@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Services\Ssh;
 
 use Czim\Service\Events\SshFileDownloaded;
@@ -18,26 +20,23 @@ class Ssh2SftpConnection extends Ssh2Connection implements Ssh2SftpConnectionInt
      *
      * @var resource|null
      */
-    protected $ftpConnection;
+    protected mixed $ftpConnection;
 
     /**
      * Whether data should be received in chunks
      *
      * @var bool
      */
-    protected $chunking = false;
+    protected bool $chunking = false;
 
     /**
      * If chunking is enabled, the chunk size in bytes
      *
      * @var int
      */
-    protected $chunkSize = 8192;
+    protected int $chunkSize = 8192;
 
-    /**
-     * @var Filesystem
-     */
-    protected $files;
+    protected Filesystem $files;
 
 
     /**
@@ -54,7 +53,7 @@ class Ssh2SftpConnection extends Ssh2Connection implements Ssh2SftpConnectionInt
         string $password,
         int $port = 22,
         ?string $fingerprint = null,
-        Filesystem $files = null
+        Filesystem $files = null,
     ) {
         parent::__construct($hostname, $user, $password, $port, $fingerprint);
 
@@ -186,7 +185,7 @@ class Ssh2SftpConnection extends Ssh2Connection implements Ssh2SftpConnectionInt
             new SshFileUploaded(basename($pathFrom), $pathTo, $bytesWritten)
         );
 
-        return $bytesWritten;
+        return (bool) $bytesWritten;
     }
 
     /**

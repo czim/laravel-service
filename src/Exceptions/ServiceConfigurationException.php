@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Exceptions;
 
 use RuntimeException;
@@ -10,7 +12,7 @@ class ServiceConfigurationException extends RuntimeException
     /**
      * @var string[]
      */
-    protected $errors = [];
+    protected array $errors = [];
 
     /**
      * @param string|null    $message

@@ -21,6 +21,6 @@ interface Ssh2SftpConnectionFactoryInterface
         string $user,
         string $password,
         int $port = 22,
-        ?string $fingerprint = null
+        ?string $fingerprint = null,
     ): Ssh2SftpConnectionInterface;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Interpreters;
 
 use Czim\Service\Contracts\ServiceInterpreterInterface;
@@ -16,28 +18,28 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
      *
      * @var ServiceRequestInterface
      */
-    protected $request;
+    protected ServiceRequestInterface $request;
 
     /**
      * The raw response to be interpreted.
      *
      * @var mixed
      */
-    protected $response;
+    protected mixed $response;
 
     /**
      * Extra information about the response.
      *
      * @var ServiceResponseInformationInterface
      */
-    protected $responseInformation;
+    protected ServiceResponseInformationInterface $responseInformation;
 
     /**
      * The interpreted response to return.
      *
      * @var ServiceResponseInterface
      */
-    protected $interpretedResponse;
+    protected ServiceResponseInterface $interpretedResponse;
 
 
     public function __construct()
@@ -55,7 +57,7 @@ abstract class AbstractInterpreter implements ServiceInterpreterInterface
      */
     public function interpret(
         ServiceRequestInterface $request,
-        $response,
+        mixed $response,
         ServiceResponseInformationInterface $responseInformation = null
     ): ServiceResponseInterface {
         $this->resetInterpretedResponse();

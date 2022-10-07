@@ -1,32 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Events;
 
 class SshFileUploaded extends AbstractServiceEvent
 {
     /**
-     * @var string
+     * @param string $filename
+     * @param string $remotePath Full path including file name
+     * @param int    $filesize
      */
-    protected $filename;
-
-    /**
-     * Full path including file name
-     *
-     * @var string
-     */
-    protected $remotePath;
-
-    /**
-     * @var int
-     */
-    protected $filesize;
-
-
-    public function __construct(string $filename, string $remotePath, int $filesize)
-    {
-        $this->filename   = $filename;
-        $this->remotePath = $remotePath;
-        $this->filesize   = $filesize;
+    public function __construct(
+        protected readonly string $filename,
+        protected readonly string $remotePath,
+        protected readonly int $filesize,
+    ) {
     }
 
     /**

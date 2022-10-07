@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Interpreters\Decorators;
 
 use Czim\Service\Contracts\ServiceRequestInterface;
@@ -19,8 +21,8 @@ abstract class AbstractValidationPostDecorator extends AbstractValidationPreDeco
      */
     public function interpret(
         ServiceRequestInterface $request,
-        $response,
-        ServiceResponseInformationInterface $responseInformation = null
+        mixed $response,
+        ServiceResponseInformationInterface $responseInformation = null,
     ): ServiceResponseInterface {
         $response = $this->interpreter->interpret($request, $response, $responseInformation);
 

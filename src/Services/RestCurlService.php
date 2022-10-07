@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\ServiceRequestInterface;
@@ -19,19 +21,19 @@ class RestCurlService extends AbstractService
      *
      * @var string
      */
-    protected $method = RestService::METHOD_POST;
+    protected string $method = RestService::METHOD_POST;
 
     /**
      * Whether to use basic authentication.
      *
      * @var bool
      */
-    protected $basicAuth = true;
+    protected bool $basicAuth = true;
 
     /**
      * @var array<string, mixed>
      */
-    protected $headers = [];
+    protected array $headers = [];
 
 
     public function setMethod(string $method): void
@@ -64,7 +66,7 @@ class RestCurlService extends AbstractService
     /**
      * {@inheritDoc}
      */
-    protected function callRaw(ServiceRequestInterface $request)
+    protected function callRaw(ServiceRequestInterface $request): mixed
     {
         $url = rtrim($request->getLocation(), '/') . '/' . $request->getMethod();
 

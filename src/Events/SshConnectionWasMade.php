@@ -1,33 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Events;
 
 class SshConnectionWasMade
 {
     /**
-     * Full address: user@hostname:port.
-     *
-     * @var string
+     * @param string $address     Full address: user@hostname:port.
+     * @param string $fingerprint Last known server fingerprint.
      */
-    protected $address;
-
-    /**
-     * Last known server fingerprint.
-     *
-     * @var string
-     */
-    protected $fingerprint;
-
-    /**
-     * Create a new event instance.
-     *
-     * @param string $address
-     * @param string $fingerprint
-     */
-    public function __construct(string $address, string $fingerprint)
-    {
-        $this->address     = $address;
-        $this->fingerprint = $fingerprint;
+    public function __construct(
+        protected readonly string $address,
+        protected readonly string $fingerprint
+    ) {
     }
 
     /**

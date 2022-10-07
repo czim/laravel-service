@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\ServiceInterpreterInterface;
@@ -11,15 +13,12 @@ use Illuminate\Filesystem\Filesystem;
 
 class FileService extends AbstractService
 {
-    /**
-     * @var Filesystem
-     */
-    protected $files;
+    protected Filesystem $files;
 
 
     public function __construct(
         Filesystem $files = null,
-        ServiceInterpreterInterface $interpreter = null
+        ServiceInterpreterInterface $interpreter = null,
     ) {
         if ($files === null) {
             $files = app(Filesystem::class);
@@ -31,18 +30,15 @@ class FileService extends AbstractService
     }
 
     /**
-     * @param ServiceRequestInterface $request
-     * @return mixed
-     * @throws CouldNotConnectException
-     * @throws Exception
+     * {@inheritDoc}
      */
-    protected function callRaw(ServiceRequestInterface $request)
+    protected function callRaw(ServiceRequestInterface $request): mixed
     {
         $path = $this->makeFilePathFromRequest($request);
 
         try {
             $response = $this->files->get($path);
-        } catch (FileNotFoundException $e) {
+        } catch (FileNotFoundException) {
             throw new CouldNotConnectException("Local file could not be found: '{$path}'");
         } catch (Exception $e) {
             throw new CouldNotConnectException($e->getMessage(), $e->getCode(), $e);

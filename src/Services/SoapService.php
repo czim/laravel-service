@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\ServiceRequestInterface;
@@ -22,55 +24,49 @@ class SoapService extends AbstractService
     /**
      * {@inheritDoc}
      */
-    protected $requestDefaultsClass = ServiceSoapRequestDefaults::class;
+    protected string $requestDefaultsClass = ServiceSoapRequestDefaults::class;
 
     /**
      * Classname/FQN of the SoapClient to use for calls.
      *
-     * @var string
+     * @var class-string<SoapClient>
      */
-    protected $soapClientClass = SoapClient::class;
+    protected string $soapClientClass = SoapClient::class;
 
     /**
      * @var ServiceSoapRequestDefaults
      */
-    protected $defaults;
+    protected ServiceRequestInterface $defaults;
 
     /**
      * @var ServiceSoapRequest
      */
-    protected $request;
+    protected ServiceRequestInterface $request;
 
-    /**
-     * @var SoapClient
-     */
-    protected $client;
+    protected SoapClient $client;
 
-    /**
-     * @var string
-     */
-    protected $wsdl;
+    protected string $wsdl;
 
     /**
      * The options to inject into the soap client.
      *
      * @var array<string, mixed>
      */
-    protected $clientOptions = [];
+    protected array $clientOptions = [];
 
     /**
      * Hash for checking whether client needs to be re-initialized.
      *
      * @var string|null
      */
-    protected $clientHash;
+    protected ?string $clientHash = null;
 
     /**
      * Default SoapClient options to set if not explicitly defined
      *
      * @var array<string, mixed>
      */
-    protected $soapOptionDefaults = [
+    protected array $soapOptionDefaults = [
         'exceptions' => true,
         'features'   => SOAP_SINGLE_ELEMENT_ARRAYS,
     ];
@@ -83,11 +79,11 @@ class SoapService extends AbstractService
 
 
     /**
-     * @param ServiceRequestInterface|ServiceSoapRequest $request
+     * @param ServiceRequestInterface&ServiceSoapRequest $request
      * @return mixed
      * @throws CouldNotRetrieveException
      */
-    protected function callRaw(ServiceRequestInterface $request)
+    protected function callRaw(ServiceRequestInterface $request): mixed
     {
         $this->applySoapHeaders();
 
@@ -152,20 +148,17 @@ class SoapService extends AbstractService
     {
         $headers = $this->request->getHeaders() ?: [];
 
-        if ($headers instanceof SoapHeader) {
-            $headers = [ $headers ];
-        } else {
-            foreach ($headers as &$header) {
-                if ($header instanceof SoapHeader) continue;
 
-                $namespace      = isset($header['namespace']) ? $header['namespace'] : null;
-                $name           = isset($header['name']) ? $header['name'] : null;
-                $data           = isset($header['data']) ? $header['data'] : null;
-                $mustUnderstand = isset($header['mustunderstand']) ? $header['mustunderstand'] : null;
-                $actor          = isset($header['actor']) ? $header['actor'] : null;
+        foreach ($headers as &$header) {
+            if ($header instanceof SoapHeader) continue;
 
-                $header = new SoapHeader($namespace, $name, $data, $mustUnderstand, $actor);
-            }
+            $namespace      = $header['namespace'] ?? null;
+            $name           = $header['name'] ?? null;
+            $data           = $header['data'] ?? null;
+            $mustUnderstand = $header['mustunderstand'] ?? null;
+            $actor          = $header['actor'] ?? null;
+
+            $header = new SoapHeader($namespace, $name, $data, $mustUnderstand, $actor);
         }
 
         unset($header);

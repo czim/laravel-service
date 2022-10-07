@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Services\Ssh;
 
 use Czim\Service\Contracts\Ssh2ConnectionInterface;
@@ -18,39 +20,20 @@ class Ssh2Connection implements Ssh2ConnectionInterface
      *
      * @var bool
      */
-    protected $connected = false;
+    protected bool $connected = false;
 
     /**
      * ssh2_connect connection.
      *
      * @var resource|null
      */
-    protected $connection;
+    protected mixed $connection;
 
-    /**
-     * @var string
-     */
-    protected $hostname;
-
-    /**
-     * @var int
-     */
-    protected $port;
-
-    /**
-     * @var string|null
-     */
-    protected $fingerprint;
-
-    /**
-     * @var string
-     */
-    protected $user;
-
-    /**
-     * @var string
-     */
-    protected $password;
+    protected string $hostname;
+    protected int $port;
+    protected ?string $fingerprint;
+    protected string $user;
+    protected string $password;
 
     /**
      * @param string      $hostname
@@ -153,7 +136,7 @@ class Ssh2Connection implements Ssh2ConnectionInterface
     /**
      * {@inheritDoc}
      */
-    public function exec(string $command)
+    public function exec(string $command): string
     {
         $stream = ssh2_exec($this->connection, $command);
 

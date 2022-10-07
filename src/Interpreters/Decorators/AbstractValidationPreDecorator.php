@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Interpreters\Decorators;
 
 use Czim\Service\Contracts\ServiceInterpreterInterface;
@@ -14,21 +16,15 @@ use Czim\Service\Exceptions\CouldNotValidateResponseException;
 abstract class AbstractValidationPreDecorator implements ServiceInterpreterInterface
 {
     /**
-     * @var ServiceInterpreterInterface
-     */
-    protected $interpreter;
-
-    /**
      * Validation errors.
      *
      * @var string[]
      */
-    protected $errors = [];
+    protected array $errors = [];
 
 
-    public function __construct(ServiceInterpreterInterface $interpreter)
+    public function __construct(protected readonly ServiceInterpreterInterface $interpreter)
     {
-        $this->interpreter = $interpreter;
     }
 
 
@@ -40,8 +36,8 @@ abstract class AbstractValidationPreDecorator implements ServiceInterpreterInter
      */
     public function interpret(
         ServiceRequestInterface $request,
-        $response,
-        ServiceResponseInformationInterface $responseInformation = null
+        mixed $response,
+        ServiceResponseInformationInterface $responseInformation = null,
     ): ServiceResponseInterface {
         if (! $this->validate($response)) {
             $this->throwValidationException();
@@ -51,18 +47,14 @@ abstract class AbstractValidationPreDecorator implements ServiceInterpreterInter
     }
 
 
-    /**
-     * @param mixed $response
-     * @return bool
-     */
-    abstract protected function validate($response): bool;
+    abstract protected function validate(mixed $response): bool;
 
     /**
      * Throws an exception, indicating that validation failed.
      *
      * @throws CouldNotValidateResponseException
      */
-    protected function throwValidationException(): void
+    protected function throwValidationException(): never
     {
         throw new CouldNotValidateResponseException($this->getErrorMessage(), $this->getErrors());
     }

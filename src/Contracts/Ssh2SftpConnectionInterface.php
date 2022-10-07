@@ -16,6 +16,6 @@ interface Ssh2SftpConnectionInterface extends Ssh2ConnectionInterface, SftpConne
         string $user,
         string $password,
         int $port = 22,
-        ?string $fingerprint = null
+        ?string $fingerprint = null,
     );
 }

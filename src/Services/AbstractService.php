@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\ServiceInterface;
@@ -22,64 +24,61 @@ abstract class AbstractService implements ServiceInterface
     /**
      * The classname of the defaults object to instantiate if none is injected.
      *
-     * @var string
+     * @var class-string<ServiceRequestDefaultsInterface>
      */
-    protected $requestDefaultsClass = ServiceRequestDefaults::class;
+    protected string $requestDefaultsClass = ServiceRequestDefaults::class;
 
     /**
      * The classname of the interpreter to instantiate if none is injected.
      *
-     * @var string
+     * @var class-string<ServiceInterpreterInterface>
      */
-    protected $interpreterClass = BasicDefaultInterpreter::class;
+    protected string $interpreterClass = BasicDefaultInterpreter::class;
 
 
-    /**
-     * @var ServiceRequestDefaultsInterface
-     */
-    protected $defaults;
+    protected ServiceRequestInterface $defaults;
 
     /**
      * The request object to base the call on.
      *
      * @var ServiceRequestInterface
      */
-    protected $request;
+    protected ServiceRequestInterface $request;
 
     /**
      * Last response without any interpretation or parsing applied (as far as that is possible).
      *
      * @var mixed
      */
-    protected $rawResponse;
+    protected mixed $rawResponse;
 
     /**
      * Extra secondary information about the last response call made, such as headers, status code, etc.
      *
      * @var ServiceResponseInformationInterface
      */
-    protected $responseInformation;
+    protected ServiceResponseInformationInterface $responseInformation;
 
     /**
      * The last successfully interpreted response.
      *
      * @var ServiceResponseInterface
      */
-    protected $response;
+    protected ServiceResponseInterface $response;
 
     /**
      * The interpreter that normalizes the raw reponse to a ServiceReponse.
      *
      * @var ServiceInterpreterInterface
      */
-    protected $interpreter;
+    protected ServiceInterpreterInterface $interpreter;
 
     /**
      * Wether any calls have been made since construction.
      *
      * @var bool
      */
-    protected $firstCallIsMade = false;
+    protected bool $firstCallIsMade = false;
 
     /**
      * Wether to send the full response along with creating a *CallCompleted event
@@ -88,12 +87,12 @@ abstract class AbstractService implements ServiceInterface
      *
      * @var bool
      */
-    protected $sendResponseToEvent = false;
+    protected bool $sendResponseToEvent = false;
 
 
     public function __construct(
         ServiceRequestDefaultsInterface $defaults = null,
-        ServiceInterpreterInterface $interpreter = null
+        ServiceInterpreterInterface $interpreter = null,
     ) {
         if ($defaults === null) {
             $defaults = $this->buildRequestDefaults();
@@ -168,10 +167,10 @@ abstract class AbstractService implements ServiceInterface
      */
     public function call(
         ?string $method,
-        $request = null,
-        $parameters = null,
+        mixed $request = null,
+        mixed $parameters = null,
         array $headers = null,
-        array $options = []
+        array $options = [],
     ): ServiceResponseInterface {
         // Build up ServiceRequest
         if ($request instanceof ServiceRequestInterface) {
@@ -213,7 +212,7 @@ abstract class AbstractService implements ServiceInterface
     /**
      * {@inheritDoc}
      */
-    public function getLastRawResponse()
+    public function getLastRawResponse(): mixed
     {
         return $this->rawResponse;
     }
@@ -299,7 +298,7 @@ abstract class AbstractService implements ServiceInterface
      *
      * @param mixed $request
      */
-    protected function checkRequestClassType($request)
+    protected function checkRequestClassType(mixed $request): void
     {
         if (! $request instanceof ServiceRequestInterface) {
             throw new InvalidArgumentException(
@@ -434,7 +433,7 @@ abstract class AbstractService implements ServiceInterface
      * @param ServiceRequestInterface $request
      * @return mixed
      */
-    abstract protected function callRaw(ServiceRequestInterface $request);
+    abstract protected function callRaw(ServiceRequestInterface $request): mixed;
 
 
     // ------------------------------------------------------------------------------

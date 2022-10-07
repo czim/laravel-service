@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Collections;
 
 use Czim\Service\Contracts\ServiceCollectionInterface;
@@ -16,23 +18,18 @@ class ServiceCollection extends Collection implements ServiceCollectionInterface
     /**
      * @param ServiceInterface[] $items
      */
-    public function __construct($items = [])
+    public function __construct(array $items = [])
     {
         $items = is_array($items) ? $items : $this->getArrayableItems($items);
 
         foreach ($items as $item) {
-            $this->checkValidService($item);
+            $this->assertValidService($item);
         }
 
         parent::__construct($items);
     }
 
-    /**
-     * @param mixed  $key
-     * @param mixed  $default
-     * @return ServiceInterface
-     */
-    public function get($key, $default = null): ServiceInterface
+    public function get(mixed $key, mixed $default = null): ServiceInterface
     {
         return $this->offsetGet($key);
     }
@@ -47,7 +44,7 @@ class ServiceCollection extends Collection implements ServiceCollectionInterface
      * @return ServiceInterface
      * @throws ServiceNotFoundInCollectionException
      */
-    public function offsetGet($key): ServiceInterface
+    public function offsetGet(mixed $key): ServiceInterface
     {
         if (! isset($this->items[$key])) {
             throw new ServiceNotFoundInCollectionException(
@@ -62,9 +59,9 @@ class ServiceCollection extends Collection implements ServiceCollectionInterface
      * @param mixed            $key
      * @param ServiceInterface $value
      */
-    public function offsetSet($key, $value): void
+    public function offsetSet(mixed $key, mixed $value): void
     {
-        $this->checkValidService($value);
+        $this->assertValidService($value);
 
         parent::offsetSet($key, $value);
     }
@@ -77,7 +74,7 @@ class ServiceCollection extends Collection implements ServiceCollectionInterface
      * @param int|null    $index
      * @throws InvalidCollectionContentException
      */
-    protected function checkValidService($item, ?string $context = null, ?int $index = null)
+    protected function assertValidService(mixed $item, ?string $context = null, ?int $index = null): void
     {
         if (! $item instanceof ServiceInterface) {
             throw new InvalidCollectionContentException(

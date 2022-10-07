@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Interpreters\Xml;
 
 use Czim\Service\Contracts\XmlParserInterface;
 use DOMDocument;
 use DOMElement;
+use DOMNode;
 use SimpleXMLElement;
 
 /**
@@ -20,9 +23,9 @@ class DomDocumentBasedXmlParser implements XmlParserInterface
      * This strips namespaces from the XML through a bit of a hack.
      *
      * @param string $xml
-     * @return mixed
+     * @return DOMNode|null
      */
-    public function parse(string $xml)
+    public function parse(string $xml): ?DOMNode
     {
         $dom = $this->buildDomDocumentFromXml($xml);
 

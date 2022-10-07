@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Interpreters;
 
 use Czim\Service\Exceptions\CouldNotInterpretJsonResponseException;
@@ -14,7 +16,7 @@ class BasicJsonInterpreter extends AbstractInterpreter
      *
      * @var bool
      */
-    protected $asArray = true;
+    protected bool $asArray = true;
 
 
     public function __construct(?bool $asArray = null)

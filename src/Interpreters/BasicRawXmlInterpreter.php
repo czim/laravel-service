@@ -15,12 +15,9 @@ class BasicRawXmlInterpreter extends AbstractXmlInterpreter
      *
      * @var bool
      */
-    protected $asArray = false;
+    protected bool $asArray = false;
 
-    /**
-     * @var XmlParserInterface
-     */
-    protected $xmlParser;
+    protected XmlParserInterface $xmlParser;
 
 
     /**

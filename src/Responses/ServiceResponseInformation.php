@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Responses;
 
 use Czim\Service\Contracts\ServiceResponseInformationInterface;

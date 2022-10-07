@@ -1,26 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Events;
 
 class SshLocalFileDeleted extends AbstractServiceEvent
 {
     /**
-     * @var string
+     * @param string $filename
+     * @param string $localPath Full path including file name
      */
-    protected $filename;
-
-    /**
-     * Full path including local file name
-     *
-     * @var string
-     */
-    protected $localPath;
-
-
-    public function __construct(string $filename, string $localPath)
-    {
-        $this->filename  = $filename;
-        $this->localPath = $localPath;
+    public function __construct(
+        protected readonly string $filename,
+        protected readonly string $localPath,
+    ) {
     }
 
     /**

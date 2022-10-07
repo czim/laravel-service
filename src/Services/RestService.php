@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Services;
 
 use Czim\Service\Contracts\GuzzleFactoryInterface;
@@ -34,55 +36,55 @@ class RestService extends AbstractService
     /**
      * {@inheritDoc}
      */
-    protected $requestDefaultsClass = ServiceRestRequestDefaults::class;
+    protected string $requestDefaultsClass = ServiceRestRequestDefaults::class;
 
     /**
      * @var ServiceRestRequest;
      */
-    protected $defaults;
+    protected ServiceRequestInterface $defaults;
 
     /**
      * @var ServiceRestRequest
      */
-    protected $request;
+    protected ServiceRequestInterface $request;
 
     /**
      * The default method to use for the HTTP call.
      *
      * @var string
      */
-    protected $httpMethod = self::METHOD_POST;
+    protected string $httpMethod = self::METHOD_POST;
 
     /**
      * Whether to use basic authentication.
      *
      * @var bool
      */
-    protected $basicAuth = true;
+    protected bool $basicAuth = true;
 
     /**
      * @var array<string, mixed>
      */
-    protected $headers = [];
+    protected array $headers = [];
 
     /**
-     * @var Client
+     * @var Client&ClientInterface
      */
-    protected $client;
+    protected ClientInterface $client;
 
     /**
      * Whether to send form parameters as multipart data.
      *
      * @var bool
      */
-    protected $multipart = false;
+    protected bool $multipart = false;
 
     /**
      * Whether to send POST/PUT/PATCH body data as json (multipart will override this).
      *
      * @var bool
      */
-    protected $sendJson = false;
+    protected bool $sendJson = false;
 
 
     /**
@@ -193,7 +195,7 @@ class RestService extends AbstractService
     /**
      * {@inheritDoc}
      */
-    protected function callRaw(ServiceRequestInterface $request)
+    protected function callRaw(ServiceRequestInterface $request): mixed
     {
         $url = rtrim($request->getLocation(), '/') . '/' . $request->getMethod();
 
@@ -238,7 +240,7 @@ class RestService extends AbstractService
      *
      * @param ServiceRequestInterface $request
      * @param string|null             $httpMethod
-     * @return array
+     * @return array<string, mixed>
      */
     protected function prepareGuzzleOptions(ServiceRequestInterface $request, ?string $httpMethod = null): array
     {
@@ -323,7 +325,7 @@ class RestService extends AbstractService
     /**
      * Returns HTTP method to use based on request & default.
      *
-     * @param ServiceRequestInterface|ServiceRestRequest $request
+     * @param ServiceRequestInterface&ServiceRestRequest $request
      * @return string
      */
     protected function determineHttpMethod(ServiceRequestInterface $request): string
@@ -334,16 +336,7 @@ class RestService extends AbstractService
 
     protected function isGuzzleException(Throwable $e): bool
     {
-        return (
-            $e instanceof GuzzleException\BadResponseException
-            || $e instanceof GuzzleException\ClientException
-            || $e instanceof GuzzleException\ConnectException
-            || $e instanceof GuzzleException\RequestException
-            || $e instanceof GuzzleException\SeekException
-            || $e instanceof GuzzleException\ServerException
-            || $e instanceof GuzzleException\TooManyRedirectsException
-            || $e instanceof GuzzleException\TransferException
-        );
+        return $e instanceof GuzzleException\TransferException;
     }
 
     protected function checkRequest(): void
@@ -374,10 +367,10 @@ class RestService extends AbstractService
     /**
      * Converts a given array with parameters to the multipart array format.
      *
-     * @param array|Arrayable $params
-     * @return array
+     * @param array<int|string, mixed>|Arrayable $params
+     * @return array<int, array<string, mixed>>
      */
-    protected function prepareMultipartData($params): array
+    protected function prepareMultipartData(array|Arrayable $params): array
     {
         $multipart = [];
 
@@ -416,7 +409,7 @@ class RestService extends AbstractService
 
     /**
      * @param array<string, mixed> $config
-     * @return ClientInterface
+     * @return ClientInterface&Client
      */
     protected function createGuzzleClient(array $config): ClientInterface
     {

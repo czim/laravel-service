@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Interpreters;
 
 /**
@@ -12,7 +14,7 @@ class BasicSoapXmlInterpreter extends AbstractXmlInterpreter
      *
      * @var bool
      */
-    protected $asArray = false;
+    protected bool $asArray = false;
 
 
     protected function doInterpretation(): void

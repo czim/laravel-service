@@ -13,5 +13,5 @@ interface XmlParserInterface
      * @return mixed
      * @throws CouldNotInterpretXmlResponseException
      */
-    public function parse(string $xml);
+    public function parse(string $xml): mixed;
 }

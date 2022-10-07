@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Responses;
 
 use Czim\DataObject\AbstractDataObject;
@@ -25,18 +27,12 @@ class ServiceResponse extends AbstractDataObject implements ServiceResponseInter
         'success'    => true,
     ];
 
-    /**
-     * @param mixed $data
-     */
-    public function setData($data): void
+    public function setData(mixed $data): void
     {
         $this->setAttribute('data', $data);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getData()
+    public function getData(): mixed
     {
         return $this->getAttribute('data');
     }

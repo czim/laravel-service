@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Services;
 
 use Closure;
 use Czim\Service\Contracts\ResponseMergerInterface;
 use Czim\Service\Contracts\ServiceInterpreterInterface;
+use Czim\Service\Contracts\ServiceRequestDefaultsInterface;
 use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Contracts\ServiceResponseInterface;
 use Czim\Service\Contracts\ServiceSshRequestInterface;
@@ -26,29 +29,22 @@ use InvalidArgumentException;
 class MultiFileService extends AbstractService
 {
     /**
-     * @var string
+     * @var class-string<ServiceRequestDefaultsInterface>
      */
-    protected $requestDefaultsClass = ServiceSshRequestDefaults::class;
+    protected string $requestDefaultsClass = ServiceSshRequestDefaults::class;
 
     /**
      * @var ServiceSshRequestInterface
      */
-    protected $defaults;
+    protected ServiceRequestInterface $defaults;
 
     /**
      * @var ServiceSshRequestInterface
      */
-    protected $request;
+    protected ServiceRequestInterface $request;
 
-    /**
-     * @var ResponseMergerInterface
-     */
-    protected $responseMerger;
-
-    /**
-     * @var Filesystem
-     */
-    protected $files;
+    protected Filesystem $files;
+    protected ResponseMergerInterface $responseMerger;
 
 
     public function __construct(
@@ -159,11 +155,11 @@ class MultiFileService extends AbstractService
 
 
     /**
-     * @param ServiceRequestInterface $request
+     * @param ServiceSshRequestInterface $request
      * @return mixed
      * @throws CouldNotConnectException
      */
-    protected function callRaw(ServiceRequestInterface $request)
+    protected function callRaw(ServiceRequestInterface $request): mixed
     {
         if ($this->request !== $request) {
             $this->request = $request;
@@ -204,9 +200,9 @@ class MultiFileService extends AbstractService
     {
         try {
             $data = $this->files->get($file);
-        } catch (FileNotFoundException $e) {
+        } catch (FileNotFoundException) {
             throw new CouldNotConnectException("Local file could not be found: '{$file}'");
-        } catch (Exception $e) {
+        } catch (Exception) {
             throw new CouldNotConnectException("Local file unreadable or unopenable: '{$file}'");
         }
 
@@ -282,7 +278,7 @@ class MultiFileService extends AbstractService
         parent::checkRequest();
 
         if (! $this->request instanceof ServiceSshRequest) {
-            throw new InvalidArgumentException("Request class is not a ServiceSshRequest");
+            throw new InvalidArgumentException('Request class is not a ServiceSshRequest');
         }
     }
 }

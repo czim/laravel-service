@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Interpreters\Decorators;
 
 use Czim\Service\Contracts\ServiceInterpreterInterface;
@@ -12,15 +14,8 @@ use Czim\Service\Contracts\ServiceResponseInterface;
  */
 class FixXmlNamespacesDecorator implements ServiceInterpreterInterface
 {
-    /**
-     * @var ServiceInterpreterInterface
-     */
-    protected $interpreter;
-
-
-    public function __construct(ServiceInterpreterInterface $interpreter)
+    public function __construct(protected readonly ServiceInterpreterInterface $interpreter)
     {
-        $this->interpreter = $interpreter;
     }
 
 
@@ -32,8 +27,8 @@ class FixXmlNamespacesDecorator implements ServiceInterpreterInterface
      */
     public function interpret(
         ServiceRequestInterface $request,
-        $response,
-        ServiceResponseInformationInterface $responseInformation = null
+        mixed $response,
+        ServiceResponseInformationInterface $responseInformation = null,
     ): ServiceResponseInterface {
         return $this->interpreter->interpret(
             $request,

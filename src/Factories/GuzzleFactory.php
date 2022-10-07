@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Factories;
 
 use Czim\Service\Contracts\GuzzleFactoryInterface;

@@ -32,5 +32,5 @@ interface Ssh2ConnectionInterface
      * @param string $command
      * @return mixed
      */
-    public function exec(string $command);
+    public function exec(string $command): mixed;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Czim\Service\Interpreters\Xml;
 
 use Czim\Service\Contracts\XmlObjectConverterInterface;
@@ -12,7 +14,7 @@ class XmlObjectToArrayConverter implements XmlObjectConverterInterface
 {
     /**
      * @param object $object
-     * @return mixed[]
+     * @return array<int|string, mixed>
      */
     public function convert(object $object): array
     {
@@ -22,28 +24,27 @@ class XmlObjectToArrayConverter implements XmlObjectConverterInterface
     /**
      * Converts SimpleXml structure to array
      *
-     * @param SimpleXmlElement|array|object $xml
+     * @param SimpleXmlElement|array<int|string, mixed>|object $xml
      * @return array
      */
-    protected function convertXmlObjectToArray($xml): array
+    protected function convertXmlObjectToArray(mixed $xml): array
     {
         $array = (array) $xml;
 
-        if (count($array) == 0 && ! is_array($xml)) {
+        if (count($array) == 0) {
             $array = [ (string) $xml ];
         }
 
-        if (is_array($array)) {
-            foreach ($array as $key => $value) {
-                if (is_object($value)) {
-                    if (strpos(get_class($value), "SimpleXML") !== false) {
-                        $array[ $key ] = $this->convertXmlObjectToArray($value);
-                    } else {
-                        $array[ $key ] = $this->convertXmlObjectToArray( (array) $value );
-                    }
-                } elseif (is_array($value)) {
+
+        foreach ($array as $key => $value) {
+            if (is_object($value)) {
+                if (str_contains(get_class($value), "SimpleXML")) {
                     $array[ $key ] = $this->convertXmlObjectToArray($value);
+                } else {
+                    $array[ $key ] = $this->convertXmlObjectToArray( (array) $value );
                 }
+            } elseif (is_array($value)) {
+                $array[ $key ] = $this->convertXmlObjectToArray($value);
             }
         }
 
