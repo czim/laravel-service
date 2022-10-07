@@ -13,7 +13,6 @@ use Czim\Service\Contracts\ServiceResponseInterface;
 use Czim\Service\Exceptions\ServiceConfigurationException;
 use Czim\Service\Interpreters\BasicDefaultInterpreter;
 use Czim\Service\Requests\ServiceRequestDefaults;
-use Czim\Service\Responses\ServiceResponse;
 use Czim\Service\Responses\ServiceResponseInformation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
@@ -36,7 +35,7 @@ abstract class AbstractService implements ServiceInterface
     protected string $interpreterClass = BasicDefaultInterpreter::class;
 
 
-    protected ServiceRequestInterface $defaults;
+    protected ServiceRequestDefaultsInterface $defaults;
 
     /**
      * The request object to base the call on.
@@ -163,7 +162,7 @@ abstract class AbstractService implements ServiceInterface
      * @param mixed                     $parameters extra parameters to send along (optional)
      * @param array<string, mixed>|null $headers    extra headers to send along (optional)
      * @param array<string, mixed>      $options    extra options to set on f.i. the soap client used
-     * @return ServiceResponse fallback to mixed if no interpreter available; make sure there is one
+     * @return ServiceResponseInterface fallback to mixed if no interpreter available; make sure there is one
      */
     public function call(
         ?string $method,

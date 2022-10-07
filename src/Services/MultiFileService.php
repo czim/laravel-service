@@ -34,9 +34,9 @@ class MultiFileService extends AbstractService
     protected string $requestDefaultsClass = ServiceSshRequestDefaults::class;
 
     /**
-     * @var ServiceSshRequestInterface
+     * @var ServiceSshRequestDefaults
      */
-    protected ServiceRequestInterface $defaults;
+    protected ServiceRequestDefaultsInterface $defaults;
 
     /**
      * @var ServiceSshRequestInterface

@@ -7,10 +7,10 @@ interface ServiceInterface
     /**
      * Performs a call on the service, returning an interpreted response.
      *
-     * @param string|null $method     name of the method to call through the service
-     * @param mixed|null  $request
-     * @param mixed|null  $parameters extra parameters to send along (optional)
-     * @param mixed|null  $headers    extra headers to send along (optional)
+     * @param string|null               $method     name of the method to call through the service
+     * @param mixed|null                $request
+     * @param mixed|null                $parameters extra parameters to send along (optional)
+     * @param array<string, mixed>|null $headers    extra headers to send along (optional)
      * @return ServiceResponseInterface
      */
     public function call(

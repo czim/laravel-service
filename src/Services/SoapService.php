@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Czim\Service\Services;
 
+use Czim\Service\Contracts\ServiceRequestDefaultsInterface;
 use Czim\Service\Contracts\ServiceRequestInterface;
 use Czim\Service\Contracts\SoapFactoryInterface;
 use Czim\Service\Events\SoapCallCompleted;
@@ -36,7 +37,7 @@ class SoapService extends AbstractService
     /**
      * @var ServiceSoapRequestDefaults
      */
-    protected ServiceRequestInterface $defaults;
+    protected ServiceRequestDefaultsInterface $defaults;
 
     /**
      * @var ServiceSoapRequest

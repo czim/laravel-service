@@ -12,7 +12,6 @@ use Czim\Service\Events\RestCallCompleted;
 use Czim\Service\Exceptions\CouldNotConnectException;
 use Czim\Service\Requests\ServiceRestRequest;
 use Czim\Service\Requests\ServiceRestRequestDefaults;
-use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception as GuzzleException;
 use Illuminate\Contracts\Support\Arrayable;
@@ -39,9 +38,9 @@ class RestService extends AbstractService
     protected string $requestDefaultsClass = ServiceRestRequestDefaults::class;
 
     /**
-     * @var ServiceRestRequest;
+     * @var ServiceRestRequestDefaults
      */
-    protected ServiceRequestInterface $defaults;
+    protected ServiceRequestDefaultsInterface $defaults;
 
     /**
      * @var ServiceRestRequest
@@ -68,7 +67,7 @@ class RestService extends AbstractService
     protected array $headers = [];
 
     /**
-     * @var Client&ClientInterface
+     * @var ClientInterface
      */
     protected ClientInterface $client;
 
@@ -411,7 +410,7 @@ class RestService extends AbstractService
 
     /**
      * @param array<string, mixed> $config
-     * @return ClientInterface&Client
+     * @return ClientInterface
      */
     protected function createGuzzleClient(array $config): ClientInterface
     {

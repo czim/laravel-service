@@ -8,6 +8,7 @@ use Czim\Service\Contracts\ServiceCollectionInterface;
 use Czim\Service\Contracts\ServiceInterface;
 use Czim\Service\Exceptions\InvalidCollectionContentException;
 use Czim\Service\Exceptions\ServiceNotFoundInCollectionException;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 
 /**
@@ -18,9 +19,11 @@ class ServiceCollection extends Collection implements ServiceCollectionInterface
     /**
      * @param ServiceInterface[] $items
      */
-    public function __construct(array $items = [])
+    public function __construct(array|Arrayable $items = [])
     {
-        $items = is_array($items) ? $items : $this->getArrayableItems($items);
+        if ($items instanceof Arrayable) {
+            $items = $this->getArrayableItems($items);
+        }
 
         foreach ($items as $item) {
             $this->assertValidService($item);

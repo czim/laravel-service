@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Czim\Service\Interpreters\Xml;
 
 use Czim\Service\Contracts\XmlObjectConverterInterface;
-use DOMDocument;
-use DOMElement;
 use DOMNode;
 
 /**
@@ -19,7 +17,7 @@ use DOMNode;
 class DomObjectToArrayConverter implements XmlObjectConverterInterface
 {
     /**
-     * @param mixed|DOMDocument|DOMElement|DOMNode $object
+     * @param DOMNode $object
      * @return array<int|string, mixed>
      */
     public function convert(object $object): array
