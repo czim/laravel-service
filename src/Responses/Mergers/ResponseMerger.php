@@ -14,6 +14,8 @@ use Czim\Service\Responses\ServiceResponse;
  * elements in a single array.
  *
  * @template TResponse as \Czim\Service\Contracts\ServiceResponseInterface
+ *
+ * @implements ResponseMergerInterface<TResponse>
  */
 class ResponseMerger implements ResponseMergerInterface
 {
