@@ -18,7 +18,7 @@ Basic framework for making standardized but flexible webservice classes.
 | 7 - 8   | 7.2+  | 1.0     |
 | 9       | 7.2+  | 1.1     |
 | 9       | 8.0   | 2.0     |
-| 9       | 8.1   | 3.0     |
+| 9 - 11  | 8.1   | 3.1     |
 
 ## Install
 
